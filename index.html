@@ -167,6 +167,100 @@
         
 
 <div class="post">
+    <a href="/2023/10/10/C-%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8BI/">
+        <h2 class="post-title">C++核心编程I</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="category">
+            <a href="/categories/%E7%AC%94%E8%AE%B0/">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                笔记
+            </a>
+        </span>
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/10
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="C-核心编程"><a href="#C-核心编程" class="headerlink" title="C++核心编程"></a>C++核心编程</h1><h3 id="1-内存分区模型"><a href="#1-内存分区模型" class="headerlink" title="1. 内存分区模型"></a>1. 内存分区模型</h3><ul>
+<li>代码区：存放函数的二进制代码，由操作系统进行管理</li>
+<li>全局区：存放全局变量和静态变量以及常量</li>
+<li>栈区：由编译器自动分配释放，存放函数的参数值，局部变量等</li>
+<li>堆区：由程序员分配和释放，若程序员不释放，程序结束由操作系统释放</li>
+</ul>
+<h3 id="2-内联函数"><a href="#2-内联函数" class="headerlink" title="2. 内联函数"></a>2. 内联函数</h3><p>在C++中，使用关键字 <code>inline</code> 可以将函数定义为内联函数。内联函数的特点是它们的定义必须在每个调用它们的源文件中可见，通常这意味着函数的定义通常会写在头文件（.h）中。</p>
+<p>目的：在编译时将函数的代码嵌入到调用它们的地方，而不是像普通函数一样在链接时进行函数调用。因此，如果函数定义不在可见范围内，编译器无法将其内联到调用点。</p>
+<p><strong>在头文件中声明内联函数的原型（函数声明），并在同一头文件中定义函数的具体实现。</strong></p>
+<pre><code class="c++">#构造函数可以直接赋初值，构造函数特性
+complex (double r = 0, double i = 0) : re(r),im(i)&#123;&#125;
+</code></pre>
+<p><em><strong>1. 不带指针的构造函数多半不需要写析构函数</strong></em>	     	<strong>如果class里面带指针，就必须有拷贝构造和拷贝复制</strong></p>
+<p><strong>2. 写在class里面的方法是内联函数（建议编译器内联，最后还是看编译器）</strong></p>
+<p><em><strong>3. 数据一定要放在private里面，构造函数可以放在private里面，详情见后</strong></em></p>
+<p>以下的常成员函数在常量对象调用时起作用，若没加 <code>const</code>常量对象调用时会报错 ,所以该加<code>const</code>的地方一定要加</p>
+<pre><code class="c++">
+double real() const &#123; return re; &#125;  #常成员函数
+</code></pre>
+<ul>
+<li><p><em><strong>参数传递尽量用引用，返回也是</strong></em></p>
+</li>
+<li><p><em><strong>同一个class的不同object之间互为友元（firend)</strong></em></p>
+</li>
+<li><p><em><strong>临时对象  typename ()</strong></em></p>
+</li>
+<li><p><strong>如果class里面带指针，就必须有拷贝构造和拷贝复制</strong></p>
+</li>
+</ul>
+<img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230920163619993.png" alt="image-20230920163619993" style="zoom:50%;" />
+
+<p>​																									浅拷贝：只拷贝指针</p>
+<p>b &#x3D; a,如果使用编译器默认的函数，是浅拷贝，有可能导致内存泄漏</p>
+<h3 id="3-拷贝构造函数"><a href="#3-拷贝构造函数" class="headerlink" title="3. 拷贝构造函数"></a>3. <strong>拷贝构造函数</strong></h3><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230920163938278.png" alt="image-20230920163938278"></p>
+<pre><code>                                                深拷贝:复制内存
+</code></pre>
+<p><strong>拷贝赋值函数</strong>：把左边拷贝的右边分三步：1. 先把右边清空，2. 重新分配右边跟左边一样大的内存，3. 拷贝</p>
+<img src="C:\Users\17954\AppData\Roaming\Typora\typora-user-images\image-20230920164727873.png" alt="image-20230920164727873" style="zoom:50%;" />
+
+<p><img src="C:\Users\17954\AppData\Roaming\Typora\typora-user-images\image-20230920200351109.png" alt="12"></p>
+<p>变量可以声明多次，但只能定义一次</p>
+<pre><code class="c++">extern int a;		#声明
+extern int a = 0;   #定义
+</code></pre>
+<p><strong>静态函数属于类，而不属于对象</strong></p>
+<p><strong>模板类在编译时要把.h文件和.cpp文件都要添加</strong></p>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/c/" style="color: #03a9f4">c++</a>
+        </span>
+        
+    </div>
+    <a href="/2023/10/10/C-%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8BI/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2023/10/09/Linux%E4%B8%8Bgit%E4%BD%BF%E7%94%A8/">
         <h2 class="post-title">Linux下git使用</h2>
     </a>
@@ -193,135 +287,7 @@
     <div class="description">
         <div class="content" v-pre>
             
-            <span id="more"></span>
-<h1 id="Linux下Git使用"><a href="#Linux下Git使用" class="headerlink" title="Linux下Git使用"></a>Linux下Git使用</h1><h3 id="1-git的安装"><a href="#1-git的安装" class="headerlink" title="1. git的安装"></a>1. git的安装</h3><pre><code class="shell">sudo apt install git
-</code></pre>
-<p>安装完，使用<code>git --version</code>查看git版本</p>
-<h3 id="2-配置git"><a href="#2-配置git" class="headerlink" title="2. 配置git"></a>2. 配置git</h3><pre><code class="shell">git config --global user.name &quot;Your Name“	##配置用户 
-git config --global user.email email@example.com	##配置邮箱
-git config --global --list			##查看配置信息
-## --global 全局配置，所有仓库生效，不加就只对当前用户有效
-## --system 系统配置，对所有用户生效
-</code></pre>
-<h3 id="3-新建版本库"><a href="#3-新建版本库" class="headerlink" title="3. 新建版本库"></a>3. 新建版本库</h3><pre><code class="shell"> git init
-</code></pre>
-<h3 id="4-工作区域与文件状态"><a href="#4-工作区域与文件状态" class="headerlink" title="4. 工作区域与文件状态"></a>4. 工作区域与文件状态</h3><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230920204530239.png" alt="image-20230920204530239"></p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230920204638439.png" alt="image-20230920204638439"></p>
-<h3 id="5-添加和提交文件"><a href="#5-添加和提交文件" class="headerlink" title="5. 添加和提交文件"></a>5. 添加和提交文件</h3><pre><code class="shell">git init		##创建仓库
-git status		##查看仓库的状态
-git add			##添加到暂存库
-git commit 		##提交
-git rm --cached &lt;file&gt;...		##将文件从暂存区中去除
-git log			##查看提交记录
-git ls-files	##查看暂存区的文件
-git commit -a -m &quot; &quot; #实现添加和提交两个步骤
-</code></pre>
-<h3 id="3-回退版本"><a href="#3-回退版本" class="headerlink" title="3. 回退版本"></a>3. 回退版本</h3><pre><code class="shell">git reset --soft
-git reset --hard
-git reset --mixed	
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921085607903.png" alt="image-20230921085607903"></p>
-<pre><code class="shell">git reset HEAD^		##默认为mixed,回退一个版本
-</code></pre>
-<pre><code class="txt">HEAD 表示当前版本
-HEAD^ 上一个版本
-HEAD^^ 上上一个版本
-HEAD^^^ 上上上一个版本
-HEAD~0 表示当前版本
-HEAD~1 上一个版本
-HEAD^2 上上一个版本
-HEAD^3 上上上一个版本
-执行 git reset HEAD 以取消之前 git add 添加，但不希望包含在下一提交快照中的缓存
-</code></pre>
-<p>误操作之后</p>
-<pre><code class="shell">git reflog		##回溯日志
-git reset --hard 版本号	##回退
-</code></pre>
-<h3 id="6-查看差异"><a href="#6-查看差异" class="headerlink" title="6. 查看差异"></a>6. 查看差异</h3><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921091532989.png" alt="image-20230921091532989"></p>
-<pre><code class="shell">git diff				#默认比较工作区和暂存区之间的差异
-git diff HEAD			#比较工作区和版本库之间的差异
-git diff --cached		#比较暂存区和版本库之间的区别
-git diff 版本号	版本号	#比较两个版本之间的差异
-git diff HEAD~ HEAD		#如回退版本
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921092511736.png" alt="image-20230921092511736"></p>
-<h3 id="7-删除文件"><a href="#7-删除文件" class="headerlink" title="7. 删除文件"></a>7. 删除文件</h3><p>方法1：先删除本地文件，再提交</p>
-<pre><code class="shell">rm -rf 3.txt	##删除本地中的文件
-git add .		##删除暂存区中的文件
-git commit -m &#39;deleted 3.txt&#39;	##删除工作区文件
-</code></pre>
-<p>方法2</p>
-<pre><code class="shell">git rm 2.txt	##删除本地和暂存区中文件
-git commit -m &#39;deleted 2.txt&#39;	##删除工作区文件
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921093523261.png" alt="image-20230921093523261"></p>
-<h3 id="8-忽略文件"><a href="#8-忽略文件" class="headerlink" title="8. 忽略文件"></a>8. 忽略文件</h3><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921093644360.png" alt="image-20230921093644360"></p>
-<pre><code class="shell"> echo &quot;*.log&quot; &gt; .gitignore		##表示忽略所有日志文件
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921094538072.png" alt="image-20230921094538072"></p>
-<h3 id="9-远程仓库github"><a href="#9-远程仓库github" class="headerlink" title="9. 远程仓库github"></a>9. 远程仓库github</h3><p>注册github账号，创建仓库</p>
-<h3 id="10-ssh配置和克隆仓库"><a href="#10-ssh配置和克隆仓库" class="headerlink" title="10. ssh配置和克隆仓库"></a>10. ssh配置和克隆仓库</h3><p>创建ssh密钥</p>
-<pre><code class="shell">cd ~
-cd .ssh		#如果显示文件不存在，就之间执行以下命令
-ssh-keygen -t rsa -b 4096 -C &quot;xxx@email.com&quot;	#直接enter,如果是第二次执行，记得更改文件名，不然会覆盖之前的id_rsa文件，且不可逆
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921101312117.png" alt="image-20230921101312117"></p>
-<p>执行之前的命令会生成以下两个文件，有.pub的是公钥文件，没有的是私钥文件，复制公钥文件到github的Settings里的ssh配置</p>
-<p>如果是第一次配置就配置完了，如果是第二次，更改了文件名的，就需要新建一个config文件，内容为</p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921101639858.png" alt="image-20230921101639858"></p>
-<p>意思是：当我们在访问github.com这个网站的时候。使用的是test这个文件里的密钥</p>
-<pre><code class="shell"> git clone git@github.com:xxx.git		##克隆新建的远程仓库
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921102254407.png" alt="image-20230921102254407"></p>
-<pre><code class="shell">git push	##将本地文件推送到远程仓库
-</code></pre>
-<h3 id="11-关联本地仓库和远程仓库"><a href="#11-关联本地仓库和远程仓库" class="headerlink" title="11. 关联本地仓库和远程仓库"></a>11. 关联本地仓库和远程仓库</h3><ol>
-<li>本地无仓库</li>
-</ol>
-<pre><code class="shell">echo &quot;# fist-repo&quot; &gt;&gt; README.md
-git init
-git add README.md
-git commit -m &quot;first commit&quot;
-git branch -M main
-git remote add origin git@github.com:xxx.git
-git push -u origin main
-</code></pre>
-<ol start="2">
-<li>本地已经有仓库</li>
-</ol>
-<pre><code class="shell">git remote add origin git@github.com:xxx.git		##添加一个远程仓库
-git branch -M main									##指定分支的名称为main
-git push -u origin main								##把本地的main分支与远程的orgin main分支关联
-</code></pre>
-<pre><code class="shell">git remote -v		##查看本地仓库对应的远程仓库别名
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921103436235.png" alt="image-20230921103436235"></p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921103522078.png" alt="image-20230921103522078"></p>
-<h3 id="12-分支"><a href="#12-分支" class="headerlink" title="12. 分支"></a>12. 分支</h3><pre><code class="shell">git branch			#查看分支
-git branch	dev		#新建分支dev
-git checkout dev	#切换到分支dev(有风险，有时会用来恢复文件)
-git switch main		#切换到分支main
-git merge dev		#将要被合并的分支(dev)合并到当前分支(main)
-git log --graph --oneline --decorate --all	##查看分支情况
-git branch -d dev	#删除分支(已经合并)
-git branch -D dev	#删除分支(未合并，强行删除)
-</code></pre>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921140159925.png" alt="image-20230921140159925"></p>
-<h3 id="13-回退和rebase"><a href="#13-回退和rebase" class="headerlink" title="13. 回退和rebase"></a>13. 回退和rebase</h3><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921140826350.png" alt="image-20230921140826350"></p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921141221770.png" alt="image-20230921141221770"></p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921141308973.png" alt="image-20230921141308973"></p>
-<h3 id="14-分支管理和工作流模型"><a href="#14-分支管理和工作流模型" class="headerlink" title="14. 分支管理和工作流模型"></a>14. 分支管理和工作流模型</h3><ol>
-<li><strong>git flow模型</strong></li>
-</ol>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/v2-04b62035a49e04e997d3cb05e22970a9_r.jpg" alt="img"></p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/v2-f20d5d1eab3704639fe64531776b4bac_720w.webp" alt="img"></p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/v2-c7b37d13cfb22d77c840bac3cceee6a7_r.jpg" alt="img"></p>
-<ol start="2">
-<li><strong>github flow模型</strong></li>
-</ol>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921141728150.png" alt="image-20230921141728150"></p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921141750346.png" alt="image-20230921141750346"></p>
-
+            <p>简单介绍git的基本命令</p>
             
         </div>
     </div>
@@ -335,89 +301,16 @@ git branch -D dev	#删除分支(未合并，强行删除)
         
         <span class="tag">
             
-            <a href="/tags/git/" style="color: #ff7d73">git</a>
+            <a href="/tags/git/" style="color: #03a9f4">git</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/linux/" style="color: #00a596">linux</a>
+            <a href="/tags/linux/" style="color: #ffa2c4">linux</a>
         </span>
         
     </div>
     <a href="/2023/10/09/Linux%E4%B8%8Bgit%E4%BD%BF%E7%94%A8/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/10/09/one-day/">
-        <h2 class="post-title">one day</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/9
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2023/10/09/one-day/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/10/09/hello-world/">
-        <h2 class="post-title">Hello World</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/9
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code class="bash">$ hexo new &quot;My New Post&quot;
-</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code class="bash">$ hexo server
-</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code class="bash">$ hexo generate
-</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code class="bash">$ hexo deploy
-</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2023/10/09/hello-world/" class="go-post">阅读全文</a>
 </div>
 
 
