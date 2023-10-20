@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8" />
-    <title>Categories: 教程 | Hexo</title>
+    <title>解析Http协议 | Hexo</title>
     <meta name="author" content="Mzy" />
     <meta name="description" content="mzy的成长历程" />
     <meta name="keywords" content="" />
@@ -31,6 +31,10 @@
 
 
 <script src="/js/lib/preview.js"></script>
+
+
+
+
 
 
 
@@ -144,14 +148,20 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div id="archives">
-    
-    <div class="categories-tags">
+            <div class="article">
+    <div>
+        <h1>解析Http协议</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/20
+        </span>
         
-        
-        
-        <span>
-            <a href="/categories/%E7%AC%94%E8%AE%B0/" style="background: #ff7d73">
+        <span class="category">
+            <a href="/categories/%E7%AC%94%E8%AE%B0/">
                 <span class="icon">
                     <i class="fa-solid fa-bookmark fa-fw"></i>
                 </span>
@@ -160,61 +170,112 @@
         </span>
         
         
-        
-        <span>
-            <a href="/categories/%E6%95%99%E7%A8%8B/" style="background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%)">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                教程
-            </a>
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/http/" style="color: #03a9f4">http</a>
+            </span>
+            
         </span>
-        
-        
-        
         
     </div>
     
-    <div class="timeline">
-        <div class="timeline-tail"></div>
-        <div class="timeline-content">
-            <div class="item-time">2023/10/9</div>
-            <a href="/2023/10/09/Linux%E4%B8%8Bgit%E4%BD%BF%E7%94%A8/">
-                <h3>Linux下git使用</h3>
-            </a>
-            <div class="info">
-                
-                <span class="category">
-                    <a href="/categories/%E6%95%99%E7%A8%8B/">
-                        <span class="icon">
-                            <i class="fa-solid fa-bookmark fa-fw"></i>
-                        </span>
-                        教程
-                    </a>
-                </span>
-                
-                
-                <span class="tags">
-                    <span class="icon">
-                        <i class="fa-solid fa-tags fa-fw"></i>
-                    </span>
-                    
-                    
-                    <span class="tag">
-                        
-                        <a href="/tags/linux/" style="color: #ffa2c4">linux</a>
-                    </span>
-                    
-                    <span class="tag">
-                        
-                        <a href="/tags/git/" style="color: #03a9f4">git</a>
-                    </span>
-                    
-                </span>
-                
-            </div>
-        </div>
+    <div class="content" v-pre>
+        <p>在写webSever时了解了一点关于http协议的内容，更方便后面的学习</p>
+<span id="more"></span>
+<p><strong>HTTP</strong>(hypertext transport protocol 超文本传输协议）：一种无状态的，以请求&#x2F;应答方式运行的协议，它使用可扩展的语义和自描述消息格式，与基于网络的超文本信息系统灵活的互动。</p>
+<h2 id="1-http请求"><a href="#1-http请求" class="headerlink" title="1. http请求"></a>1. http请求</h2><pre><code class="txt">http请求消息分为四部分
+1. 请求行
+    不管是get请求还是post请求，请求行分为三部分
+2. 请求头
+3. 空行
+4. 客户端想服务器提交的数据
+</code></pre>
+<pre><code class="txt">GET /doing HTTP/1.1
+Host: 10.1.18.4
+User-Agent: Mozilla/5.0 (Windows NT 6.2; rv:40.0) Gecko/20100101 Firefox/40.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Referer: http://10.1.18.4/
+Connection: keep-alive
+</code></pre>
+<pre><code class="txt">1. 请求行	GET /doing HTTP/1.1
+三部分：请求方式	请求的资源（/不代表服务器根目录，是服务器给客户端提供的资源目录）	HTTP协议版本	还有看不见的\r\n
+2. 请求头	若干个键值对
+Host: 10.1.18.4
+User-Agent: Mozilla/5.0 (Windows NT 6.2; rv:40.0) Gecko/20100101 Firefox/40.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Referer: http://10.1.18.4/
+Connection: keep-alive
+</code></pre>
+<ul>
+<li><p>get</p>
+<ul>
+<li>提交的数据,不安全,提交的数据会显示到地址栏中，被别人看到之后，数据就泄露了</li>
+<li>图中的<code> userid</code>和<code>roomid </code>就是浏览器向服务器提交的数据地址栏中的数据会放到某块缓冲中，地址栏对应的缓存是有上限的,在几k左右</li>
+</ul>
+</li>
+<li><p>post</p>
+<ul>
+<li>提交的数据并不会显示到地址栏中,完全不可见的，因此更安全</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>请求行，用来说明请求类型，要访问的资源以及所使用的<code>http</code>版本。get说明请求类型为get，该行的最后一部分说明使用的是<code>http 1.1</code>版本</p>
+</li>
+<li><p>请求头，紧接着请求行（即第一行）之后的部分，用来说明服务器要使用的附加信息。从第二行起为请求头部，<code>host</code>将指出请求的目的地。<code>User-Agent</code>，服务器端和客户端脚本都能访问它，它是客户端类型检测逻辑的重要基础。该信息由你的客户端来定义，并且在每个请求中自动发送等。</p>
+</li>
+<li><p>空行，请求头部后面的空行是必须的。即使第四部分的请求数据为空，也必须有空行。</p>
+</li>
+<li><p>请求数据也叫主体，可以添加任意的其他数据，上面的请求数据为空。</p>
+</li>
+</ol>
+<h2 id="1-2-http响应"><a href="#1-2-http响应" class="headerlink" title="1.2 http响应"></a>1.2 http响应</h2><ol>
+<li>状态行，由<code>http</code>协议版本号， 状态码， 状态消息三部分组成。上面<code>http</code>版本号为<code>http/1.1</code>，状态码为200，状态消息为”OK”。</li>
+<li>消息报头，用来说明客户端要使用的一些附加信息。<code>Date</code>：生成响应的日期和时间；<code>Content-Type</code>：指定了MIME类型的<code>html(text/html)</code>，编码类型是<code>UTF-8</code>。</li>
+<li>空行，消息报头后面的空行是必须的。</li>
+<li>响应正文，服务器返回给客户端的文本信息，空行后面的<code>html</code>部分为响应正文。</li>
+</ol>
+<h2 id="1-3-http状态码"><a href="#1-3-http状态码" class="headerlink" title="1.3 http状态码"></a>1.3 http状态码</h2><p>状态代码有三位数字组成，第一个数字定义了响应的类别，共分五种类别:</p>
+<pre><code class="txt">1xx:指示信息--表示请求已接收，继续处理
+
+2xx:成功--表示请求已被成功接收、理解、接受
+
+3xx:重定向--要完成请求必须进行更进—步的操作(网络地址的重
+
+新访问)
+
+4xx:客户端错误--请求有语法错误或请求无法实现
+
+5xx:服务器端错误--服务器未能实现合法的请求
+</code></pre>
+<p>常见状态码</p>
+<pre><code class="txt">200 OK	客户端请求成功
+400 Bad Request客户端请求有语法错误，不能被服务器所理解
+401 Unauthorized请求未经授权，这个状态代码必须和Www-Authenticate报头域一起使用
+403 Forbidden 服务器收到请求，但是拒绝提供服务
+404 Not Found 请求资源不存在，eg:输入了错误的URL
+500 Internal Server Error服务器发生不可预期的错误
+503 Server Unavailable 服务器当前不能处理客户端的请求，一
+段时间后可能恢复正常
+</code></pre>
+
     </div>
+    
+    
+    
+    
+    
+    
     
 </div>
 
@@ -246,6 +307,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 
     <canvas
