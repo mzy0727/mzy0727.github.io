@@ -183,7 +183,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/Qt/" style="color: #ffa2c4">Qt</a>
+                <a href="/tags/Qt/" style="color: #00bcd4">Qt</a>
             </span>
             
         </span>
@@ -219,6 +219,7 @@ view-&gt;setMouseTracking(true);
 <li>重写<code>eventFilter(QObject *obj, QEvent *event)</code>函数进行处理。</li>
 </ol>
 <p>首先使用参数<code>obj</code>进行与绑定的控件对象进行判断，是否与其相等；然后在使用参数<code>event-&gt;type()</code>的返回值与枚举鼠标或者键盘进行判断；最后将<code>event</code>转换为鼠标事件对象或者键盘对象事件，就可以进行操作了。</p>
+<!-- more -->
 <pre><code class="c++">bool ImgHelper::eventFilter(QObject *watched, QEvent *event)
 &#123;
     //判断信号是不是来自QGraphicsView
@@ -375,6 +376,7 @@ view-&gt;setMouseTracking(true);
 &#125;
 </code></pre>
 <h3 id="功能2：Qt拖动鼠标画一个矩形"><a href="#功能2：Qt拖动鼠标画一个矩形" class="headerlink" title="功能2：Qt拖动鼠标画一个矩形"></a>功能2：Qt拖动鼠标画一个矩形</h3><p>想要画一个矩形就需要过滤鼠标点击事件，鼠标按下时确定矩形的起点，然后拖动一段距离，松开确定终点。</p>
+<!-- more -->
 <pre><code class="c++">// 鼠标点击事件
         case QEvent::MouseButtonPress:
         &#123;
@@ -431,6 +433,7 @@ view-&gt;setMouseTracking(true);
 <p>这是在网上看到其他人重写的一个<code>QGraphicsRectItem</code>类，画出来的矩形可以拖动，变形，旋转，使用时只需要导入这个类</p>
 <ul>
 <li><p>mygraphicrectitem.h</p>
+<!-- more -->
 <pre><code class="c++">#ifndef MYGRAPHICRECTITEM_H
 #define MYGRAPHICRECTITEM_H
 #include &lt;QObject&gt;
@@ -506,6 +509,7 @@ protected:
 </code></pre>
 </li>
 <li><p>mygraphicrectitem.cpp</p>
+<!-- more -->
 <pre><code class="c++">#include &quot;mygraphicrectitem.h&quot;
 #include &lt;QtMath&gt;
 #include &lt;QDebug&gt;
