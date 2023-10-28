@@ -178,12 +178,12 @@
             
             <span class="tag">
                 
-                <a href="/tags/c/" style="color: #ffa2c4">c++</a>
+                <a href="/tags/c/" style="color: #00bcd4">c++</a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/Qt/" style="color: #00bcd4">Qt</a>
+                <a href="/tags/Qt/" style="color: #03a9f4">Qt</a>
             </span>
             
         </span>
@@ -216,10 +216,9 @@ view-&gt;setMouseTracking(true);
 <p><strong>事件过滤器的操作：</strong></p>
 <ol>
 <li>首先给需要添加事件过滤器的部件<strong>注册监听对象</strong>；<br><code>对象名-&gt;installEventFilter(true);</code></li>
-<li>重写<code>eventFilter(QObject *obj, QEvent *event)</code>函数进行处理。</li>
+<li>重写<code>eventFilter(QObject *obj, QEvent *event)</code>函数进行处理。<!-- more -->
+首先使用参数<code>obj</code>进行与绑定的控件对象进行判断，是否与其相等；然后在使用参数<code>event-&gt;type()</code>的返回值与枚举鼠标或者键盘进行判断；最后将<code>event</code>转换为鼠标事件对象或者键盘对象事件，就可以进行操作了。</li>
 </ol>
-<p>首先使用参数<code>obj</code>进行与绑定的控件对象进行判断，是否与其相等；然后在使用参数<code>event-&gt;type()</code>的返回值与枚举鼠标或者键盘进行判断；最后将<code>event</code>转换为鼠标事件对象或者键盘对象事件，就可以进行操作了。</p>
-<!-- more -->
 <pre><code class="c++">bool ImgHelper::eventFilter(QObject *watched, QEvent *event)
 &#123;
     //判断信号是不是来自QGraphicsView
