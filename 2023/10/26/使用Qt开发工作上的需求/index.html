@@ -1,328 +1,442 @@
-
-
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=auto>
-
+<!DOCTYPE HTML>
+<html lang="zh-CN">
 
 
 <head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="Mzy">
-  <meta name="keywords" content="">
-  
-    <meta name="description" content="记录最近工作设及到一些关于qt编程的相关内容">
-<meta property="og:type" content="article">
-<meta property="og:title" content="使用Qt开发工作上的需求">
-<meta property="og:url" content="http://example.com/2023/10/26/%E4%BD%BF%E7%94%A8Qt%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E4%B8%8A%E7%9A%84%E9%9C%80%E6%B1%82/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="记录最近工作设及到一些关于qt编程的相关内容">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://api.311i.cn/api/bing.php">
-<meta property="article:published_time" content="2023-10-26T08:03:35.000Z">
-<meta property="article:modified_time" content="2023-10-31T06:49:27.294Z">
-<meta property="article:author" content="Mzy">
-<meta property="article:tag" content="c++">
-<meta property="article:tag" content="Qt">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://api.311i.cn/api/bing.php">
-  
-  
+    <meta charset="utf-8">
+    <meta name="keywords" content="使用Qt开发工作上的需求, Hexo">
+    <meta name="description" content="记录最近工作设及到一些关于qt编程的相关内容
+
+
+功能1：鼠标点击图片显示坐标和像素最近工作设及到一些关于qt编程的工作，主要内容就是在一个QGraphicsView上显示了一个QGraphicsPixmapItem的相机监控的图片，并用鼠">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="referrer" content="no-referrer-when-downgrade">
-  
-  
-  <title>使用Qt开发工作上的需求 - Hexo</title>
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
+    <title>使用Qt开发工作上的需求 | Hexo</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <!-- bg-cover style     -->
 
 
 
-<!-- 主题依赖的图标库，不要自行修改 -->
-<!-- Do not modify the link that theme dependent icons -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
-
-
-<link  rel="stylesheet" href="/css/main.css" />
-
-
-  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
-  
-    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
-  
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
 
 
 
 
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
-
-    if (CONFIG.web_analytics.follow_dnt) {
-      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
-    }
-  </script>
-  <script  src="/js/utils.js" ></script>
-  <script  src="/js/color-schema.js" ></script>
-  
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
 
 
-  
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
-  
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Hexo</span>
+                </a>
+            </div>
+            
 
-  <header>
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
     
-
-<div class="header-inner" style="height: 70vh;">
-  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <strong>随笔</strong>
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
     </a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/">
-                <i class="iconfont icon-home-fill"></i>
-                <span>首页</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/archives/">
-                <i class="iconfont icon-archive-fill"></i>
-                <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <i class="iconfont icon-search"></i>
-            </a>
-          </li>
-          
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
-              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
+    
+  </li>
   
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
 
-<div id="banner" class="banner" parallax=true
-     style="background: url('/img/post_banner.jpg') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Hexo</div>
+        <div class="logo-desc">
+            
+            mzy的成长历程
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
           
-            <span id="subtitle" data-typed-text="使用Qt开发工作上的需求"></span>
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
           
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
         </div>
 
         
-          
-  <div class="mt-3">
-    
-    
-      <span class="post-meta">
-        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-10-26 16:03" pubdate>
-          2023年10月26日 下午
-        </time>
-      </span>
-    
-  </div>
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
 
-  <div class="mt-1">
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-chart"></i>
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
         
-          26k 字
-        
-      </span>
-    
+    </nav>
+
+</header>
 
     
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-clock-fill"></i>
-        
-        
-        
-          215 分钟
-        
-      </span>
-    
-
-    
-    
-      
-        <span id="busuanzi_container_page_pv" style="display: none">
-          <i class="iconfont icon-eye" aria-hidden="true"></i>
-          <span id="busuanzi_value_page_pv"></span> 次
-        </span>
-        
-      
-    
-  </div>
 
 
-        
-      </div>
 
-      
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">使用Qt开发工作上的需求</h1>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
-</div>
 
-  </header>
 
-  <script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
-  <canvas
-    id="fireworks"
-    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 32767"
-></canvas>
-<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
-<script src="/js/fireworks.min.js"></script>
 
-<canvas
-    id="background"
-    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1"
-></canvas>
-<script src="/js/background.min.js"></script>
-<!--动态线条背景-->
-<script type="text/javascript"
-color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
-</script>
+<main class="post-container content">
 
-  <main>
     
-      
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/c/">
+                                <span class="chip bg-color">c++</span>
+                            </a>
+                        
+                            <a href="/tags/Qt/">
+                                <span class="chip bg-color">Qt</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E7%AC%94%E8%AE%B0/" class="post-category">
+                                笔记
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
 
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-
-    </div>
-
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div id="board">
-          <article class="post-content mx-auto">
-            <h1 id="seo-header">使用Qt开发工作上的需求</h1>
-            
-            
-              <div class="markdown-body">
+            <div class="post-info">
                 
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2023-10-26
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
                 <p>记录最近工作设及到一些关于qt编程的相关内容</p>
 <span id="more"></span>
 
 <h3 id="功能1：鼠标点击图片显示坐标和像素"><a href="#功能1：鼠标点击图片显示坐标和像素" class="headerlink" title="功能1：鼠标点击图片显示坐标和像素"></a>功能1：鼠标点击图片显示坐标和像素</h3><p>最近工作设及到一些关于qt编程的工作，主要内容就是在一个<code>QGraphicsView</code>上显示了一个<code>QGraphicsPixmapItem</code>的相机监控的图片，并用鼠标点击图片显示坐标和像素。</p>
 <p>最初在网上找到的解决方案是重写<code>mousePressEvent()</code>方法</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ImgHelper::mousePressEvent</span><span class="hljs-params">(QGraphicsSceneMouseEvent* event)</span></span><br><span class="hljs-function"></span>&#123;<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;Item: (&quot;</span> &lt;&lt; event-&gt;<span class="hljs-built_in">scenePos</span>().<span class="hljs-built_in">x</span>() &lt;&lt; <span class="hljs-string">&quot;, &quot;</span> &lt;&lt; event-&gt;<span class="hljs-built_in">scenePos</span>().<span class="hljs-built_in">y</span>() &lt;&lt; <span class="hljs-string">&#x27;)&#x27;</span> &lt;&lt; std::endl; <br>&#125;<br><br></code></pre></td></tr></table></figure>
-
+<pre><code class="c++">void ImgHelper::mousePressEvent(QGraphicsSceneMouseEvent* event)
+&#123;
+    std::cout &lt;&lt; &quot;Item: (&quot; &lt;&lt; event-&gt;scenePos().x() &lt;&lt; &quot;, &quot; &lt;&lt; event-&gt;scenePos().y() &lt;&lt; &#39;)&#39; &lt;&lt; std::endl; 
+&#125;
+</code></pre>
 <p>测试发现未响应鼠标事件，网上找到说：重写鼠标点击事件函数时发现鼠标点击事件在子类化后的<code>QGraphicsScene</code>中被响应，但是子类化后的<code>QGraphicsPixmapItem</code>无法响应。<code>QGraphicsView</code>的事件传递机制的顺序是<code>View-&gt;Scene-&gt;Item</code>，也就是说事件被子类化的<code>QGraphicsScene</code>吞没了，没有传递到下一级的<code>item</code>。<br>解决方案，在子类化的<code>QGraphicsScene</code>中重写<code>mousePressEvent()</code>方法内部一定要要记得调用：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">QGraphicsScene::<span class="hljs-built_in">mousePressEvent</span>(event);<br></code></pre></td></tr></table></figure>
-
+<pre><code class="c++">QGraphicsScene::mousePressEvent(event);
+</code></pre>
 <p>注意，要想返回图像坐标系的位置，就需要在子类化的<code>QGraphicsPixmapItem</code>中调用<code>scenePos()</code>函数。即使放大图像，点击图像中相同位置也会返回相同坐标结果。</p>
 <p>结果发现还是没有反应，还有一种说法就是加上下面这句话</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//使能QGraphcisView控件的鼠标跟踪</span><br>view-&gt;<span class="hljs-built_in">setMouseTracking</span>(<span class="hljs-literal">true</span>);<br></code></pre></td></tr></table></figure>
-
+<pre><code class="c++">//使能QGraphcisView控件的鼠标跟踪
+view-&gt;setMouseTracking(true);
+</code></pre>
 <p>最后尝试把<code>mousePressEvent</code>函数在最上层的<code>mainwindow</code>中重写并使能鼠标，有效果，但是坐标并不是我想要的效果，现在的坐标系是整个界面的，我想要的是图像的坐标，然后能通过图像控件的位置和长宽进行筛选，但是获得的图像是经过qt自适应缩放在<code>600X600</code>的容器里的。</p>
 <p>在一筹莫展的时候，突然看到<code>eventFilter</code>事件过滤器。</p>
-<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/20210320141253167.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></p>
+<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/20210320141253167.png" alt="在这里插入图片描述"></p>
 <p>原本事件应该直接发送给“组件对象”，但是现在却先将事件发送给“过滤器对象”，经过过滤的事件再发给“组件对象”。</p>
 <p><strong>事件过滤器的操作：</strong></p>
 <ol>
@@ -330,456 +444,1448 @@ color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com
 <li>重写<code>eventFilter(QObject *obj, QEvent *event)</code>函数进行处理。<!-- more -->
 首先使用参数<code>obj</code>进行与绑定的控件对象进行判断，是否与其相等；然后在使用参数<code>event-&gt;type()</code>的返回值与枚举鼠标或者键盘进行判断；最后将<code>event</code>转换为鼠标事件对象或者键盘对象事件，就可以进行操作了。</li>
 </ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">ImgHelper::eventFilter</span><span class="hljs-params">(QObject *watched, QEvent *event)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//判断信号是不是来自QGraphicsView</span><br>    <span class="hljs-keyword">if</span>(watched == view-&gt;<span class="hljs-built_in">viewport</span>())&#123;<br>        <span class="hljs-keyword">switch</span> (event-&gt;<span class="hljs-built_in">type</span>()) &#123;<br>        <span class="hljs-comment">//鼠标移动事件</span><br>        <span class="hljs-keyword">case</span>  QEvent::MouseMove:<br>        &#123;<br>            QMouseEvent *m_event = (QMouseEvent*)event;<br><br><br>            <span class="hljs-keyword">if</span>(pixmapItem == <span class="hljs-literal">NULL</span>)&#123;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br><br>           <span class="hljs-comment">// QPoint point = m_event-&gt;pos();</span><br><br>            QPixmap pix= pixmapItem-&gt;<span class="hljs-built_in">pixmap</span>();<br>            QImage img = pix.<span class="hljs-built_in">toImage</span>();<br>          <span class="hljs-comment">//  QSize size = pixmapItem-&gt;pixmap().size();</span><br><br><br>            QPoint point = m_event-&gt;<span class="hljs-built_in">pos</span>();<br>           <span class="hljs-comment">// qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;</span><br>            <span class="hljs-comment">// 坐标系转换 - 视图 -&gt; 场景</span><br>            QPointF scenePoint = view-&gt;<span class="hljs-built_in">mapToScene</span>(point);<br>            <span class="hljs-comment">//qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;</span><br>            <span class="hljs-comment">// 坐标系转换 - 场景 -&gt; 图元</span><br>            QPointF itempoint = pixmapItem-&gt;<span class="hljs-built_in">mapFromScene</span>(scenePoint);<br>           <span class="hljs-comment">// qDebug()&lt;&lt;&quot;itempoint:&quot;&lt;&lt;itempoint&lt;&lt;endl;</span><br>            QString str;<br>            <span class="hljs-comment">// 判断所选点是否在图像范围内</span><br>            <span class="hljs-keyword">if</span>(itempoint.<span class="hljs-built_in">x</span>()&gt;=<span class="hljs-number">0</span> &amp;&amp;itempoint.<span class="hljs-built_in">x</span>()&lt;=pix.<span class="hljs-built_in">width</span>() &amp;&amp; itempoint.<span class="hljs-built_in">y</span>()&gt;=<span class="hljs-number">0</span> &amp;&amp; itempoint.<span class="hljs-built_in">y</span>()&lt;= pix.<span class="hljs-built_in">height</span>())&#123;<br>                QRgb pixColor = img.<span class="hljs-built_in">pixel</span>(itempoint.<span class="hljs-built_in">x</span>(),itempoint.<span class="hljs-built_in">y</span>());<br>               <span class="hljs-comment">// qDebug()&lt;&lt;pixColor&lt;&lt;&quot; &quot;&lt;&lt;qRed(pixColor)&lt;&lt;&quot; &quot;&lt;&lt;qGreen(pixColor)&lt;&lt;&quot; &quot;&lt;&lt;qBlue(pixColor)&lt;&lt;endl;</span><br>                str = <span class="hljs-built_in">QString</span>(<span class="hljs-string">&quot;X:%1\nY:%2\nR:%3\nG:%4\nB:%5\n&quot;</span>).<span class="hljs-built_in">arg</span>(QString::<span class="hljs-built_in">number</span>(itempoint.<span class="hljs-built_in">x</span>(),<span class="hljs-string">&#x27;f&#x27;</span>,<span class="hljs-number">1</span>))<br>                                                                .<span class="hljs-built_in">arg</span>(QString::<span class="hljs-built_in">number</span>(itempoint.<span class="hljs-built_in">y</span>(),<span class="hljs-string">&#x27;f&#x27;</span>,<span class="hljs-number">1</span>))<br>                                                                .<span class="hljs-built_in">arg</span>(<span class="hljs-built_in">qRed</span>(pixColor))<br>                                                                .<span class="hljs-built_in">arg</span>(<span class="hljs-built_in">qGreen</span>(pixColor))<br>                                                                .<span class="hljs-built_in">arg</span>(<span class="hljs-built_in">qBlue</span>(pixColor)).<span class="hljs-built_in">toLocal8Bit</span>();<br>            &#125;<br>            <span class="hljs-keyword">else</span>&#123;<br>                str = <span class="hljs-string">&quot;&quot;</span>;<br>            &#125;<br>            img_xy_pix-&gt;<span class="hljs-built_in">setText</span>(str);<br>            img_xy_pix-&gt;<span class="hljs-built_in">setStyleSheet</span>(<span class="hljs-string">&quot;color:red;&quot;</span>);<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-comment">// 鼠标点击事件</span><br>        <span class="hljs-keyword">case</span> QEvent::MouseButtonPress:<br>        &#123;<br>            <span class="hljs-keyword">if</span>(pixmapItem == <span class="hljs-literal">NULL</span>)&#123;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            QMouseEvent *m_event = (QMouseEvent*)event;<br>            <span class="hljs-comment">// 左键点击确定起点</span><br>            <span class="hljs-keyword">if</span>(m_event-&gt;<span class="hljs-built_in">button</span>() == Qt::LeftButton )&#123;<br><br>             <span class="hljs-comment">//   QPixmap pix= pixmapItem-&gt;pixmap();</span><br>                <span class="hljs-function">QPainter <span class="hljs-title">painter</span><span class="hljs-params">(view-&gt;viewport())</span></span>;<br>                painter.<span class="hljs-built_in">setPen</span>(<span class="hljs-built_in">QPen</span>(Qt::blue,<span class="hljs-number">1</span>));<br>              <span class="hljs-comment">//  QImage img = pix.toImage();</span><br>              <span class="hljs-comment">//  QSize size = pixmapItem-&gt;pixmap().size();</span><br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;</span><br>                QPoint point = m_event-&gt;<span class="hljs-built_in">pos</span>();<br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;</span><br>                QPointF scenePoint = view-&gt;<span class="hljs-built_in">mapToScene</span>(point);<br>                <span class="hljs-comment">//qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;</span><br>                QPointF itempoint = pixmapItem-&gt;<span class="hljs-built_in">mapFromScene</span>(scenePoint);<br>                startPoint = itempoint;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-comment">// 送开鼠标，确定终点</span><br>        <span class="hljs-keyword">case</span> QEvent::MouseButtonRelease:<br>        &#123;<br>            <span class="hljs-keyword">if</span>(pixmapItem == <span class="hljs-literal">NULL</span>)&#123;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            QMouseEvent *m_event = (QMouseEvent*)event;<br>            <span class="hljs-keyword">if</span>(m_event-&gt;<span class="hljs-built_in">button</span>() == Qt::LeftButton )&#123;<br><br><span class="hljs-comment">//                QPixmap pix= pixmapItem-&gt;pixmap();</span><br>                <span class="hljs-function">QPainter <span class="hljs-title">painter</span><span class="hljs-params">(view-&gt;viewport())</span></span>;<br>                painter.<span class="hljs-built_in">setPen</span>(<span class="hljs-built_in">QPen</span>(Qt::blue,<span class="hljs-number">1</span>));<br>              <span class="hljs-comment">//  QImage img = pix.toImage();</span><br>              <span class="hljs-comment">//  QSize size = pixmapItem-&gt;pixmap().size();</span><br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;</span><br>                QPoint point = m_event-&gt;<span class="hljs-built_in">pos</span>();<br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;</span><br>                QPointF scenePoint = view-&gt;<span class="hljs-built_in">mapToScene</span>(point);<br>                <span class="hljs-comment">//qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;</span><br>                QPointF itempoint = pixmapItem-&gt;<span class="hljs-built_in">mapFromScene</span>(scenePoint);<br>                QPointF endPoint = itempoint;<br>                <span class="hljs-keyword">if</span>(startPoint.<span class="hljs-built_in">x</span>() != <span class="hljs-number">0</span> &amp;&amp; startPoint.<span class="hljs-built_in">y</span>() != <span class="hljs-number">0</span>)&#123;<br>                    <span class="hljs-function">QRectF <span class="hljs-title">rectangle</span><span class="hljs-params">(startPoint.x(),startPoint.y(),endPoint.x()-startPoint.x(),endPoint.y()-startPoint.y())</span></span>;<br>                    painter.<span class="hljs-built_in">drawRect</span>(rectangle);<br>                    painter.<span class="hljs-built_in">setPen</span>(<span class="hljs-built_in">QPen</span>(Qt::red,<span class="hljs-number">1</span>));<br>                    rects = scene-&gt;<span class="hljs-built_in">addRect</span>(rectangle,rectPen);<br><span class="hljs-comment">//                    float rectInfo[8];</span><br><span class="hljs-comment">//                    rectcounts++;</span><br><span class="hljs-comment">//                    rectInfo[0] = rectcounts;</span><br><span class="hljs-comment">//                    float x = (endPoint.x()-startPoint.x()) / 2 + startPoint.x();</span><br><span class="hljs-comment">//                    float y = (endPoint.y()-startPoint.y()) / 2 + startPoint.y();</span><br><span class="hljs-comment">//                    float height;</span><br><span class="hljs-comment">//                    float width;</span><br><span class="hljs-comment">//                    if(endPoint.x()-startPoint.x() &gt; endPoint.y()-startPoint.y())&#123;</span><br><span class="hljs-comment">//                       height = endPoint.x()-startPoint.x();</span><br><span class="hljs-comment">//                       width = endPoint.y()-startPoint.y();</span><br><span class="hljs-comment">//                    &#125;else&#123;</span><br><span class="hljs-comment">//                        width = endPoint.x()-startPoint.x();</span><br><span class="hljs-comment">//                        height = endPoint.y()-startPoint.y();</span><br><span class="hljs-comment">//                    &#125;</span><br>                 <span class="hljs-comment">//   rectInfo[1] = x;</span><br>                 <span class="hljs-comment">//   rectInfo[2] = y;</span><br>                 <span class="hljs-comment">//   rectInfo[3] = height;</span><br>                 <span class="hljs-comment">//      rectInfo[4] = width;</span><br>                  <span class="hljs-comment">//  float angle = -90;</span><br>                 <span class="hljs-comment">//   rectInfo[5] = angle;</span><br><span class="hljs-comment">//                    CassUdpHelper* udpClient = new CassUdpHelper(localPort, this);</span><br>                    <br><span class="hljs-comment">//                     bool flag = false;</span><br>  <br><span class="hljs-comment">//                    int rectCountsAddr = 353345520;</span><br><span class="hljs-comment">//                    flag = udpClient-&gt;writeBytesByModbus(rectCountsAddr, (char*)&amp;rectcounts, sizeof(short), hostIpAddr, hostPort);</span><br><span class="hljs-comment">//                    if(!flag) &#123;</span><br><span class="hljs-comment">//                        delete udpClient;</span><br><span class="hljs-comment">//                         break;</span><br><span class="hljs-comment">//                    &#125;</span><br><span class="hljs-comment">//                    int startAddr = 427778712;</span><br><span class="hljs-comment">//                    flag = udpClient-&gt;writeBytesByModbus(startAddr + sizeof(float)*8 *(rectcounts - 1), (char*)rectInfo, sizeof(float)*8, hostIpAddr, hostPort);</span><br><span class="hljs-comment">//                    if(!flag) &#123;</span><br><span class="hljs-comment">//                        delete udpClient;</span><br><span class="hljs-comment">//                         break;</span><br><span class="hljs-comment">//                    &#125;</span><br><span class="hljs-comment">//                    delete udpClient;</span><br>                    <br>                &#125;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br><br>        <span class="hljs-keyword">default</span>:<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br><br>    &#125;<br><br><br><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<pre><code class="c++">bool ImgHelper::eventFilter(QObject *watched, QEvent *event)
+&#123;
+    //判断信号是不是来自QGraphicsView
+    if(watched == view-&gt;viewport())&#123;
+        switch (event-&gt;type()) &#123;
+        //鼠标移动事件
+        case  QEvent::MouseMove:
+        &#123;
+            QMouseEvent *m_event = (QMouseEvent*)event;
 
+
+            if(pixmapItem == NULL)&#123;
+                break;
+            &#125;
+
+           // QPoint point = m_event-&gt;pos();
+
+            QPixmap pix= pixmapItem-&gt;pixmap();
+            QImage img = pix.toImage();
+          //  QSize size = pixmapItem-&gt;pixmap().size();
+
+
+            QPoint point = m_event-&gt;pos();
+           // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
+            // 坐标系转换 - 视图 -&gt; 场景
+            QPointF scenePoint = view-&gt;mapToScene(point);
+            //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
+            // 坐标系转换 - 场景 -&gt; 图元
+            QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+           // qDebug()&lt;&lt;&quot;itempoint:&quot;&lt;&lt;itempoint&lt;&lt;endl;
+            QString str;
+            // 判断所选点是否在图像范围内
+            if(itempoint.x()&gt;=0 &amp;&amp;itempoint.x()&lt;=pix.width() &amp;&amp; itempoint.y()&gt;=0 &amp;&amp; itempoint.y()&lt;= pix.height())&#123;
+                QRgb pixColor = img.pixel(itempoint.x(),itempoint.y());
+               // qDebug()&lt;&lt;pixColor&lt;&lt;&quot; &quot;&lt;&lt;qRed(pixColor)&lt;&lt;&quot; &quot;&lt;&lt;qGreen(pixColor)&lt;&lt;&quot; &quot;&lt;&lt;qBlue(pixColor)&lt;&lt;endl;
+                str = QString(&quot;X:%1\nY:%2\nR:%3\nG:%4\nB:%5\n&quot;).arg(QString::number(itempoint.x(),&#39;f&#39;,1))
+                                                                .arg(QString::number(itempoint.y(),&#39;f&#39;,1))
+                                                                .arg(qRed(pixColor))
+                                                                .arg(qGreen(pixColor))
+                                                                .arg(qBlue(pixColor)).toLocal8Bit();
+            &#125;
+            else&#123;
+                str = &quot;&quot;;
+            &#125;
+            img_xy_pix-&gt;setText(str);
+            img_xy_pix-&gt;setStyleSheet(&quot;color:red;&quot;);
+            break;
+        &#125;
+        // 鼠标点击事件
+        case QEvent::MouseButtonPress:
+        &#123;
+            if(pixmapItem == NULL)&#123;
+                break;
+            &#125;
+            QMouseEvent *m_event = (QMouseEvent*)event;
+            // 左键点击确定起点
+            if(m_event-&gt;button() == Qt::LeftButton )&#123;
+
+             //   QPixmap pix= pixmapItem-&gt;pixmap();
+                QPainter painter(view-&gt;viewport());
+                painter.setPen(QPen(Qt::blue,1));
+              //  QImage img = pix.toImage();
+              //  QSize size = pixmapItem-&gt;pixmap().size();
+               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
+                QPoint point = m_event-&gt;pos();
+               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
+                QPointF scenePoint = view-&gt;mapToScene(point);
+                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
+                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+                startPoint = itempoint;
+                break;
+            &#125;
+            break;
+        &#125;
+        // 送开鼠标，确定终点
+        case QEvent::MouseButtonRelease:
+        &#123;
+            if(pixmapItem == NULL)&#123;
+                break;
+            &#125;
+            QMouseEvent *m_event = (QMouseEvent*)event;
+            if(m_event-&gt;button() == Qt::LeftButton )&#123;
+
+//                QPixmap pix= pixmapItem-&gt;pixmap();
+                QPainter painter(view-&gt;viewport());
+                painter.setPen(QPen(Qt::blue,1));
+              //  QImage img = pix.toImage();
+              //  QSize size = pixmapItem-&gt;pixmap().size();
+               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
+                QPoint point = m_event-&gt;pos();
+               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
+                QPointF scenePoint = view-&gt;mapToScene(point);
+                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
+                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+                QPointF endPoint = itempoint;
+                if(startPoint.x() != 0 &amp;&amp; startPoint.y() != 0)&#123;
+                    QRectF rectangle(startPoint.x(),startPoint.y(),endPoint.x()-startPoint.x(),endPoint.y()-startPoint.y());
+                    painter.drawRect(rectangle);
+                    painter.setPen(QPen(Qt::red,1));
+                    rects = scene-&gt;addRect(rectangle,rectPen);
+//                    float rectInfo[8];
+//                    rectcounts++;
+//                    rectInfo[0] = rectcounts;
+//                    float x = (endPoint.x()-startPoint.x()) / 2 + startPoint.x();
+//                    float y = (endPoint.y()-startPoint.y()) / 2 + startPoint.y();
+//                    float height;
+//                    float width;
+//                    if(endPoint.x()-startPoint.x() &gt; endPoint.y()-startPoint.y())&#123;
+//                       height = endPoint.x()-startPoint.x();
+//                       width = endPoint.y()-startPoint.y();
+//                    &#125;else&#123;
+//                        width = endPoint.x()-startPoint.x();
+//                        height = endPoint.y()-startPoint.y();
+//                    &#125;
+                 //   rectInfo[1] = x;
+                 //   rectInfo[2] = y;
+                 //   rectInfo[3] = height;
+                 //      rectInfo[4] = width;
+                  //  float angle = -90;
+                 //   rectInfo[5] = angle;
+//                    CassUdpHelper* udpClient = new CassUdpHelper(localPort, this);
+                    
+//                     bool flag = false;
+  
+//                    int rectCountsAddr = 353345520;
+//                    flag = udpClient-&gt;writeBytesByModbus(rectCountsAddr, (char*)&amp;rectcounts, sizeof(short), hostIpAddr, hostPort);
+//                    if(!flag) &#123;
+//                        delete udpClient;
+//                         break;
+//                    &#125;
+//                    int startAddr = 427778712;
+//                    flag = udpClient-&gt;writeBytesByModbus(startAddr + sizeof(float)*8 *(rectcounts - 1), (char*)rectInfo, sizeof(float)*8, hostIpAddr, hostPort);
+//                    if(!flag) &#123;
+//                        delete udpClient;
+//                         break;
+//                    &#125;
+//                    delete udpClient;
+                    
+                &#125;
+                break;
+            &#125;
+            break;
+        &#125;
+
+        default:
+            break;
+        &#125;
+
+    &#125;
+
+
+
+    return false;
+&#125;
+</code></pre>
 <h3 id="功能2：Qt拖动鼠标画一个矩形"><a href="#功能2：Qt拖动鼠标画一个矩形" class="headerlink" title="功能2：Qt拖动鼠标画一个矩形"></a>功能2：Qt拖动鼠标画一个矩形</h3><p>想要画一个矩形就需要过滤鼠标点击事件，鼠标按下时确定矩形的起点，然后拖动一段距离，松开确定终点。</p>
 <!-- more -->
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 鼠标点击事件</span><br>        <span class="hljs-keyword">case</span> QEvent::MouseButtonPress:<br>        &#123;<br>            <span class="hljs-keyword">if</span>(pixmapItem == <span class="hljs-literal">NULL</span>)&#123;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            QMouseEvent *m_event = (QMouseEvent*)event;<br>            <span class="hljs-comment">// 左键点击确定起点</span><br>            <span class="hljs-keyword">if</span>(m_event-&gt;<span class="hljs-built_in">button</span>() == Qt::LeftButton )&#123;<br><br>             <span class="hljs-comment">//   QPixmap pix= pixmapItem-&gt;pixmap();</span><br>                <span class="hljs-function">QPainter <span class="hljs-title">painter</span><span class="hljs-params">(view-&gt;viewport())</span></span>;<br>                painter.<span class="hljs-built_in">setPen</span>(<span class="hljs-built_in">QPen</span>(Qt::blue,<span class="hljs-number">1</span>));<br>              <span class="hljs-comment">//  QImage img = pix.toImage();</span><br>              <span class="hljs-comment">//  QSize size = pixmapItem-&gt;pixmap().size();</span><br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;</span><br>                QPoint point = m_event-&gt;<span class="hljs-built_in">pos</span>();<br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;</span><br>                QPointF scenePoint = view-&gt;<span class="hljs-built_in">mapToScene</span>(point);<br>                <span class="hljs-comment">//qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;</span><br>                QPointF itempoint = pixmapItem-&gt;<span class="hljs-built_in">mapFromScene</span>(scenePoint);<br>                startPoint = itempoint;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-comment">// 送开鼠标，确定终点</span><br>        <span class="hljs-keyword">case</span> QEvent::MouseButtonRelease:<br>        &#123;<br>            <span class="hljs-keyword">if</span>(pixmapItem == <span class="hljs-literal">NULL</span>)&#123;<br>                <span class="hljs-keyword">break</span>;<br>            &#125;<br>            QMouseEvent *m_event = (QMouseEvent*)event;<br>            <span class="hljs-keyword">if</span>(m_event-&gt;<span class="hljs-built_in">button</span>() == Qt::LeftButton )&#123;<br><br><span class="hljs-comment">//                QPixmap pix= pixmapItem-&gt;pixmap();</span><br>                <span class="hljs-function">QPainter <span class="hljs-title">painter</span><span class="hljs-params">(view-&gt;viewport())</span></span>;<br>                painter.<span class="hljs-built_in">setPen</span>(<span class="hljs-built_in">QPen</span>(Qt::blue,<span class="hljs-number">1</span>));<br>              <span class="hljs-comment">//  QImage img = pix.toImage();</span><br>              <span class="hljs-comment">//  QSize size = pixmapItem-&gt;pixmap().size();</span><br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;</span><br>                QPoint point = m_event-&gt;<span class="hljs-built_in">pos</span>();<br>               <span class="hljs-comment">// qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;</span><br>                QPointF scenePoint = view-&gt;<span class="hljs-built_in">mapToScene</span>(point);<br>                <span class="hljs-comment">//qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;</span><br>                QPointF itempoint = pixmapItem-&gt;<span class="hljs-built_in">mapFromScene</span>(scenePoint);<br>                QPointF endPoint = itempoint;<br>                <span class="hljs-keyword">if</span>(startPoint.<span class="hljs-built_in">x</span>() != <span class="hljs-number">0</span> &amp;&amp; startPoint.<span class="hljs-built_in">y</span>() != <span class="hljs-number">0</span>)&#123;<br>                    <span class="hljs-function">QRectF <span class="hljs-title">rectangle</span><span class="hljs-params">(startPoint.x(),startPoint.y(),endPoint.x()-startPoint.x(),endPoint.y()-startPoint.y())</span></span>;<br>                    painter.<span class="hljs-built_in">drawRect</span>(rectangle);<br>                    painter.<span class="hljs-built_in">setPen</span>(<span class="hljs-built_in">QPen</span>(Qt::red,<span class="hljs-number">1</span>));<br>                    rects = scene-&gt;<span class="hljs-built_in">addRect</span>(rectangle,rectPen);<br></code></pre></td></tr></table></figure>
+<pre><code class="c++">// 鼠标点击事件
+        case QEvent::MouseButtonPress:
+        &#123;
+            if(pixmapItem == NULL)&#123;
+                break;
+            &#125;
+            QMouseEvent *m_event = (QMouseEvent*)event;
+            // 左键点击确定起点
+            if(m_event-&gt;button() == Qt::LeftButton )&#123;
 
+             //   QPixmap pix= pixmapItem-&gt;pixmap();
+                QPainter painter(view-&gt;viewport());
+                painter.setPen(QPen(Qt::blue,1));
+              //  QImage img = pix.toImage();
+              //  QSize size = pixmapItem-&gt;pixmap().size();
+               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
+                QPoint point = m_event-&gt;pos();
+               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
+                QPointF scenePoint = view-&gt;mapToScene(point);
+                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
+                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+                startPoint = itempoint;
+                break;
+            &#125;
+            break;
+        &#125;
+        // 送开鼠标，确定终点
+        case QEvent::MouseButtonRelease:
+        &#123;
+            if(pixmapItem == NULL)&#123;
+                break;
+            &#125;
+            QMouseEvent *m_event = (QMouseEvent*)event;
+            if(m_event-&gt;button() == Qt::LeftButton )&#123;
+
+//                QPixmap pix= pixmapItem-&gt;pixmap();
+                QPainter painter(view-&gt;viewport());
+                painter.setPen(QPen(Qt::blue,1));
+              //  QImage img = pix.toImage();
+              //  QSize size = pixmapItem-&gt;pixmap().size();
+               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
+                QPoint point = m_event-&gt;pos();
+               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
+                QPointF scenePoint = view-&gt;mapToScene(point);
+                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
+                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+                QPointF endPoint = itempoint;
+                if(startPoint.x() != 0 &amp;&amp; startPoint.y() != 0)&#123;
+                    QRectF rectangle(startPoint.x(),startPoint.y(),endPoint.x()-startPoint.x(),endPoint.y()-startPoint.y());
+                    painter.drawRect(rectangle);
+                    painter.setPen(QPen(Qt::red,1));
+                    rects = scene-&gt;addRect(rectangle,rectPen);
+</code></pre>
 <p>这是在网上看到其他人重写的一个<code>QGraphicsRectItem</code>类，画出来的矩形可以拖动，变形，旋转，使用时只需要导入这个类</p>
 <ul>
 <li><p>mygraphicrectitem.h</p>
 <!-- more -->
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> MYGRAPHICRECTITEM_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MYGRAPHICRECTITEM_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QObject&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QWidget&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QMouseEvent&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QGraphicsScene&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QGraphicsRectItem&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QGraphicsSceneMouseEvent&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QRect&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QPainter&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QPolygon&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QList&gt;</span></span><br><span class="hljs-keyword">enum</span> <span class="hljs-title class_">STATE_FLAG</span>&#123;<br>    DEFAULT_FLAG=<span class="hljs-number">0</span>,<br>    MOV_LEFT_LINE,<span class="hljs-comment">//标记当前为用户按下矩形的左边界区域</span><br>    MOV_TOP_LINE,<span class="hljs-comment">//标记当前为用户按下矩形的上边界区域</span><br>    MOV_RIGHT_LINE,<span class="hljs-comment">//标记当前为用户按下矩形的右边界区域</span><br>    MOV_BOTTOM_LINE,<span class="hljs-comment">//标记当前为用户按下矩形的下边界区域</span><br>    MOV_RIGHTBOTTOM_RECT,<span class="hljs-comment">//标记当前为用户按下矩形的右下角</span><br>    MOV_RECT,<span class="hljs-comment">//标记当前为鼠标拖动图片移动状态</span><br>    ROTATE<span class="hljs-comment">//标记当前为旋转状态</span><br>&#125;;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">myGraphicRectItem</span>:<span class="hljs-keyword">public</span> QObject,<span class="hljs-keyword">public</span> QGraphicsItem<br>&#123;<br>    Q_OBJECT<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">myGraphicRectItem</span>(QGraphicsItem *parent = <span class="hljs-literal">nullptr</span>);<br>    <span class="hljs-comment">//myGraphicRectItem(QRectF m_OriginRect = QRectF(0,0,100,100));</span><br>    <span class="hljs-function">QRectF  <span class="hljs-title">boundingRect</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span>;<br>    ~<span class="hljs-built_in">myGraphicRectItem</span>();<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">setRectSize</span><span class="hljs-params">(QRectF mrect,<span class="hljs-type">bool</span> bResetRotateCenter = <span class="hljs-literal">true</span>)</span></span>;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">paint</span><span class="hljs-params">(QPainter *painter, <span class="hljs-type">const</span> QStyleOptionGraphicsItem *option, QWidget *widget)</span></span>;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">mousePressEvent</span><span class="hljs-params">(QGraphicsSceneMouseEvent *event)</span></span>;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">mouseMoveEvent</span><span class="hljs-params">(QGraphicsSceneMouseEvent *event)</span></span>;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">mouseReleaseEvent</span><span class="hljs-params">(QGraphicsSceneMouseEvent *event)</span></span>;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">SetRotate</span><span class="hljs-params">(qreal RotateAngle,QPointF ptCenter=QPointF(<span class="hljs-number">-999</span>,<span class="hljs-number">-999</span>))</span></span>;<br>    <span class="hljs-function">QPointF <span class="hljs-title">getRotatePoint</span><span class="hljs-params">(QPointF ptCenter, QPointF ptIn, qreal angle)</span></span>;<span class="hljs-comment">//获取旋转后的点</span><br>    <span class="hljs-function">QList&lt;QPointF&gt; <span class="hljs-title">getRotatePoints</span><span class="hljs-params">(QPointF ptCenter,QList&lt;QPointF&gt; ptIns,qreal angle)</span></span>;<span class="hljs-comment">//获取多个旋转后的点</span><br>    <span class="hljs-function">QPolygonF <span class="hljs-title">getRotatePolygonFromRect</span><span class="hljs-params">(QPointF ptCenter,QRectF rectIn,qreal angle)</span></span>;<span class="hljs-comment">//将矩形旋转之后返回多边形</span><br>    <span class="hljs-function">QRectF <span class="hljs-title">getCrtPosRectToSceen</span><span class="hljs-params">()</span></span>;<br>    QRectF m_SmallRotateRect;<span class="hljs-comment">//矩形顶部用来表示旋转的标记的矩形</span><br>    QPolygonF m_SmallRotatePolygon;<span class="hljs-comment">//矩形顶部用来表示旋转的标记的矩形旋转后形成的多边形</span><br>    <span class="hljs-function">QPointF <span class="hljs-title">getSmallRotateRectCenter</span><span class="hljs-params">(QPointF ptA,QPointF ptB)</span></span>;<span class="hljs-comment">//获取旋转时候矩形正上方的旋转标记矩形</span><br>    <span class="hljs-function">QRectF  <span class="hljs-title">getSmallRotateRect</span><span class="hljs-params">(QPointF ptA,QPointF ptB)</span></span>;<br>    <span class="hljs-type">bool</span>    m_bRotate;<br>    qreal   m_RotateAngle;<br>    QPointF m_RotateCenter;<br><br><span class="hljs-keyword">private</span>:<br>    QRectF  m_oldRect;<br>    QPolygonF m_oldRectPolygon;<br>    QRectF  m_RotateAreaRect;<br>    <span class="hljs-type">bool</span>    m_bResize;<br>    QPolygonF m_insicedPolygon;<br>    QRectF  m_insicedRectf;<br>    QPolygonF m_leftPolygon;<br>    QRectF  m_leftRectf;<br>    QPolygonF m_topPolygon;<br>    QRectF  m_topRectf;<br>    QPolygonF m_rightPolygon;<br>    QRectF  m_rightRectf;<br>    QPolygonF m_bottomPolygon;<br>    QRectF  m_bottomRectf;<br><span class="hljs-comment">//    QPolygonF m_rbPolygon;</span><br><span class="hljs-comment">//    QRectF  m_rbRectf;</span><br>    QPointF m_startPos;<br>    STATE_FLAG m_StateFlag;<br>    QPointF *pPointFofSmallRotateRect;<br><span class="hljs-keyword">protected</span>:<br><br>&#125;;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">// MYGRAPHICRECTITEM_H</span></span><br><br></code></pre></td></tr></table></figure>
+<pre><code class="c++">#ifndef MYGRAPHICRECTITEM_H
+#define MYGRAPHICRECTITEM_H
+#include &lt;QObject&gt;
+#include &lt;QWidget&gt;
+#include &lt;QMouseEvent&gt;
+#include &lt;QGraphicsScene&gt;
+#include &lt;QGraphicsRectItem&gt;
+#include &lt;QGraphicsSceneMouseEvent&gt;
+#include &lt;QRect&gt;
+#include &lt;QPainter&gt;
+#include &lt;QPolygon&gt;
+#include &lt;QList&gt;
+enum STATE_FLAG&#123;
+    DEFAULT_FLAG=0,
+    MOV_LEFT_LINE,//标记当前为用户按下矩形的左边界区域
+    MOV_TOP_LINE,//标记当前为用户按下矩形的上边界区域
+    MOV_RIGHT_LINE,//标记当前为用户按下矩形的右边界区域
+    MOV_BOTTOM_LINE,//标记当前为用户按下矩形的下边界区域
+    MOV_RIGHTBOTTOM_RECT,//标记当前为用户按下矩形的右下角
+    MOV_RECT,//标记当前为鼠标拖动图片移动状态
+    ROTATE//标记当前为旋转状态
+&#125;;
+class myGraphicRectItem:public QObject,public QGraphicsItem
+&#123;
+    Q_OBJECT
+public:
+    myGraphicRectItem(QGraphicsItem *parent = nullptr);
+    //myGraphicRectItem(QRectF m_OriginRect = QRectF(0,0,100,100));
+    QRectF  boundingRect() const;
+    ~myGraphicRectItem();
+    void setRectSize(QRectF mrect,bool bResetRotateCenter = true);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void SetRotate(qreal RotateAngle,QPointF ptCenter=QPointF(-999,-999));
+    QPointF getRotatePoint(QPointF ptCenter, QPointF ptIn, qreal angle);//获取旋转后的点
+    QList&lt;QPointF&gt; getRotatePoints(QPointF ptCenter,QList&lt;QPointF&gt; ptIns,qreal angle);//获取多个旋转后的点
+    QPolygonF getRotatePolygonFromRect(QPointF ptCenter,QRectF rectIn,qreal angle);//将矩形旋转之后返回多边形
+    QRectF getCrtPosRectToSceen();
+    QRectF m_SmallRotateRect;//矩形顶部用来表示旋转的标记的矩形
+    QPolygonF m_SmallRotatePolygon;//矩形顶部用来表示旋转的标记的矩形旋转后形成的多边形
+    QPointF getSmallRotateRectCenter(QPointF ptA,QPointF ptB);//获取旋转时候矩形正上方的旋转标记矩形
+    QRectF  getSmallRotateRect(QPointF ptA,QPointF ptB);
+    bool    m_bRotate;
+    qreal   m_RotateAngle;
+    QPointF m_RotateCenter;
+
+private:
+    QRectF  m_oldRect;
+    QPolygonF m_oldRectPolygon;
+    QRectF  m_RotateAreaRect;
+    bool    m_bResize;
+    QPolygonF m_insicedPolygon;
+    QRectF  m_insicedRectf;
+    QPolygonF m_leftPolygon;
+    QRectF  m_leftRectf;
+    QPolygonF m_topPolygon;
+    QRectF  m_topRectf;
+    QPolygonF m_rightPolygon;
+    QRectF  m_rightRectf;
+    QPolygonF m_bottomPolygon;
+    QRectF  m_bottomRectf;
+//    QPolygonF m_rbPolygon;
+//    QRectF  m_rbRectf;
+    QPointF m_startPos;
+    STATE_FLAG m_StateFlag;
+    QPointF *pPointFofSmallRotateRect;
+protected:
+
+&#125;;
+#endif // MYGRAPHICRECTITEM_H
+</code></pre>
 </li>
 <li><p>mygraphicrectitem.cpp</p>
 <!-- more -->
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mygraphicrectitem.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QtMath&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;QDebug&gt;</span></span><br><br>myGraphicRectItem::<span class="hljs-built_in">myGraphicRectItem</span>(QGraphicsItem *parent):<br>    <span class="hljs-built_in">m_bResize</span>(<span class="hljs-literal">false</span>),<br>    <span class="hljs-built_in">m_oldRect</span>(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">100</span>,<span class="hljs-number">100</span>),<br>    <span class="hljs-built_in">m_bRotate</span>(<span class="hljs-literal">false</span>),<br>    <span class="hljs-built_in">m_RotateAngle</span>(<span class="hljs-number">0</span>),<br>    <span class="hljs-built_in">m_StateFlag</span>(DEFAULT_FLAG)<br>&#123;<br>    <span class="hljs-comment">//setParent(parent);</span><br>    <span class="hljs-built_in">setRectSize</span>(m_oldRect);<br>    <span class="hljs-built_in">setToolTip</span>(<span class="hljs-string">&quot;Click and drag me!&quot;</span>);  <span class="hljs-comment">//提示</span><br>    <span class="hljs-built_in">setCursor</span>(Qt::ArrowCursor);   <span class="hljs-comment">//改变光标形状,手的形状</span><br>    <span class="hljs-built_in">setFlag</span>(QGraphicsItem::ItemIsMovable);<br>    <span class="hljs-comment">//    setAcceptDrops(true);</span><br>    pPointFofSmallRotateRect = <span class="hljs-keyword">new</span> QPointF[<span class="hljs-number">4</span>];<br>    <span class="hljs-built_in">SetRotate</span>(<span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">setFlag</span>(QGraphicsItem::ItemIsSelectable);<span class="hljs-comment">//</span><br>&#125;<br><br><span class="hljs-function">QRectF <span class="hljs-title">myGraphicRectItem::boundingRect</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//return m_oldRectPolygon.boundingRect();</span><br>    QRectF boundingRectF = m_oldRectPolygon.<span class="hljs-built_in">boundingRect</span>();<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">QRectF</span>(boundingRectF.<span class="hljs-built_in">x</span>()<span class="hljs-number">-40</span>,boundingRectF.<span class="hljs-built_in">y</span>()<span class="hljs-number">-40</span>,boundingRectF.<span class="hljs-built_in">width</span>()+<span class="hljs-number">80</span>,boundingRectF.<span class="hljs-built_in">height</span>()+<span class="hljs-number">80</span>);<br>&#125;<br><br>myGraphicRectItem::~<span class="hljs-built_in">myGraphicRectItem</span>()<br>&#123;<br>    <span class="hljs-keyword">delete</span> []pPointFofSmallRotateRect;<br>    pPointFofSmallRotateRect = <span class="hljs-literal">nullptr</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">myGraphicRectItem::setRectSize</span><span class="hljs-params">(QRectF mrect, <span class="hljs-type">bool</span> bResetRotateCenter)</span></span><br><span class="hljs-function"></span>&#123;<br>    m_oldRect = mrect;<br>    <span class="hljs-keyword">if</span>(bResetRotateCenter)<br>    &#123;<br>        m_RotateCenter.<span class="hljs-built_in">setX</span>(m_oldRect.<span class="hljs-built_in">x</span>()+m_oldRect.<span class="hljs-built_in">width</span>()/<span class="hljs-number">2</span>);<br>        m_RotateCenter.<span class="hljs-built_in">setY</span>(m_oldRect.<span class="hljs-built_in">y</span>()+m_oldRect.<span class="hljs-built_in">height</span>()/<span class="hljs-number">2</span>);<br>    &#125;<br>    m_oldRectPolygon = <span class="hljs-built_in">getRotatePolygonFromRect</span>(m_RotateCenter,m_oldRect,m_RotateAngle);<br><br>    m_insicedRectf = <span class="hljs-built_in">QRectF</span>(m_oldRect.<span class="hljs-built_in">x</span>()+<span class="hljs-number">8</span>,m_oldRect.<span class="hljs-built_in">y</span>()+<span class="hljs-number">8</span>,m_oldRect.<span class="hljs-built_in">width</span>()<span class="hljs-number">-16</span>,m_oldRect.<span class="hljs-built_in">height</span>()<span class="hljs-number">-16</span>);<br>    m_insicedPolygon =<span class="hljs-built_in">getRotatePolygonFromRect</span>(m_RotateCenter,m_insicedRectf,m_RotateAngle);<br><br>    m_leftRectf = <span class="hljs-built_in">QRectF</span>(m_oldRect.<span class="hljs-built_in">x</span>(),m_oldRect.<span class="hljs-built_in">y</span>(),<span class="hljs-number">8</span>,m_oldRect.<span class="hljs-built_in">height</span>()<span class="hljs-number">-8</span>);<br>    m_leftPolygon = <span class="hljs-built_in">getRotatePolygonFromRect</span>(m_RotateCenter,m_leftRectf,m_RotateAngle);<br><br>    m_topRectf = <span class="hljs-built_in">QRectF</span>(m_oldRect.<span class="hljs-built_in">x</span>()+<span class="hljs-number">8</span>,m_oldRect.<span class="hljs-built_in">y</span>(),m_oldRect.<span class="hljs-built_in">width</span>()<span class="hljs-number">-8</span>,<span class="hljs-number">8</span>);<br>    m_topPolygon = <span class="hljs-built_in">getRotatePolygonFromRect</span>(m_RotateCenter,m_topRectf,m_RotateAngle);<br><br>    m_rightRectf = <span class="hljs-built_in">QRectF</span>(m_oldRect.<span class="hljs-built_in">right</span>()<span class="hljs-number">-8</span>,m_oldRect.<span class="hljs-built_in">y</span>()+<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,m_oldRect.<span class="hljs-built_in">height</span>()<span class="hljs-number">-16</span>);<br>    m_rightPolygon = <span class="hljs-built_in">getRotatePolygonFromRect</span>(m_RotateCenter,m_rightRectf,m_RotateAngle);<br><br>    m_bottomRectf = <span class="hljs-built_in">QRectF</span>(m_oldRect.<span class="hljs-built_in">x</span>(),m_oldRect.<span class="hljs-built_in">bottom</span>()<span class="hljs-number">-8</span>,m_oldRect.<span class="hljs-built_in">width</span>()<span class="hljs-number">-8</span>,<span class="hljs-number">8</span>);<br>    m_bottomPolygon = <span class="hljs-built_in">getRotatePolygonFromRect</span>(m_RotateCenter,m_bottomRectf,m_RotateAngle);<br><br><span class="hljs-comment">//    m_rbRectf = QRectF(m_oldRect.right()-8,m_oldRect.bottom()-8,8,8);</span><br><span class="hljs-comment">//    m_rbPolygon = getRotatePolygonFromRect(m_RotateCenter,m_rbRectf,m_RotateAngle);</span><br><br>    m_SmallRotateRect = <span class="hljs-built_in">getSmallRotateRect</span>(mrect.<span class="hljs-built_in">topLeft</span>(),mrect.<span class="hljs-built_in">topRight</span>());<span class="hljs-comment">//矩形正上方的旋转标记矩形</span><br>    m_SmallRotatePolygon = <span class="hljs-built_in">getRotatePolygonFromRect</span>(m_RotateCenter,m_SmallRotateRect,m_RotateAngle);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">myGraphicRectItem::paint</span><span class="hljs-params">(QPainter *painter, <span class="hljs-type">const</span> QStyleOptionGraphicsItem *option, QWidget *widget)</span></span><br><span class="hljs-function"></span>&#123;<br>    QPen mPen = <span class="hljs-built_in">QPen</span>(Qt::yellow);<br>    painter-&gt;<span class="hljs-built_in">setPen</span>(mPen);<br>    <span class="hljs-comment">//绘制旋转后的矩形</span><br>    painter-&gt;<span class="hljs-built_in">drawPolygon</span>(m_oldRectPolygon);<br>    <span class="hljs-comment">//绘制旋转圆形</span><br>    mPen.<span class="hljs-built_in">setWidth</span>(<span class="hljs-number">2</span>);<br>    mPen.<span class="hljs-built_in">setColor</span>(Qt::green);<br>    painter-&gt;<span class="hljs-built_in">setPen</span>(mPen);<br>    QPointF pf = <span class="hljs-built_in">getSmallRotateRectCenter</span>(m_oldRectPolygon[<span class="hljs-number">0</span>],m_oldRectPolygon[<span class="hljs-number">1</span>]);<br>    QRectF rect = <span class="hljs-built_in">QRectF</span>(pf.<span class="hljs-built_in">x</span>()<span class="hljs-number">-10</span>,pf.<span class="hljs-built_in">y</span>()<span class="hljs-number">-10</span>,<span class="hljs-number">20</span>,<span class="hljs-number">20</span>);<br>    painter-&gt;<span class="hljs-built_in">drawEllipse</span>(rect);<span class="hljs-comment">//绘制圆形</span><br>    painter-&gt;<span class="hljs-built_in">drawPoint</span>(pf);<span class="hljs-comment">//绘制点</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">myGraphicRectItem::mousePressEvent</span><span class="hljs-params">(QGraphicsSceneMouseEvent *event)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span>(event-&gt;<span class="hljs-built_in">button</span>()== Qt::LeftButton)<br>    &#123;<br>        m_startPos = event-&gt;<span class="hljs-built_in">pos</span>();<span class="hljs-comment">//鼠标左击时，获取当前鼠标在图片中的坐标，</span><br>        <span class="hljs-keyword">if</span>(m_SmallRotatePolygon.<span class="hljs-built_in">containsPoint</span>(m_startPos,Qt::WindingFill))<span class="hljs-comment">//旋转矩形</span><br>        &#123;<br>            <span class="hljs-built_in">setCursor</span>(Qt::PointingHandCursor);<br>            m_StateFlag = ROTATE;<br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_insicedPolygon.<span class="hljs-built_in">containsPoint</span>(m_startPos,Qt::WindingFill))<span class="hljs-comment">//在矩形内框区域时按下鼠标，则可拖动图片</span><br>        &#123;<br>            <span class="hljs-built_in">setCursor</span>(Qt::ClosedHandCursor);   <span class="hljs-comment">//改变光标形状,手的形状</span><br>            m_StateFlag = MOV_RECT;<span class="hljs-comment">//标记当前为鼠标拖动图片移动状态</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_leftPolygon.<span class="hljs-built_in">containsPoint</span>(m_startPos,Qt::WindingFill))<br>        &#123;<br>            <span class="hljs-built_in">setCursor</span>(Qt::SizeHorCursor);<br>            m_StateFlag = MOV_LEFT_LINE;<span class="hljs-comment">//标记当前为用户按下矩形的左边界区域</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_rightPolygon.<span class="hljs-built_in">containsPoint</span>(m_startPos,Qt::WindingFill))<br>        &#123;<br>            <span class="hljs-built_in">setCursor</span>(Qt::SizeHorCursor);<br>            m_StateFlag = MOV_RIGHT_LINE;<span class="hljs-comment">//标记当前为用户按下矩形的右边界区域</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_topPolygon.<span class="hljs-built_in">containsPoint</span>(m_startPos,Qt::WindingFill))<br>        &#123;<br>            <span class="hljs-built_in">setCursor</span>(Qt::SizeVerCursor);<br>            m_StateFlag = MOV_TOP_LINE;<span class="hljs-comment">//标记当前为用户按下矩形的上边界区域</span><br>        &#125;<br>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_bottomPolygon.<span class="hljs-built_in">containsPoint</span>(m_startPos,Qt::WindingFill))<br>        &#123;<br>            <span class="hljs-built_in">setCursor</span>(Qt::SizeVerCursor);<br>            m_StateFlag = MOV_BOTTOM_LINE;<span class="hljs-comment">//标记当前为用户按下矩形的下边界区域</span><br>        &#125;<br><span class="hljs-comment">//        else if(m_rbPolygon.containsPoint(m_startPos,Qt::WindingFill))</span><br><span class="hljs-comment">//        &#123;</span><br><span class="hljs-comment">//            setCursor(Qt::SizeFDiagCursor);</span><br><span class="hljs-comment">//            m_StateFlag = MOV_RIGHTBOTTOM_RECT;//标记当前为用户按下矩形的右下角</span><br><span class="hljs-comment">//        &#125;</span><br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            m_StateFlag = DEFAULT_FLAG;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        QGraphicsItem::<span class="hljs-built_in">mousePressEvent</span>(event);<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">myGraphicRectItem::mouseMoveEvent</span><span class="hljs-params">(QGraphicsSceneMouseEvent *event)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span>(m_StateFlag == ROTATE)<br>    &#123;<br>       <span class="hljs-type">int</span> nRotateAngle = <span class="hljs-built_in">atan2</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_RotateCenter.<span class="hljs-built_in">x</span>()),(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_RotateCenter.<span class="hljs-built_in">y</span>()))*<span class="hljs-number">180</span>/M_PI;<br>       <span class="hljs-built_in">SetRotate</span>(<span class="hljs-number">180</span>-nRotateAngle);<br>       <span class="hljs-built_in">setRectSize</span>(m_oldRect);<br>       <span class="hljs-comment">//qDebug()&lt;&lt;nRotateAngle;</span><br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_StateFlag == MOV_RECT)<br>    &#123;<br>        QPointF point = (event-&gt;<span class="hljs-built_in">pos</span>() - m_startPos);<br>        <span class="hljs-built_in">moveBy</span>(point.<span class="hljs-built_in">x</span>(), point.<span class="hljs-built_in">y</span>());<br>        <span class="hljs-built_in">setRectSize</span>(m_oldRect);<br>        <span class="hljs-built_in">scene</span>()-&gt;<span class="hljs-built_in">update</span>();<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_StateFlag == MOV_LEFT_LINE)<br>    &#123;<br>        QPointF pf = <span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>));<br>        <span class="hljs-comment">//计算到右侧边中点的距离</span><br>        qreal dis = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>()));<br>        qreal dis2LT = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()));<br>        qreal dis2RT = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">y</span>()));<br>        <span class="hljs-keyword">if</span>(dis&lt;<span class="hljs-number">16</span>||dis2LT&gt;dis2RT)<br>        &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            QRectF <span class="hljs-built_in">newRect</span>(m_oldRect);<br>            newRect.<span class="hljs-built_in">setLeft</span>(m_oldRect.<span class="hljs-built_in">right</span>()-dis);<br>            newRect.<span class="hljs-built_in">setRight</span>(m_oldRect.<span class="hljs-built_in">right</span>());<br>            <span class="hljs-built_in">setRectSize</span>(newRect,<span class="hljs-literal">false</span>);<br>            m_RotateCenter=<span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,(m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>);<br>            m_oldRect.<span class="hljs-built_in">moveCenter</span>(m_RotateCenter);<br>            <span class="hljs-built_in">setRectSize</span>(m_oldRect);<br>            <span class="hljs-built_in">scene</span>()-&gt;<span class="hljs-built_in">update</span>();<span class="hljs-comment">//必须要用scene()-&gt;update()，不能用update();否则会出现重影</span><br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_StateFlag == MOV_TOP_LINE)<br>    &#123;<br>        <span class="hljs-comment">//底边中点</span><br>        QPointF pf = <span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>));<br>        <span class="hljs-comment">//计算到底边中点的距离</span><br>        qreal dis = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>()));<br>        qreal dis2LT = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()));<br>        qreal dis2LB = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">y</span>()));<br>        <span class="hljs-keyword">if</span>(dis&lt;<span class="hljs-number">16</span>||dis2LT&gt;dis2LB)<br>        &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            QRectF <span class="hljs-built_in">newRect</span>(m_oldRect);<br>            newRect.<span class="hljs-built_in">setTop</span>(m_oldRect.<span class="hljs-built_in">bottom</span>()-dis);<br>            newRect.<span class="hljs-built_in">setBottom</span>(m_oldRect.<span class="hljs-built_in">bottom</span>());<br>            <span class="hljs-built_in">setRectSize</span>(newRect,<span class="hljs-literal">false</span>);<br>            m_RotateCenter=<span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,(m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>);<br>            m_oldRect.<span class="hljs-built_in">moveCenter</span>(m_RotateCenter);<br>            <span class="hljs-built_in">setRectSize</span>(m_oldRect);<br>            <span class="hljs-built_in">scene</span>()-&gt;<span class="hljs-built_in">update</span>();<span class="hljs-comment">//必须要用scene()-&gt;update()，不能用update();否则会出现重影</span><br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_StateFlag == MOV_RIGHT_LINE)<br>    &#123;<br>        QPointF pf = <span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>));<br>        <span class="hljs-comment">//计算到左侧边中点的距离</span><br>        qreal dis = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>()));<br>        qreal dis2LT = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()));<br>        qreal dis2RT = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">y</span>()));<br>        <span class="hljs-keyword">if</span>(dis&lt;<span class="hljs-number">16</span>||dis2LT&lt;dis2RT)<br>        &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            QRectF <span class="hljs-built_in">newRect</span>(m_oldRect);<br>            newRect.<span class="hljs-built_in">setLeft</span>(m_oldRect.<span class="hljs-built_in">left</span>());<br>            newRect.<span class="hljs-built_in">setRight</span>(m_oldRect.<span class="hljs-built_in">left</span>()+dis);<br>            <span class="hljs-built_in">setRectSize</span>(newRect,<span class="hljs-literal">false</span>);<br>            m_RotateCenter=<span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,(m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>);<br>            m_oldRect.<span class="hljs-built_in">moveCenter</span>(m_RotateCenter);<br>            <span class="hljs-built_in">setRectSize</span>(m_oldRect);<br>            <span class="hljs-built_in">scene</span>()-&gt;<span class="hljs-built_in">update</span>();<span class="hljs-comment">//必须要用scene()-&gt;update()，不能用update();否则会出现重影</span><br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(m_StateFlag == MOV_BOTTOM_LINE)<br>    &#123;<br>        <span class="hljs-comment">//顶边中点</span><br>        QPointF pf = <span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">1</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>));<br>        <span class="hljs-comment">//计算到底边中点的距离</span><br>        qreal dis = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-pf.<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-pf.<span class="hljs-built_in">y</span>()));<br>        qreal dis2LT = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()));<br>        qreal dis2LB = <span class="hljs-built_in">sqrt</span>((event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">x</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">x</span>()) +(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">y</span>())*(event-&gt;<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>()-m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">3</span>).<span class="hljs-built_in">y</span>()));<br>        <span class="hljs-keyword">if</span>(dis&lt;<span class="hljs-number">16</span>||dis2LT&lt;dis2LB)<br>        &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            QRectF <span class="hljs-built_in">newRect</span>(m_oldRect);<br>            newRect.<span class="hljs-built_in">setTop</span>(m_oldRect.<span class="hljs-built_in">top</span>());<br>            newRect.<span class="hljs-built_in">setBottom</span>(m_oldRect.<span class="hljs-built_in">top</span>()+dis);<br>            <span class="hljs-built_in">setRectSize</span>(newRect,<span class="hljs-literal">false</span>);<br>            m_RotateCenter=<span class="hljs-built_in">QPointF</span>((m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">x</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,(m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">0</span>).<span class="hljs-built_in">y</span>()+m_oldRectPolygon.<span class="hljs-built_in">at</span>(<span class="hljs-number">2</span>).<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>);<br>            m_oldRect.<span class="hljs-built_in">moveCenter</span>(m_RotateCenter);<br>            <span class="hljs-built_in">setRectSize</span>(m_oldRect);<br>            <span class="hljs-built_in">scene</span>()-&gt;<span class="hljs-built_in">update</span>();<span class="hljs-comment">//必须要用scene()-&gt;update()，不能用update();否则会出现重影</span><br>        &#125;<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">myGraphicRectItem::mouseReleaseEvent</span><span class="hljs-params">(QGraphicsSceneMouseEvent *event)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">setCursor</span>(Qt::ArrowCursor);<br>    <span class="hljs-keyword">if</span>(m_StateFlag == MOV_RECT)<br>    &#123;<br>        m_StateFlag = DEFAULT_FLAG;<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        QGraphicsItem::<span class="hljs-built_in">mouseReleaseEvent</span>(event);<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">myGraphicRectItem::SetRotate</span><span class="hljs-params">(qreal RotateAngle, QPointF ptCenter)</span></span><br><span class="hljs-function"></span>&#123;<br>    m_bRotate = <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">if</span>(ptCenter.<span class="hljs-built_in">x</span>()==<span class="hljs-number">-999</span> &amp;&amp; ptCenter.<span class="hljs-built_in">y</span>()==<span class="hljs-number">-999</span>)<br>    &#123;<br>        m_RotateCenter = <span class="hljs-built_in">QPointF</span>(m_oldRect.<span class="hljs-built_in">x</span>()+m_oldRect.<span class="hljs-built_in">width</span>()/<span class="hljs-number">2</span>,m_oldRect.<span class="hljs-built_in">y</span>()+m_oldRect.<span class="hljs-built_in">height</span>()/<span class="hljs-number">2</span>);<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        m_RotateCenter = ptCenter;<br>    &#125;<br>    m_RotateAngle = RotateAngle;<br>    <span class="hljs-keyword">this</span>-&gt;<span class="hljs-built_in">update</span>();<br>&#125;<br><br><span class="hljs-function">QPointF <span class="hljs-title">myGraphicRectItem::getRotatePoint</span><span class="hljs-params">(QPointF ptCenter, QPointF ptIn, qreal angle)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">double</span> dx = ptCenter.<span class="hljs-built_in">x</span>();<br>    <span class="hljs-type">double</span> dy = ptCenter.<span class="hljs-built_in">y</span>();<br>    <span class="hljs-type">double</span> x = ptIn.<span class="hljs-built_in">x</span>();<br>    <span class="hljs-type">double</span> y = ptIn.<span class="hljs-built_in">y</span>();<br>    <span class="hljs-type">double</span> xx,yy;<br>    xx = (x-dx)*<span class="hljs-built_in">cos</span>(angle*M_PI/<span class="hljs-number">180</span>)-(y-dy)*<span class="hljs-built_in">sin</span>(angle*M_PI/<span class="hljs-number">180</span>)+dx;<br>    yy = (x-dx)*<span class="hljs-built_in">sin</span>(angle*M_PI/<span class="hljs-number">180</span>)+(y-dy)*<span class="hljs-built_in">cos</span>(angle*M_PI/<span class="hljs-number">180</span>)+dy;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">QPointF</span>(xx,yy);<br>&#125;<br><br><span class="hljs-function">QList&lt;QPointF&gt; <span class="hljs-title">myGraphicRectItem::getRotatePoints</span><span class="hljs-params">(QPointF ptCenter, QList&lt;QPointF&gt; ptIns, qreal angle)</span></span><br><span class="hljs-function"></span>&#123;<br>    QList&lt;QPointF&gt; lstPt;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;i&lt;ptIns.<span class="hljs-built_in">count</span>();i++)<br>    &#123;<br>        lstPt.<span class="hljs-built_in">append</span>(<span class="hljs-built_in">getRotatePoint</span>(ptCenter,ptIns.<span class="hljs-built_in">at</span>(i),angle));<br>    &#125;<br>    <span class="hljs-keyword">return</span> lstPt;<br>&#125;<br><br><span class="hljs-function">QPolygonF <span class="hljs-title">myGraphicRectItem::getRotatePolygonFromRect</span><span class="hljs-params">(QPointF ptCenter, QRectF rectIn, qreal angle)</span></span><br><span class="hljs-function"></span>&#123;<br>    QVector&lt;QPointF&gt; vpt;<br>    QPointF pf = <span class="hljs-built_in">getRotatePoint</span>(ptCenter,rectIn.<span class="hljs-built_in">topLeft</span>(),angle);<br>    vpt.<span class="hljs-built_in">append</span>(pf);<br>    pf = <span class="hljs-built_in">getRotatePoint</span>(ptCenter,rectIn.<span class="hljs-built_in">topRight</span>(),angle);<br>    vpt.<span class="hljs-built_in">append</span>(pf);<br>    pf = <span class="hljs-built_in">getRotatePoint</span>(ptCenter,rectIn.<span class="hljs-built_in">bottomRight</span>(),angle);<br>    vpt.<span class="hljs-built_in">append</span>(pf);<br>    pf = <span class="hljs-built_in">getRotatePoint</span>(ptCenter,rectIn.<span class="hljs-built_in">bottomLeft</span>(),angle);<br>    vpt.<span class="hljs-built_in">append</span>(pf);<br>    pf = <span class="hljs-built_in">getRotatePoint</span>(ptCenter,rectIn.<span class="hljs-built_in">topLeft</span>(),angle);<br>    vpt.<span class="hljs-built_in">append</span>(pf);<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">QPolygonF</span>(vpt);<br>&#125;<br><br><span class="hljs-function">QRectF <span class="hljs-title">myGraphicRectItem::getCrtPosRectToSceen</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    QRectF retRect = <span class="hljs-built_in">QRectF</span>(m_oldRect.<span class="hljs-built_in">x</span>()+<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">x</span>(),m_oldRect.<span class="hljs-built_in">y</span>()+<span class="hljs-built_in">pos</span>().<span class="hljs-built_in">y</span>(),m_oldRect.<span class="hljs-built_in">width</span>(),m_oldRect.<span class="hljs-built_in">height</span>());<br>    <span class="hljs-keyword">return</span> retRect;<br>&#125;<br><span class="hljs-function">QRectF <span class="hljs-title">myGraphicRectItem::getSmallRotateRect</span><span class="hljs-params">(QPointF ptA,QPointF ptB)</span></span><br><span class="hljs-function"></span>&#123;<br>    QPointF pt = <span class="hljs-built_in">getSmallRotateRectCenter</span>(ptA,ptB);<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">QRectF</span>(pt.<span class="hljs-built_in">x</span>()<span class="hljs-number">-10</span>,pt.<span class="hljs-built_in">y</span>()<span class="hljs-number">-10</span>,<span class="hljs-number">20</span>,<span class="hljs-number">20</span>);<br>&#125;<br><span class="hljs-function">QPointF <span class="hljs-title">myGraphicRectItem::getSmallRotateRectCenter</span><span class="hljs-params">(QPointF ptA,QPointF ptB)</span></span><br><span class="hljs-function"></span>&#123;<br>    QPointF ptCenter = <span class="hljs-built_in">QPointF</span>((ptA.<span class="hljs-built_in">x</span>()+ptB.<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>,(ptA.<span class="hljs-built_in">y</span>()+ptB.<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>);<span class="hljs-comment">//A,B点的中点C</span><br>    <span class="hljs-comment">//中垂线方程式为 y=x*k + b;</span><br>    qreal x,y;<span class="hljs-comment">//旋转图标矩形的中心</span><br>    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">abs</span>(ptB.<span class="hljs-built_in">y</span>()-ptA.<span class="hljs-built_in">y</span>())&lt;<span class="hljs-number">0.1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span>(ptA.<span class="hljs-built_in">x</span>()&lt;ptB.<span class="hljs-built_in">x</span>())<span class="hljs-comment">//矩形左上角在上方</span><br>        &#123;<br>            x = ptCenter.<span class="hljs-built_in">x</span>();<br>            y = ptCenter.<span class="hljs-built_in">y</span>()<span class="hljs-number">-20</span>;<br>        &#125;<br>        <span class="hljs-keyword">else</span><span class="hljs-comment">//矩形左上角在下方</span><br>        &#123;<br>            x = ptCenter.<span class="hljs-built_in">x</span>();<br>            y = ptCenter.<span class="hljs-built_in">y</span>()+<span class="hljs-number">20</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(ptB.<span class="hljs-built_in">y</span>()&gt;ptA.<span class="hljs-built_in">y</span>())<span class="hljs-comment">//顺时针旋转0-180</span><br>    &#123;<br>        qreal k = (ptA.<span class="hljs-built_in">x</span>()-ptB.<span class="hljs-built_in">x</span>())/(ptB.<span class="hljs-built_in">y</span>()-ptA.<span class="hljs-built_in">y</span>());<span class="hljs-comment">//中垂线斜率</span><br>        qreal b = (ptA.<span class="hljs-built_in">y</span>()+ptB.<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>-k*(ptA.<span class="hljs-built_in">x</span>()+ptB.<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>;<br>        <span class="hljs-comment">//求AB线中垂线上离AB中点20个像素的点C的坐标</span><br>        x = <span class="hljs-number">20</span>*<span class="hljs-built_in">cos</span>(<span class="hljs-built_in">atan</span>(k))+ptCenter.<span class="hljs-built_in">x</span>();<br>        y = k*x+b;<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(ptB.<span class="hljs-built_in">y</span>()&lt;ptA.<span class="hljs-built_in">y</span>())<span class="hljs-comment">//顺时针旋转180-360</span><br>    &#123;<br>        qreal k = (ptA.<span class="hljs-built_in">x</span>()-ptB.<span class="hljs-built_in">x</span>())/(ptB.<span class="hljs-built_in">y</span>()-ptA.<span class="hljs-built_in">y</span>());<span class="hljs-comment">//中垂线斜率</span><br>        qreal b = (ptA.<span class="hljs-built_in">y</span>()+ptB.<span class="hljs-built_in">y</span>())/<span class="hljs-number">2</span>-k*(ptA.<span class="hljs-built_in">x</span>()+ptB.<span class="hljs-built_in">x</span>())/<span class="hljs-number">2</span>;<br>        <span class="hljs-comment">//求AB线中垂线上离AB中点20个像素的点C的坐标</span><br>        x = <span class="hljs-number">-20</span>*<span class="hljs-built_in">cos</span>(<span class="hljs-built_in">atan</span>(k))+ptCenter.<span class="hljs-built_in">x</span>();<br>        y = k*x+b;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">QPointF</span>(x,y);<br>&#125;<br><br></code></pre></td></tr></table></figure></li>
+<pre><code class="c++">#include &quot;mygraphicrectitem.h&quot;
+#include &lt;QtMath&gt;
+#include &lt;QDebug&gt;
+
+myGraphicRectItem::myGraphicRectItem(QGraphicsItem *parent):
+    m_bResize(false),
+    m_oldRect(0,0,100,100),
+    m_bRotate(false),
+    m_RotateAngle(0),
+    m_StateFlag(DEFAULT_FLAG)
+&#123;
+    //setParent(parent);
+    setRectSize(m_oldRect);
+    setToolTip(&quot;Click and drag me!&quot;);  //提示
+    setCursor(Qt::ArrowCursor);   //改变光标形状,手的形状
+    setFlag(QGraphicsItem::ItemIsMovable);
+    //    setAcceptDrops(true);
+    pPointFofSmallRotateRect = new QPointF[4];
+    SetRotate(0);
+    setFlag(QGraphicsItem::ItemIsSelectable);//
+&#125;
+
+QRectF myGraphicRectItem::boundingRect() const
+&#123;
+    //return m_oldRectPolygon.boundingRect();
+    QRectF boundingRectF = m_oldRectPolygon.boundingRect();
+    return QRectF(boundingRectF.x()-40,boundingRectF.y()-40,boundingRectF.width()+80,boundingRectF.height()+80);
+&#125;
+
+myGraphicRectItem::~myGraphicRectItem()
+&#123;
+    delete []pPointFofSmallRotateRect;
+    pPointFofSmallRotateRect = nullptr;
+&#125;
+
+void myGraphicRectItem::setRectSize(QRectF mrect, bool bResetRotateCenter)
+&#123;
+    m_oldRect = mrect;
+    if(bResetRotateCenter)
+    &#123;
+        m_RotateCenter.setX(m_oldRect.x()+m_oldRect.width()/2);
+        m_RotateCenter.setY(m_oldRect.y()+m_oldRect.height()/2);
+    &#125;
+    m_oldRectPolygon = getRotatePolygonFromRect(m_RotateCenter,m_oldRect,m_RotateAngle);
+
+    m_insicedRectf = QRectF(m_oldRect.x()+8,m_oldRect.y()+8,m_oldRect.width()-16,m_oldRect.height()-16);
+    m_insicedPolygon =getRotatePolygonFromRect(m_RotateCenter,m_insicedRectf,m_RotateAngle);
+
+    m_leftRectf = QRectF(m_oldRect.x(),m_oldRect.y(),8,m_oldRect.height()-8);
+    m_leftPolygon = getRotatePolygonFromRect(m_RotateCenter,m_leftRectf,m_RotateAngle);
+
+    m_topRectf = QRectF(m_oldRect.x()+8,m_oldRect.y(),m_oldRect.width()-8,8);
+    m_topPolygon = getRotatePolygonFromRect(m_RotateCenter,m_topRectf,m_RotateAngle);
+
+    m_rightRectf = QRectF(m_oldRect.right()-8,m_oldRect.y()+8,8,m_oldRect.height()-16);
+    m_rightPolygon = getRotatePolygonFromRect(m_RotateCenter,m_rightRectf,m_RotateAngle);
+
+    m_bottomRectf = QRectF(m_oldRect.x(),m_oldRect.bottom()-8,m_oldRect.width()-8,8);
+    m_bottomPolygon = getRotatePolygonFromRect(m_RotateCenter,m_bottomRectf,m_RotateAngle);
+
+//    m_rbRectf = QRectF(m_oldRect.right()-8,m_oldRect.bottom()-8,8,8);
+//    m_rbPolygon = getRotatePolygonFromRect(m_RotateCenter,m_rbRectf,m_RotateAngle);
+
+    m_SmallRotateRect = getSmallRotateRect(mrect.topLeft(),mrect.topRight());//矩形正上方的旋转标记矩形
+    m_SmallRotatePolygon = getRotatePolygonFromRect(m_RotateCenter,m_SmallRotateRect,m_RotateAngle);
+&#125;
+
+void myGraphicRectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+&#123;
+    QPen mPen = QPen(Qt::yellow);
+    painter-&gt;setPen(mPen);
+    //绘制旋转后的矩形
+    painter-&gt;drawPolygon(m_oldRectPolygon);
+    //绘制旋转圆形
+    mPen.setWidth(2);
+    mPen.setColor(Qt::green);
+    painter-&gt;setPen(mPen);
+    QPointF pf = getSmallRotateRectCenter(m_oldRectPolygon[0],m_oldRectPolygon[1]);
+    QRectF rect = QRectF(pf.x()-10,pf.y()-10,20,20);
+    painter-&gt;drawEllipse(rect);//绘制圆形
+    painter-&gt;drawPoint(pf);//绘制点
+&#125;
+
+void myGraphicRectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+&#123;
+    if(event-&gt;button()== Qt::LeftButton)
+    &#123;
+        m_startPos = event-&gt;pos();//鼠标左击时，获取当前鼠标在图片中的坐标，
+        if(m_SmallRotatePolygon.containsPoint(m_startPos,Qt::WindingFill))//旋转矩形
+        &#123;
+            setCursor(Qt::PointingHandCursor);
+            m_StateFlag = ROTATE;
+        &#125;
+        else if(m_insicedPolygon.containsPoint(m_startPos,Qt::WindingFill))//在矩形内框区域时按下鼠标，则可拖动图片
+        &#123;
+            setCursor(Qt::ClosedHandCursor);   //改变光标形状,手的形状
+            m_StateFlag = MOV_RECT;//标记当前为鼠标拖动图片移动状态
+        &#125;
+        else if(m_leftPolygon.containsPoint(m_startPos,Qt::WindingFill))
+        &#123;
+            setCursor(Qt::SizeHorCursor);
+            m_StateFlag = MOV_LEFT_LINE;//标记当前为用户按下矩形的左边界区域
+        &#125;
+        else if(m_rightPolygon.containsPoint(m_startPos,Qt::WindingFill))
+        &#123;
+            setCursor(Qt::SizeHorCursor);
+            m_StateFlag = MOV_RIGHT_LINE;//标记当前为用户按下矩形的右边界区域
+        &#125;
+        else if(m_topPolygon.containsPoint(m_startPos,Qt::WindingFill))
+        &#123;
+            setCursor(Qt::SizeVerCursor);
+            m_StateFlag = MOV_TOP_LINE;//标记当前为用户按下矩形的上边界区域
+        &#125;
+        else if(m_bottomPolygon.containsPoint(m_startPos,Qt::WindingFill))
+        &#123;
+            setCursor(Qt::SizeVerCursor);
+            m_StateFlag = MOV_BOTTOM_LINE;//标记当前为用户按下矩形的下边界区域
+        &#125;
+//        else if(m_rbPolygon.containsPoint(m_startPos,Qt::WindingFill))
+//        &#123;
+//            setCursor(Qt::SizeFDiagCursor);
+//            m_StateFlag = MOV_RIGHTBOTTOM_RECT;//标记当前为用户按下矩形的右下角
+//        &#125;
+        else
+        &#123;
+            m_StateFlag = DEFAULT_FLAG;
+        &#125;
+    &#125;
+    else
+    &#123;
+        QGraphicsItem::mousePressEvent(event);
+    &#125;
+&#125;
+
+void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+&#123;
+    if(m_StateFlag == ROTATE)
+    &#123;
+       int nRotateAngle = atan2((event-&gt;pos().x()-m_RotateCenter.x()),(event-&gt;pos().y()-m_RotateCenter.y()))*180/M_PI;
+       SetRotate(180-nRotateAngle);
+       setRectSize(m_oldRect);
+       //qDebug()&lt;&lt;nRotateAngle;
+    &#125;
+    else if(m_StateFlag == MOV_RECT)
+    &#123;
+        QPointF point = (event-&gt;pos() - m_startPos);
+        moveBy(point.x(), point.y());
+        setRectSize(m_oldRect);
+        scene()-&gt;update();
+    &#125;
+    else if(m_StateFlag == MOV_LEFT_LINE)
+    &#123;
+        QPointF pf = QPointF((m_oldRectPolygon.at(1).x()+m_oldRectPolygon.at(2).x())/2,((m_oldRectPolygon.at(1).y()+m_oldRectPolygon.at(2).y())/2));
+        //计算到右侧边中点的距离
+        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2RT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(1).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(1).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(1).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(1).y()));
+        if(dis&lt;16||dis2LT&gt;dis2RT)
+        &#123;
+            return;
+        &#125;
+        else
+        &#123;
+            QRectF newRect(m_oldRect);
+            newRect.setLeft(m_oldRect.right()-dis);
+            newRect.setRight(m_oldRect.right());
+            setRectSize(newRect,false);
+            m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
+            m_oldRect.moveCenter(m_RotateCenter);
+            setRectSize(m_oldRect);
+            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+        &#125;
+    &#125;
+    else if(m_StateFlag == MOV_TOP_LINE)
+    &#123;
+        //底边中点
+        QPointF pf = QPointF((m_oldRectPolygon.at(2).x()+m_oldRectPolygon.at(3).x())/2,((m_oldRectPolygon.at(2).y()+m_oldRectPolygon.at(3).y())/2));
+        //计算到底边中点的距离
+        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2LB = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(3).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(3).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(3).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(3).y()));
+        if(dis&lt;16||dis2LT&gt;dis2LB)
+        &#123;
+            return;
+        &#125;
+        else
+        &#123;
+            QRectF newRect(m_oldRect);
+            newRect.setTop(m_oldRect.bottom()-dis);
+            newRect.setBottom(m_oldRect.bottom());
+            setRectSize(newRect,false);
+            m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
+            m_oldRect.moveCenter(m_RotateCenter);
+            setRectSize(m_oldRect);
+            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+        &#125;
+    &#125;
+    else if(m_StateFlag == MOV_RIGHT_LINE)
+    &#123;
+        QPointF pf = QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(3).x())/2,((m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(3).y())/2));
+        //计算到左侧边中点的距离
+        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2RT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(1).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(1).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(1).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(1).y()));
+        if(dis&lt;16||dis2LT&lt;dis2RT)
+        &#123;
+            return;
+        &#125;
+        else
+        &#123;
+            QRectF newRect(m_oldRect);
+            newRect.setLeft(m_oldRect.left());
+            newRect.setRight(m_oldRect.left()+dis);
+            setRectSize(newRect,false);
+            m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
+            m_oldRect.moveCenter(m_RotateCenter);
+            setRectSize(m_oldRect);
+            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+        &#125;
+    &#125;
+    else if(m_StateFlag == MOV_BOTTOM_LINE)
+    &#123;
+        //顶边中点
+        QPointF pf = QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(1).x())/2,((m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(1).y())/2));
+        //计算到底边中点的距离
+        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2LB = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(3).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(3).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(3).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(3).y()));
+        if(dis&lt;16||dis2LT&lt;dis2LB)
+        &#123;
+            return;
+        &#125;
+        else
+        &#123;
+            QRectF newRect(m_oldRect);
+            newRect.setTop(m_oldRect.top());
+            newRect.setBottom(m_oldRect.top()+dis);
+            setRectSize(newRect,false);
+            m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
+            m_oldRect.moveCenter(m_RotateCenter);
+            setRectSize(m_oldRect);
+            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+        &#125;
+    &#125;
+&#125;
+
+void myGraphicRectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+&#123;
+    setCursor(Qt::ArrowCursor);
+    if(m_StateFlag == MOV_RECT)
+    &#123;
+        m_StateFlag = DEFAULT_FLAG;
+    &#125;
+    else &#123;
+        QGraphicsItem::mouseReleaseEvent(event);
+    &#125;
+&#125;
+
+void myGraphicRectItem::SetRotate(qreal RotateAngle, QPointF ptCenter)
+&#123;
+    m_bRotate = true;
+    if(ptCenter.x()==-999 &amp;&amp; ptCenter.y()==-999)
+    &#123;
+        m_RotateCenter = QPointF(m_oldRect.x()+m_oldRect.width()/2,m_oldRect.y()+m_oldRect.height()/2);
+    &#125;
+    else
+    &#123;
+        m_RotateCenter = ptCenter;
+    &#125;
+    m_RotateAngle = RotateAngle;
+    this-&gt;update();
+&#125;
+
+QPointF myGraphicRectItem::getRotatePoint(QPointF ptCenter, QPointF ptIn, qreal angle)
+&#123;
+    double dx = ptCenter.x();
+    double dy = ptCenter.y();
+    double x = ptIn.x();
+    double y = ptIn.y();
+    double xx,yy;
+    xx = (x-dx)*cos(angle*M_PI/180)-(y-dy)*sin(angle*M_PI/180)+dx;
+    yy = (x-dx)*sin(angle*M_PI/180)+(y-dy)*cos(angle*M_PI/180)+dy;
+
+    return QPointF(xx,yy);
+&#125;
+
+QList&lt;QPointF&gt; myGraphicRectItem::getRotatePoints(QPointF ptCenter, QList&lt;QPointF&gt; ptIns, qreal angle)
+&#123;
+    QList&lt;QPointF&gt; lstPt;
+    for(int i = 0;i&lt;ptIns.count();i++)
+    &#123;
+        lstPt.append(getRotatePoint(ptCenter,ptIns.at(i),angle));
+    &#125;
+    return lstPt;
+&#125;
+
+QPolygonF myGraphicRectItem::getRotatePolygonFromRect(QPointF ptCenter, QRectF rectIn, qreal angle)
+&#123;
+    QVector&lt;QPointF&gt; vpt;
+    QPointF pf = getRotatePoint(ptCenter,rectIn.topLeft(),angle);
+    vpt.append(pf);
+    pf = getRotatePoint(ptCenter,rectIn.topRight(),angle);
+    vpt.append(pf);
+    pf = getRotatePoint(ptCenter,rectIn.bottomRight(),angle);
+    vpt.append(pf);
+    pf = getRotatePoint(ptCenter,rectIn.bottomLeft(),angle);
+    vpt.append(pf);
+    pf = getRotatePoint(ptCenter,rectIn.topLeft(),angle);
+    vpt.append(pf);
+    return QPolygonF(vpt);
+&#125;
+
+QRectF myGraphicRectItem::getCrtPosRectToSceen()
+&#123;
+    QRectF retRect = QRectF(m_oldRect.x()+pos().x(),m_oldRect.y()+pos().y(),m_oldRect.width(),m_oldRect.height());
+    return retRect;
+&#125;
+QRectF myGraphicRectItem::getSmallRotateRect(QPointF ptA,QPointF ptB)
+&#123;
+    QPointF pt = getSmallRotateRectCenter(ptA,ptB);
+    return QRectF(pt.x()-10,pt.y()-10,20,20);
+&#125;
+QPointF myGraphicRectItem::getSmallRotateRectCenter(QPointF ptA,QPointF ptB)
+&#123;
+    QPointF ptCenter = QPointF((ptA.x()+ptB.x())/2,(ptA.y()+ptB.y())/2);//A,B点的中点C
+    //中垂线方程式为 y=x*k + b;
+    qreal x,y;//旋转图标矩形的中心
+    if(abs(ptB.y()-ptA.y())&lt;0.1)
+    &#123;
+        if(ptA.x()&lt;ptB.x())//矩形左上角在上方
+        &#123;
+            x = ptCenter.x();
+            y = ptCenter.y()-20;
+        &#125;
+        else//矩形左上角在下方
+        &#123;
+            x = ptCenter.x();
+            y = ptCenter.y()+20;
+        &#125;
+    &#125;
+    else if(ptB.y()&gt;ptA.y())//顺时针旋转0-180
+    &#123;
+        qreal k = (ptA.x()-ptB.x())/(ptB.y()-ptA.y());//中垂线斜率
+        qreal b = (ptA.y()+ptB.y())/2-k*(ptA.x()+ptB.x())/2;
+        //求AB线中垂线上离AB中点20个像素的点C的坐标
+        x = 20*cos(atan(k))+ptCenter.x();
+        y = k*x+b;
+    &#125;
+    else if(ptB.y()&lt;ptA.y())//顺时针旋转180-360
+    &#123;
+        qreal k = (ptA.x()-ptB.x())/(ptB.y()-ptA.y());//中垂线斜率
+        qreal b = (ptA.y()+ptB.y())/2-k*(ptA.x()+ptB.x())/2;
+        //求AB线中垂线上离AB中点20个像素的点C的坐标
+        x = -20*cos(atan(k))+ptCenter.x();
+        y = k*x+b;
+    &#125;
+    return QPointF(x,y);
+&#125;
+</code></pre>
+</li>
 </ul>
 <h3 id="功能3：Qt中设置QGraphicsView的背景色为透明且无边框"><a href="#功能3：Qt中设置QGraphicsView的背景色为透明且无边框" class="headerlink" title="功能3：Qt中设置QGraphicsView的背景色为透明且无边框"></a>功能3：Qt中设置<code>QGraphicsView</code>的背景色为透明且无边框</h3><ol>
 <li>设置背景色为透明：在<code>QGraphicsView</code>上调用<code>setStyleSheet()</code>方法，并将背景色样式设置为透明。示例代码如下：</li>
 </ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">QGraphicsView* view = <span class="hljs-keyword">new</span> QGraphicsView;<br>view-&gt;<span class="hljs-built_in">setStyleSheet</span>(<span class="hljs-string">&quot;background-color: transparent;&quot;</span>);<br></code></pre></td></tr></table></figure>
-
+<pre><code class="c++">QGraphicsView* view = new QGraphicsView;
+view-&gt;setStyleSheet(&quot;background-color: transparent;&quot;);
+</code></pre>
 <ol start="2">
 <li>设置边框：在<code>QGraphicsView</code>上调用<code>setFrameStyle()</code>方法，并将边框样式设置为无边框。示例代码如下：</li>
 </ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">QGraphicsView* view = <span class="hljs-keyword">new</span> QGraphicsView;<br>view-&gt;<span class="hljs-built_in">setFrameStyle</span>(QFrame::NoFrame);<br></code></pre></td></tr></table></figure>
-
+<pre><code class="c++">QGraphicsView* view = new QGraphicsView;
+view-&gt;setFrameStyle(QFrame::NoFrame);
+</code></pre>
 <p>在Qt中使用一个按钮清除<code>QGraphicsView</code>上监控的图片<code>QGraphicsPixmapItem</code>上画出来不需要的矩形<code>QGraphicsRectItem</code></p>
 <ol>
 <li><p>首先，在<code>QGraphicsView</code>上绑定一个按钮<code>QPushButton</code></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++">QPushButton* clearBtn = <span class="hljs-keyword">new</span> <span class="hljs-built_in">QPushButton</span>(view);<br># 将按钮放置在view的左下角<br>btn.<span class="hljs-built_in">setGeometry</span>(<span class="hljs-number">0</span>,view.<span class="hljs-built_in">geometry</span>().<span class="hljs-built_in">height</span>()<span class="hljs-number">-40</span>,<span class="hljs-number">40</span>,<span class="hljs-number">20</span>);<br>btn.<span class="hljs-built_in">setText</span>(<span class="hljs-string">&quot;clear&quot;</span>);<br></code></pre></td></tr></table></figure>
+<pre><code class="c++">QPushButton* clearBtn = new QPushButton(view);
+# 将按钮放置在view的左下角
+btn.setGeometry(0,view.geometry().height()-40,40,20);
+btn.setText(&quot;clear&quot;);
+</code></pre>
 </li>
 <li><p>给按钮绑定槽函数，用于清除矩形</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">#在.h文件中定义槽函数<br><span class="hljs-keyword">private</span> slots:<br>	<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">on_btn_clicked</span><span class="hljs-params">()</span></span>;<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"># 在构造函数中绑定槽函数<br><span class="hljs-built_in">connect</span>(clearBtn,<span class="hljs-built_in">SIGNAL</span>(<span class="hljs-built_in">clicked</span>()),<span class="hljs-keyword">this</span>,<span class="hljs-built_in">SLOT</span>(<span class="hljs-built_in">on_btn_clicked</span>()));<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"># 槽函数的具体实现<br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ImgHelper::on_btn_clicked</span><span class="hljs-params">()</span></span>&#123;<br>	rectcounts = <span class="hljs-number">0</span>;	#设矩形个数为<span class="hljs-number">0</span><br>	scene-&gt;<span class="hljs-built_in">clear</span>();	# 清空<span class="hljs-function">scene</span><br><span class="hljs-function">	<span class="hljs-title">imgUpdated</span><span class="hljs-params">(cloneImage)</span></span>;	# 将直接保存的监控图片重新添加进scene<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<pre><code class="c++">#在.h文件中定义槽函数
+private slots:
+    void on_btn_clicked();
+</code></pre>
+<pre><code class="c++"># 在构造函数中绑定槽函数
+connect(clearBtn,SIGNAL(clicked()),this,SLOT(on_btn_clicked()));
+</code></pre>
+<pre><code class="c++"># 槽函数的具体实现
+void ImgHelper::on_btn_clicked()&#123;
+    rectcounts = 0;	#设矩形个数为0
+    scene-&gt;clear();	# 清空scene
+    imgUpdated(cloneImage);	# 将直接保存的监控图片重新添加进scene
+&#125;
+</code></pre>
+</li>
 </ol>
 <h3 id="功能4：保存错误图片"><a href="#功能4：保存错误图片" class="headerlink" title="功能4：保存错误图片"></a>功能4：保存错误图片</h3><p>当发现监控的图片有问题时，就可以一键保存监控的图片，按日期创建文件夹，方便查看问题</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">ImgHelper::onSaveErrorImage</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//20230908</span><br>    QString currentPath = QDir::<span class="hljs-built_in">currentPath</span>();<br><br>    QString filedir = currentPath + QDir::<span class="hljs-built_in">separator</span>() + <span class="hljs-string">&quot;errorImg&quot;</span>;<br>    <span class="hljs-function">QDir <span class="hljs-title">dir</span><span class="hljs-params">(filedir)</span></span>;<br>    <span class="hljs-keyword">if</span>(!dir.<span class="hljs-built_in">exists</span>())&#123;<br>       <span class="hljs-keyword">if</span>(dir.<span class="hljs-built_in">mkdir</span>(filedir))&#123;<br><br>       &#125;<span class="hljs-keyword">else</span>&#123;<br>           <span class="hljs-built_in">qDebug</span>()&lt;&lt;<span class="hljs-string">&quot;创建目录失败&quot;</span>;<br>       &#125;<br>    &#125;<br>    QString nowDate = QDateTime::QDateTime::<span class="hljs-built_in">currentDateTime</span>().<span class="hljs-built_in">toString</span>(<span class="hljs-string">&quot;yyyy-MM-dd&quot;</span>) ;<br>    QString filedirdate = filedir + QDir::<span class="hljs-built_in">separator</span>() + nowDate;<br>    <span class="hljs-function">QDir <span class="hljs-title">dirdate</span><span class="hljs-params">(filedirdate)</span></span>;<br>    <span class="hljs-keyword">if</span>(!dirdate.<span class="hljs-built_in">exists</span>())&#123;<br>       <span class="hljs-keyword">if</span>(dirdate.<span class="hljs-built_in">mkdir</span>(filedirdate))&#123;<br><br>       &#125;<span class="hljs-keyword">else</span>&#123;<br>           <span class="hljs-built_in">qDebug</span>()&lt;&lt;<span class="hljs-string">&quot;创建目录失败&quot;</span>;<br>       &#125;<br>    &#125;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">8</span>; i++)&#123;<br>        QString imgpath = filedirdate + QDir::<span class="hljs-built_in">separator</span>() + <span class="hljs-string">&quot;tt&quot;</span> + QString::<span class="hljs-built_in">number</span>(i) +<span class="hljs-string">&quot;.bmp&quot;</span>;<br>        <span class="hljs-function">QFile <span class="hljs-title">file</span><span class="hljs-params">(imgpath)</span></span>;<br>        <span class="hljs-comment">//判断文件是否存在</span><br>        <span class="hljs-keyword">if</span>(file.<span class="hljs-built_in">exists</span>())&#123;<br>           <span class="hljs-keyword">continue</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span>(pixmapItem != <span class="hljs-literal">NULL</span>)&#123;<br>            pixmapItem-&gt;<span class="hljs-built_in">pixmap</span>().<span class="hljs-built_in">save</span>(imgpath);<br>        &#125;<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<pre><code class="c++">void ImgHelper::onSaveErrorImage()
+&#123;
+    //20230908
+    QString currentPath = QDir::currentPath();
 
-<h3 id="功能5：修复图片通道异常"><a href="#功能5：修复图片通道异常" class="headerlink" title="功能5：修复图片通道异常"></a>功能5：修复图片通道异常</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//2023926加  修复PLC查看图片出现的通道异常</span><br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> x = <span class="hljs-number">0</span> ; x &lt; image.<span class="hljs-built_in">height</span>(); x++)&#123;<br>                    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> y = <span class="hljs-number">0</span> ; y &lt; image.<span class="hljs-built_in">width</span>(); y++)&#123;<br>                        QRgb pixel = image.<span class="hljs-built_in">pixel</span>(x,y);<br>                        <span class="hljs-type">int</span> red = <span class="hljs-built_in">qBlue</span>(pixel);<br>                        <span class="hljs-type">int</span> green =<span class="hljs-built_in">qRed</span>(pixel);<br>                        <span class="hljs-type">int</span> blue = <span class="hljs-built_in">qGreen</span>(pixel);<br>                        QRgb newpixel = <span class="hljs-built_in">qRgb</span>(red,green,blue);<br>                        image.<span class="hljs-built_in">setPixel</span>(x,y,newpixel);<br><br>                    &#125;<br>                &#125;<br></code></pre></td></tr></table></figure>
+    QString filedir = currentPath + QDir::separator() + &quot;errorImg&quot;;
+    QDir dir(filedir);
+    if(!dir.exists())&#123;
+       if(dir.mkdir(filedir))&#123;
 
+       &#125;else&#123;
+           qDebug()&lt;&lt;&quot;创建目录失败&quot;;
+       &#125;
+    &#125;
+    QString nowDate = QDateTime::QDateTime::currentDateTime().toString(&quot;yyyy-MM-dd&quot;) ;
+    QString filedirdate = filedir + QDir::separator() + nowDate;
+    QDir dirdate(filedirdate);
+    if(!dirdate.exists())&#123;
+       if(dirdate.mkdir(filedirdate))&#123;
 
+       &#125;else&#123;
+           qDebug()&lt;&lt;&quot;创建目录失败&quot;;
+       &#125;
+    &#125;
+    for(int i = 1; i &lt;= 8; i++)&#123;
+        QString imgpath = filedirdate + QDir::separator() + &quot;tt&quot; + QString::number(i) +&quot;.bmp&quot;;
+        QFile file(imgpath);
+        //判断文件是否存在
+        if(file.exists())&#123;
+           continue;
+        &#125;
+        if(pixmapItem != NULL)&#123;
+            pixmapItem-&gt;pixmap().save(imgpath);
+        &#125;
+        break;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="功能5：修复图片通道异常"><a href="#功能5：修复图片通道异常" class="headerlink" title="功能5：修复图片通道异常"></a>功能5：修复图片通道异常</h3><pre><code class="c++">//2023926加  修复PLC查看图片出现的通道异常
+        for(int x = 0 ; x &lt; image.height(); x++)&#123;
+                    for(int y = 0 ; y &lt; image.width(); y++)&#123;
+                        QRgb pixel = image.pixel(x,y);
+                        int red = qBlue(pixel);
+                        int green =qRed(pixel);
+                        int blue = qGreen(pixel);
+                        QRgb newpixel = qRgb(red,green,blue);
+                        image.setPixel(x,y,newpixel);
 
+                    &#125;
+                &#125;
+</code></pre>
 
                 
-              </div>
-            
-            <hr/>
-            <div>
-              <div class="post-metas my-3">
-  
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%AC%94%E8%AE%B0/" class="category-chain-item">笔记</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/c/" class="print-no-link">#c++</a>
-      
-        <a href="/tags/Qt/" class="print-no-link">#Qt</a>
-      
-    </div>
-  
-</div>
-
-
-              
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>使用Qt开发工作上的需求</div>
-      <div>http://example.com/2023/10/26/使用Qt开发工作上的需求/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>Mzy</div>
-        </div>
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>发布于</div>
-          <div>2023年10月26日</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
-
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2023/10/28/%E5%9F%BA%E4%BA%8Eepoll%E7%9A%84web%E6%9C%8D%E5%8A%A1%E5%99%A8-C%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC/" title="基于epoll的web服务器(C语言版本)">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">基于epoll的web服务器(C语言版本)</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2023/10/20/%E8%A7%A3%E6%9E%90Http%E5%8D%8F%E8%AE%AE/" title="解析Http协议">
-                        <span class="hidden-mobile">解析Http协议</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
             </div>
+            <hr/>
 
             
-  
-  
-    <article id="comments" lazyload>
-      
-  <div id="waline"></div>
-  <script type="text/javascript">
-    Fluid.utils.loadComments('#waline', function() {
-      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
-      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
-        var options = Object.assign(
-          {"serverURL":"waline-test-liart.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
-          {
-            el: '#waline',
-            path: window.location.pathname
-          }
-        )
-        Waline.init(options);
-        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
-          var imgSelector = '#waline .vcontent img:not(.vemoji)';
-          Fluid.plugins.imageCaption(imgSelector);
-          Fluid.plugins.fancyBox(imgSelector);
-        })
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Mzy</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://example.com/2023/10/26/%E4%BD%BF%E7%94%A8Qt%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E4%B8%8A%E7%9A%84%E9%9C%80%E6%B1%82/">http://example.com/2023/10/26/%E4%BD%BF%E7%94%A8Qt%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E4%B8%8A%E7%9A%84%E9%9C%80%E6%B1%82/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Mzy</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
       });
-    });
-  </script>
-  <noscript>Please enable JavaScript to view the comments</noscript>
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
 
 
-    </article>
-  
 
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/c/">
+                                    <span class="chip bg-color">c++</span>
+                                </a>
+                            
+                                <a href="/tags/Qt/">
+                                    <span class="chip bg-color">Qt</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
 
-          </article>
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
     </div>
 
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-  <aside class="sidebar" style="margin-left: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2023/10/28/%E5%9F%BA%E4%BA%8Eepoll%E7%9A%84web%E6%9C%8D%E5%8A%A1%E5%99%A8-C%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="基于epoll的web服务器(C语言版本)">
+                        
+                        <span class="card-title">基于epoll的web服务器(C语言版本)</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            记录学习使用epoll实现web服务器
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-10-28
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%AC%94%E8%AE%B0/" class="post-category">
+                                    笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/c/">
+                        <span class="chip bg-color">c</span>
+                    </a>
+                    
+                    <a href="/tags/linux/">
+                        <span class="chip bg-color">linux</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">
+                        <span class="chip bg-color">网络编程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/10/20/%E8%A7%A3%E6%9E%90Http%E5%8D%8F%E8%AE%AE/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="解析Http协议">
+                        
+                        <span class="card-title">解析Http协议</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            在写webSever时了解了一点关于http协议的内容，更方便后面的学习
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-10-20
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%AC%94%E8%AE%B0/" class="post-category">
+                                    笔记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/http/">
+                        <span class="chip bg-color">http</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
 </div>
 
 
 
-  </aside>
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
 
 
     </div>
-  </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
 </div>
 
 
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
 
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
 
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
 
-  
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
 
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-
-
-
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
 
     
 
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
     
-      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
 
     
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2023</span>
+            
+            <a href="/about" target="_blank">Mzy</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
         </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
+        <div id="searchResult"></div>
     </div>
-  </div>
 </div>
 
-    
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
 
-    
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
-  
-  
-  
-  
-</div>
-
-  </footer>
-
-  <!-- Scripts -->
-  
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
-    })
-  </script>
-
-
-<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
-<script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
-
-
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var subtitle = document.getElementById('subtitle');
-      if (!subtitle || !typing) {
-        return;
-      }
-      var text = subtitle.getAttribute('data-typed-text');
-      
-        typing(text);
-      
-    })(window, document);
-  </script>
-
-
-
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
-
-
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
-    var toc = jQuery('#toc');
-    if (toc.length === 0 || !window.tocbot) { return; }
-    var boardCtn = jQuery('#board-ctn');
-    var boardTop = boardCtn.offset().top;
-
-    window.tocbot.init(Object.assign({
-      tocSelector     : '#toc-body',
-      contentSelector : '.markdown-body',
-      linkClass       : 'tocbot-link',
-      activeLinkClass : 'tocbot-active-link',
-      listClass       : 'tocbot-list',
-      isCollapsedClass: 'tocbot-is-collapsed',
-      collapsibleClass: 'tocbot-is-collapsible',
-      scrollSmooth    : true,
-      includeTitleTags: true,
-      headingsOffset  : -boardTop,
-    }, CONFIG.toc));
-    if (toc.find('.toc-list-item').length > 0) {
-      toc.css('visibility', 'visible');
-    }
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('tocbot' in window) {
-        tocbot.refresh();
-        var toc = jQuery('#toc');
-        if (toc.length === 0 || !tocbot) {
-          return;
-        }
-        if (toc.find('.toc-list-item').length > 0) {
-          toc.css('visibility', 'visible');
-        }
-      }
-    });
-  });
-</script>
-
-
-  <script  src="https://lib.baomitu.com/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
-
-  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
-
-  <script>Fluid.plugins.codeWidget();</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
-    window.anchors.options = {
-      placement: CONFIG.anchorjs.placement,
-      visible  : CONFIG.anchorjs.visible
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
     };
-    if (CONFIG.anchorjs.icon) {
-      window.anchors.options.icon = CONFIG.anchorjs.icon;
-    }
-    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-    var res = [];
-    for (var item of el) {
-      res.push('.markdown-body > ' + item.trim());
-    }
-    if (CONFIG.anchorjs.placement === 'left') {
-      window.anchors.options.class = 'anchorjs-link-left';
-    }
-    window.anchors.add(res.join(', '));
 
-    Fluid.events.registerRefreshCallback(function() {
-      if ('anchors' in window) {
-        anchors.removeAll();
-        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-        var res = [];
-        for (var item of el) {
-          res.push('.markdown-body > ' + item.trim());
-        }
-        if (CONFIG.anchorjs.placement === 'left') {
-          anchors.options.class = 'anchorjs-link-left';
-        }
-        anchors.add(res.join(', '));
-      }
-    });
-  });
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
 </script>
 
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
 
-  
 <script>
-  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
-    Fluid.plugins.fancyBox();
-  });
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
 </script>
 
-
-  <script>Fluid.plugins.imageCaption();</script>
-
-  <script  src="/js/local-search.js" ></script>
-
-  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
-
-
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
 
 
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
 
-<!-- 主题的启动项，将它保持在最底部 -->
-<!-- the boot of the theme, keep it at the bottom -->
-<script  src="/js/boot.js" ></script>
+    
 
+    
+    
+    
 
-  
+    <!-- 雪花特效 -->
+    
 
-  <noscript>
-    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
-  </noscript>
+    <!-- 鼠标星星特效 -->
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
 </body>
+
 </html>
