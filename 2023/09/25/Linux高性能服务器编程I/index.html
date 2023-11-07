@@ -57,9 +57,7 @@ Linux高性能服务器编程笔记主机字节序和网络字节序大端字节
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-hopscotch.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
-<script src="/js/prism-line-numbers.min.js"></script></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -414,10 +412,25 @@ Linux高性能服务器编程笔记主机字节序和网络字节序大端字节
                 
 
                 
-
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.8k
+                </div>
                 
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
             </div>
         </div>
         <hr class="clearfix">
@@ -443,49 +456,49 @@ Linux高性能服务器编程笔记主机字节序和网络字节序大端字节
 <p>地址族类型通常与协议族类型相对应</p>
 <p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230925112244293.png" alt="image-20230925112244293"></p>
 <p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230925141532173.png" alt="image-20230925141532173"></p>
-<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;arpa/inet.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<pre><code class="c">#include &lt;arpa/inet.h&gt;
+#include &lt;stdio.h&gt;
 
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc <span class="token punctuation">,</span><span class="token keyword">char</span> <span class="token operator">*</span>argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span><span class="token number">192</span><span class="token punctuation">,</span><span class="token number">168</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> num <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span><span class="token punctuation">)</span>buf<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> sum <span class="token operator">=</span> <span class="token function">htonl</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token operator">&amp;</span>sum<span class="token punctuation">;</span>
-
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d %d %d %d\n"</span><span class="token punctuation">,</span><span class="token operator">*</span>p<span class="token punctuation">,</span><span class="token operator">*</span><span class="token punctuation">(</span>p<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token operator">*</span><span class="token punctuation">(</span>p<span class="token operator">+</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token operator">*</span><span class="token punctuation">(</span>p<span class="token operator">+</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-c++"><code class="language-c++">#include <iostream>
-#include <arpa/inet.h>
-
-int main(int argc, char *argv[]) &#123;
-       //unsigned char buf[4] = &#123;192, 168, 1, 2&#125;;
-    char buf[4] = &#123;static_cast<char>(192), static_cast<char>(168), static_cast<char>(1), static_cast<char>(2)&#125;;
-    
+int main(int argc ,char *argv[])&#123;
+    char buf[4] = &#123;192,168,1,2&#125;;
     int num = *(int *)buf;
     int sum = htonl(num);
-    unsigned char *p = reinterpret_cast<unsigned char *>(&sum);
+    unsigned char *p = &amp;sum;
 
-    std::cout << static_cast<int>(*p) << " " << static_cast<int>(*(p + 1)) << " " << static_cast<int>(*(p + 2)) << " " << static_cast<int>(*(p + 3)) << std::endl;
+    printf(&quot;%d %d %d %d\n&quot;,*p,*(p+1),*(p+2),*(p+3));
 
     return 0;
 &#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
+<pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;arpa/inet.h&gt;
+
+int main(int argc, char *argv[]) &#123;
+       //unsigned char buf[4] = &#123;192, 168, 1, 2&#125;;
+    char buf[4] = &#123;static_cast&lt;char&gt;(192), static_cast&lt;char&gt;(168), static_cast&lt;char&gt;(1), static_cast&lt;char&gt;(2)&#125;;
+    
+    int num = *(int *)buf;
+    int sum = htonl(num);
+    unsigned char *p = reinterpret_cast&lt;unsigned char *&gt;(&amp;sum);
+
+    std::cout &lt;&lt; static_cast&lt;int&gt;(*p) &lt;&lt; &quot; &quot; &lt;&lt; static_cast&lt;int&gt;(*(p + 1)) &lt;&lt; &quot; &quot; &lt;&lt; static_cast&lt;int&gt;(*(p + 2)) &lt;&lt; &quot; &quot; &lt;&lt; static_cast&lt;int&gt;(*(p + 3)) &lt;&lt; std::endl;
+
+    return 0;
+&#125;
+</code></pre>
 <pre><code>2 1 168 192
 </code></pre>
 <p>c语言代码转c++时，在初始化<code>buf</code>数组时，对于大于一个字节的整数，需要将其强制转换为<code>char</code>类型，使用<code>static_cast&lt;char&gt;(value)</code>进行转换即可。这样做可以避免<code>narrowing conversion</code>错误。</p>
 <p><strong>网络里面的数据类型定义都应该用无符号，更加保险</strong></p>
-<h3 id="点分十进制转换"><a href="#点分十进制转换" class="headerlink" title="点分十进制转换"></a>点分十进制转换</h3><pre class="line-numbers language-txt"><code class="language-txt">// src为 点分十进制字符串的IPv4地址 或 十六进制字符串表示的IPv6地址 存入dst的内存中 af指定地址族
+<h3 id="点分十进制转换"><a href="#点分十进制转换" class="headerlink" title="点分十进制转换"></a>点分十进制转换</h3><pre><code class="txt">// src为 点分十进制字符串的IPv4地址 或 十六进制字符串表示的IPv6地址 存入dst的内存中 af指定地址族
 // 可以为 AF_INET AF_INET6 成功返回1 失败返回-1
 int inet_pton(int af, const char * src, void* dst);
 // 协议名, 需要转换的ip, 存储地址, 长度(有两个常量 INET_ADDRSTRLEN, INET6_ADDRSTRLEN)
 const char* inet_ntop(int af, const void*  src, char* dst, socklen_t cnt);
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-txt"><code class="language-txt">// 创建 命名 监听 socket
-# include <sys/types.h>
-# include <sys/socket.h>
+</code></pre>
+<pre><code class="txt">// 创建 命名 监听 socket
+# include &lt;sys/types.h&gt;
+# include &lt;sys/socket.h&gt;
 // domain指定使用那个协议族 PF_INET PF_INET6
 // type指定服务类型 SOCK_STREAM (TCP协议) SOCK_DGRAM(UDP协议)
 // protocol设置为默认的0
@@ -502,18 +515,18 @@ int bind(int socket, const struct sockaddr* my_addr, socklen_t addrlen);
 int listen(int socket, int backlog);
 // 接受连接 失败返回-1 成功时返回socket
 int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen)
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <p>在Linux内核2.2之后，<code>socket backlog</code>参数的形为改变了，<strong>现在它指等待<code>accept</code>的<code>完全建立</code>的套接字的队列长度</strong>，而不是不完全连接请求的数量。 <strong>不完全连接</strong>的长度可以使用<code>/proc/sys/net/ipv4/tcp_max_syn_backlog</code>设置。这意味着当前Linux版本使用上面第二种说法，有两个队列：具有由系统范围设置指定的大小的<code>SYN队列</code> 和 应用程序（也就是backlog参数）指定的<code>accept</code>队列。</p>
-<pre class="line-numbers language-shell"><code class="language-shell">cat /proc/sys/net/ipv4/tcp_max_syn_backlog
+<pre><code class="shell">cat /proc/sys/net/ipv4/tcp_max_syn_backlog
 512
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</code></pre>
 <h3 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a><strong>TCP协议</strong></h3><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230926154633974.png" alt="image-20230926154633974"></p>
 <p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230927104224676.png" alt="TCP协议流程"></p>
 <h4 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h4><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/20170305084830550" alt="这里写图片描述"></p>
-<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><pre class="line-numbers language-c++"><code class="language-c++">#include <iostream>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
+<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><pre><code class="c++">#include &lt;iostream&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;unistd.h&gt;
 
 using namespace std;
 
@@ -525,11 +538,11 @@ int main()&#123;
     struct  sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(8080);
-    inet_pton(AF_INET,"172.18.192.1",&addr.sin_addr.s_addr);
+    inet_pton(AF_INET,&quot;172.18.192.1&quot;,&amp;addr.sin_addr.s_addr);
     
-    connect(socket_fd,(struct sockaddr*)&addr,sizeof(addr));
+    connect(socket_fd,(struct sockaddr*)&amp;addr,sizeof(addr));
     // 3. 读写数据
-    char buf[1024] = "";
+    char buf[1024] = &quot;&quot;;
     while(1)&#123;
         int n = read(STDIN_FILENO,buf,sizeof(buf));
         write(socket_fd,buf,n);     //发送数据给服务器
@@ -540,13 +553,13 @@ int main()&#123;
     close(socket_fd);
     return 0;
 &#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h4><pre class="line-numbers language-c++"><code class="language-c++">#include<iostream>
-#include<sys/socket.h>
-#include<unistd.h>
-#include<arpa/inet.h>
-#include<stdio.h>
-#include<string.h>
+</code></pre>
+<h4 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h4><pre><code class="c++">#include&lt;iostream&gt;
+#include&lt;sys/socket.h&gt;
+#include&lt;unistd.h&gt;
+#include&lt;arpa/inet.h&gt;
+#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
 
 using namespace std;
 
@@ -555,16 +568,16 @@ int main()&#123;
     // 1. 创建套接字
     int socket_fd;
     socket_fd = socket(AF_INET,SOCK_STREAM,0);
-    cout<<socket_fd<<endl;
+    cout&lt;&lt;socket_fd&lt;&lt;endl;
     // 2. 绑定 bind
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(8010);
     addr.sin_addr.s_addr = 0;   //如果是0，绑定的是通配地址
-   // inet_pton(AF_INET,"192.168.0.102",&addr.sin_addr.s_addr);
-    int ret = bind(socket_fd,(struct sockaddr *)&addr,sizeof(addr));
-    if(ret < 0)&#123;
-        perror("");
+   // inet_pton(AF_INET,&quot;192.168.0.102&quot;,&amp;addr.sin_addr.s_addr);
+    int ret = bind(socket_fd,(struct sockaddr *)&amp;addr,sizeof(addr));
+    if(ret &lt; 0)&#123;
+        perror(&quot;&quot;);
         exit(0);
     &#125;
     // 3. 监听 listen
@@ -573,17 +586,17 @@ int main()&#123;
     // 4. 提取 accept
     struct sockaddr_in cliaddr; //已建立连接
     socklen_t len = sizeof(cliaddr);
-    int Con_fd = accept(socket_fd,(struct sockaddr *)&cliaddr,&len);  //已连接套接字
-    char ip[16]="";
-    printf("new client ip=%s port=%d\n",inet_ntop(AF_INET, &cliaddr.sin_addr.s_addr,ip,16),ntohs(cliaddr.sin_port));
+    int Con_fd = accept(socket_fd,(struct sockaddr *)&amp;cliaddr,&amp;len);  //已连接套接字
+    char ip[16]=&quot;&quot;;
+    printf(&quot;new client ip=%s port=%d\n&quot;,inet_ntop(AF_INET, &amp;cliaddr.sin_addr.s_addr,ip,16),ntohs(cliaddr.sin_port));
     // 5. 读写
-    char buf[1024] = "";
+    char buf[1024] = &quot;&quot;;
     while(1)&#123;
         bzero(buf,sizeof(buf));     //清空buff
         int n = read(STDIN_FILENO,buf,sizeof(buf));
         write(Con_fd,buf,n);
         n = read(Con_fd,buf,sizeof(buf));
-        printf("%s\n",buf);
+        printf(&quot;%s\n&quot;,buf);
         
     &#125;
     // 6. 关闭
@@ -591,176 +604,176 @@ int main()&#123;
     close(Con_fd);
     return 0;
 &#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <p>可以使用命令<code> nc 127.0.0.1 8008</code>连接服务器</p>
-<pre class="line-numbers language-txt"><code class="language-txt">new client ip=127.0.0.1 port=56918
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h4 id="出错处理封装函数"><a href="#出错处理封装函数" class="headerlink" title="出错处理封装函数"></a>出错处理封装函数</h4><h5 id="warp-c"><a href="#warp-c" class="headerlink" title="warp.c"></a>warp.c</h5><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;errno.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;sys/socket.h></span></span>
-<span class="token keyword">void</span> <span class="token function">perr_exit</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>s<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token function">perror</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">Accept</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">struct</span> sockaddr <span class="token operator">*</span>sa<span class="token punctuation">,</span> socklen_t <span class="token operator">*</span>salenptr<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">;</span>
-    again<span class="token punctuation">:</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">accept</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> sa<span class="token punctuation">,</span> salenptr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>errno <span class="token operator">==</span> ECONNABORTED<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">(</span>errno <span class="token operator">==</span> EINTR<span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token keyword">goto</span> again<span class="token punctuation">;</span>
-        <span class="token keyword">else</span>
-            <span class="token function">perr_exit</span><span class="token punctuation">(</span><span class="token string">"accept error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">Bind</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> sockaddr <span class="token operator">*</span>sa<span class="token punctuation">,</span> socklen_t salen<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">bind</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> sa<span class="token punctuation">,</span> salen<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
-        <span class="token function">perr_exit</span><span class="token punctuation">(</span><span class="token string">"bind error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">Connect</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> sockaddr <span class="token operator">*</span>sa<span class="token punctuation">,</span> socklen_t salen<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">connect</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> sa<span class="token punctuation">,</span> salen<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
-        <span class="token function">perr_exit</span><span class="token punctuation">(</span><span class="token string">"connect error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">Listen</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">int</span> backlog<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">listen</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> backlog<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
-        <span class="token function">perr_exit</span><span class="token punctuation">(</span><span class="token string">"listen error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">Socket</span><span class="token punctuation">(</span><span class="token keyword">int</span> family<span class="token punctuation">,</span> <span class="token keyword">int</span> type<span class="token punctuation">,</span> <span class="token keyword">int</span> protocol<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">socket</span><span class="token punctuation">(</span>family<span class="token punctuation">,</span> type<span class="token punctuation">,</span> protocol<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
-        <span class="token function">perr_exit</span><span class="token punctuation">(</span><span class="token string">"socket error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-ssize_t <span class="token function">Read</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>ptr<span class="token punctuation">,</span> size_t nbytes<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    ssize_t n<span class="token punctuation">;</span>
-again<span class="token punctuation">:</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> ptr<span class="token punctuation">,</span> nbytes<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>errno <span class="token operator">==</span> EINTR<span class="token punctuation">)</span>
-            <span class="token keyword">goto</span> again<span class="token punctuation">;</span>
-        <span class="token keyword">else</span>
-            <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-ssize_t <span class="token function">Write</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>ptr<span class="token punctuation">,</span> size_t nbytes<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    ssize_t n<span class="token punctuation">;</span>
-again<span class="token punctuation">:</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">write</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> ptr<span class="token punctuation">,</span> nbytes<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>errno <span class="token operator">==</span> EINTR<span class="token punctuation">)</span>
-            <span class="token keyword">goto</span> again<span class="token punctuation">;</span>
-        <span class="token keyword">else</span>
-            <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">Close</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> n<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token function">close</span><span class="token punctuation">(</span>fd<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
-        <span class="token function">perr_exit</span><span class="token punctuation">(</span><span class="token string">"close error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-ssize_t <span class="token function">Readn</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>vptr<span class="token punctuation">,</span> size_t n<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    size_t nleft<span class="token punctuation">;</span>
-    ssize_t nread<span class="token punctuation">;</span>
-    <span class="token keyword">char</span> <span class="token operator">*</span>ptr<span class="token punctuation">;</span>
+<pre><code class="txt">new client ip=127.0.0.1 port=56918
+</code></pre>
+<h4 id="出错处理封装函数"><a href="#出错处理封装函数" class="headerlink" title="出错处理封装函数"></a>出错处理封装函数</h4><h5 id="warp-c"><a href="#warp-c" class="headerlink" title="warp.c"></a>warp.c</h5><pre><code class="c">#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;sys/socket.h&gt;
+void perr_exit(const char *s)
+&#123;
+    perror(s);
+    exit(1);
+&#125;
+int Accept(int fd, struct sockaddr *sa, socklen_t *salenptr)
+&#123;
+    int n;
+    again:
+    if ( (n = accept(fd, sa, salenptr)) &lt; 0) &#123;
+        if ((errno == ECONNABORTED) || (errno == EINTR))
+            goto again;
+        else
+            perr_exit(&quot;accept error&quot;);
+    &#125;
+    return n;
+&#125;
+int Bind(int fd, const struct sockaddr *sa, socklen_t salen)
+&#123;
+    int n;
+    if ((n = bind(fd, sa, salen)) &lt; 0)
+        perr_exit(&quot;bind error&quot;);
+    return n;
+&#125;
+int Connect(int fd, const struct sockaddr *sa, socklen_t salen)
+&#123;
+    int n;
+    if ((n = connect(fd, sa, salen)) &lt; 0)
+        perr_exit(&quot;connect error&quot;);
+    return n;
+&#125;
+int Listen(int fd, int backlog)
+&#123;
+    int n;
+    if ((n = listen(fd, backlog)) &lt; 0)
+        perr_exit(&quot;listen error&quot;);
+    return n;
+&#125;
+int Socket(int family, int type, int protocol)
+&#123;
+    int n;
+    if ( (n = socket(family, type, protocol)) &lt; 0)
+        perr_exit(&quot;socket error&quot;);
+    return n;
+&#125;
+ssize_t Read(int fd, void *ptr, size_t nbytes)
+&#123;
+    ssize_t n;
+again:
+    if ( (n = read(fd, ptr, nbytes)) == -1) &#123;
+        if (errno == EINTR)
+            goto again;
+        else
+            return -1;
+    &#125;
+    return n;
+&#125;
+ssize_t Write(int fd, const void *ptr, size_t nbytes)
+&#123;
+    ssize_t n;
+again:
+    if ( (n = write(fd, ptr, nbytes)) == -1) &#123;
+        if (errno == EINTR)
+            goto again;
+        else
+            return -1;
+    &#125;
+    return n;
+&#125;
+int Close(int fd)
+&#123;
+    int n;
+    if ((n = close(fd)) == -1)
+        perr_exit(&quot;close error&quot;);
+    return n;
+&#125;
+ssize_t Readn(int fd, void *vptr, size_t n)
+&#123;
+    size_t nleft;
+    ssize_t nread;
+    char *ptr;
 
-    ptr <span class="token operator">=</span> vptr<span class="token punctuation">;</span>
-    nleft <span class="token operator">=</span> n<span class="token punctuation">;</span>
+    ptr = vptr;
+    nleft = n;
 
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>nleft <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span>nread <span class="token operator">=</span> <span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> ptr<span class="token punctuation">,</span> nleft<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>errno <span class="token operator">==</span> EINTR<span class="token punctuation">)</span>
-                nread <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-            <span class="token keyword">else</span>
-                <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>nread <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-        nleft <span class="token operator">-</span><span class="token operator">=</span> nread<span class="token punctuation">;</span>
-        ptr <span class="token operator">+</span><span class="token operator">=</span> nread<span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n <span class="token operator">-</span> nleft<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    while (nleft &gt; 0) &#123;
+        if ( (nread = read(fd, ptr, nleft)) &lt; 0) &#123;
+            if (errno == EINTR)
+                nread = 0;
+            else
+                return -1;
+        &#125; else if (nread == 0)
+            break;
+        nleft -= nread;
+        ptr += nread;
+    &#125;
+    return n - nleft;
+&#125;
 
-ssize_t <span class="token function">Writen</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>vptr<span class="token punctuation">,</span> size_t n<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    size_t nleft<span class="token punctuation">;</span>
-    ssize_t nwritten<span class="token punctuation">;</span>
-    <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>ptr<span class="token punctuation">;</span>
+ssize_t Writen(int fd, const void *vptr, size_t n)
+&#123;
+    size_t nleft;
+    ssize_t nwritten;
+    const char *ptr;
 
-    ptr <span class="token operator">=</span> vptr<span class="token punctuation">;</span>
-    nleft <span class="token operator">=</span> n<span class="token punctuation">;</span>
+    ptr = vptr;
+    nleft = n;
 
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>nleft <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span>nwritten <span class="token operator">=</span> <span class="token function">write</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> ptr<span class="token punctuation">,</span> nleft<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>nwritten <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> errno <span class="token operator">==</span> EINTR<span class="token punctuation">)</span>
-                nwritten <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-            <span class="token keyword">else</span>
-                <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-        nleft <span class="token operator">-</span><span class="token operator">=</span> nwritten<span class="token punctuation">;</span>
-        ptr <span class="token operator">+</span><span class="token operator">=</span> nwritten<span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    while (nleft &gt; 0) &#123;
+        if ( (nwritten = write(fd, ptr, nleft)) &lt;= 0) &#123;
+            if (nwritten &lt; 0 &amp;&amp; errno == EINTR)
+                nwritten = 0;
+            else
+                return -1;
+        &#125;
+        nleft -= nwritten;
+        ptr += nwritten;
+    &#125;
+    return n;
+&#125;
 
-<span class="token keyword">static</span> ssize_t <span class="token function">my_read</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>ptr<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">static</span> <span class="token keyword">int</span> read_cnt<span class="token punctuation">;</span>
-    <span class="token keyword">static</span> <span class="token keyword">char</span> <span class="token operator">*</span>read_ptr<span class="token punctuation">;</span>
-    <span class="token keyword">static</span> <span class="token keyword">char</span> read_buf<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+static ssize_t my_read(int fd, char *ptr)
+&#123;
+    static int read_cnt;
+    static char *read_ptr;
+    static char read_buf[100];
 
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>read_cnt <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-again<span class="token punctuation">:</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>read_cnt <span class="token operator">=</span> <span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> read_buf<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>read_buf<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>errno <span class="token operator">==</span> EINTR<span class="token punctuation">)</span>
-                <span class="token keyword">goto</span> again<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>	
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>read_cnt <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
-            <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-        read_ptr <span class="token operator">=</span> read_buf<span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    read_cnt<span class="token operator">--</span><span class="token punctuation">;</span>
-    <span class="token operator">*</span>ptr <span class="token operator">=</span> <span class="token operator">*</span>read_ptr<span class="token operator">++</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    if (read_cnt &lt;= 0) &#123;
+again:
+        if ((read_cnt = read(fd, read_buf, sizeof(read_buf))) &lt; 0) &#123;
+            if (errno == EINTR)
+                goto again;
+            return -1;	
+        &#125; else if (read_cnt == 0)
+            return 0;
+        read_ptr = read_buf;
+    &#125;
+    read_cnt--;
+    *ptr = *read_ptr++;
+    return 1;
+&#125;
 
-ssize_t <span class="token function">Readline</span><span class="token punctuation">(</span><span class="token keyword">int</span> fd<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>vptr<span class="token punctuation">,</span> size_t maxlen<span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    ssize_t n<span class="token punctuation">,</span> rc<span class="token punctuation">;</span>
-    <span class="token keyword">char</span> c<span class="token punctuation">,</span> <span class="token operator">*</span>ptr<span class="token punctuation">;</span>
-    ptr <span class="token operator">=</span> vptr<span class="token punctuation">;</span>
+ssize_t Readline(int fd, void *vptr, size_t maxlen)
+&#123;
+    ssize_t n, rc;
+    char c, *ptr;
+    ptr = vptr;
 
-    <span class="token keyword">for</span> <span class="token punctuation">(</span>n <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> n <span class="token operator">&lt;</span> maxlen<span class="token punctuation">;</span> n<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token punctuation">(</span>rc <span class="token operator">=</span> <span class="token function">my_read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token operator">&amp;</span>c<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token operator">*</span>ptr<span class="token operator">++</span> <span class="token operator">=</span> c<span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>c <span class="token operator">==</span> <span class="token string">'\n'</span><span class="token punctuation">)</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>rc <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token operator">*</span>ptr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span>
-            <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token operator">*</span>ptr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    for (n = 1; n &lt; maxlen; n++) &#123;
+        if ( (rc = my_read(fd, &amp;c)) == 1) &#123;
+            *ptr++ = c;
+            if (c == &#39;\n&#39;)
+                break;
+        &#125; else if (rc == 0) &#123;
+            *ptr = 0;
+            return n - 1;
+        &#125; else
+            return -1;
+    &#125;
+    *ptr = 0;
+    return n;
+&#125;
+</code></pre>
 <h5 id="warp-h"><a href="#warp-h" class="headerlink" title="warp.h"></a>warp.h</h5><pre><code>#ifndef __WRAP_H_
 #define __WRAP_H_
 void perr_exit(const char *s);
@@ -918,82 +931,82 @@ int main(int argc, char *argv[])
     return 0;
 &#125;
 </code></pre>
-<pre class="line-numbers language-h"><code class="language-h">new client ip=127.0.0.1 port=53766
+<pre><code class="h">new client ip=127.0.0.1 port=53766
 w
 
 new client ip=127.0.0.1 port=53768
 q
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <p><code>free_process</code> 函数是用于处理子进程的结束的信号处理函数。当子进程结束时，父进程会收到 <code>SIGCHLD</code> 信号，该信号会触发 <code>free_process</code> 函数。这个函数使用 <code>waitpid</code> 函数来回收子进程，避免它们成为僵尸进程。</p>
-<h4 id="多线程服务端"><a href="#多线程服务端" class="headerlink" title="多线程服务端"></a>多线程服务端</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;pthread.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"wrap.h"</span></span>
+<h4 id="多线程服务端"><a href="#多线程服务端" class="headerlink" title="多线程服务端"></a>多线程服务端</h4><pre><code class="c">#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &quot;wrap.h&quot;
 
-<span class="token keyword">typedef</span> <span class="token keyword">struct</span> c_info
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> cfd<span class="token punctuation">;</span>
-    <span class="token keyword">struct</span> sockaddr_in cliaddr<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>CINFO<span class="token punctuation">;</span>
+typedef struct c_info
+&#123;
+    int cfd;
+    struct sockaddr_in cliaddr;
+&#125;CINFO;
 
-<span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">client_fun</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+void* client_fun(void *arg);
+int main(int argc, char *argv[])&#123;
 
-    <span class="token keyword">if</span><span class="token punctuation">(</span>argc <span class="token operator">&lt;</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"argc &lt; 2  \n ./test 8000\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    pthread_attr_t attr<span class="token punctuation">;</span>
-    <span class="token function">pthread_attr_init</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>attr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">pthread_attr_setdetachstate</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>attr<span class="token punctuation">,</span>PTHREAD_CREATE_DETACHED<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//设置线程的分离状态为分离态,线程在退出后会自动释放其资源，而不需要其他线程等待它结束。</span>
-    <span class="token keyword">short</span> port <span class="token operator">=</span> <span class="token function">atoi</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">int</span> lfd <span class="token operator">=</span> <span class="token function">tcp4bind</span><span class="token punctuation">(</span>port<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//创建套接字，绑定</span>
-    <span class="token function">Listen</span><span class="token punctuation">(</span>lfd<span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    if(argc &lt; 2)&#123;
+        printf(&quot;argc &lt; 2  \n ./test 8000\n&quot;);
+        return 0;
+    &#125;
+    pthread_attr_t attr;
+    pthread_attr_init(&amp;attr);
+    pthread_attr_setdetachstate(&amp;attr,PTHREAD_CREATE_DETACHED); //设置线程的分离状态为分离态,线程在退出后会自动释放其资源，而不需要其他线程等待它结束。
+    short port = atoi(argv[1]);
+    int lfd = tcp4bind(port,NULL);  //创建套接字，绑定
+    Listen(lfd,5);
 
-    <span class="token keyword">struct</span> sockaddr_in cliaddr<span class="token punctuation">;</span>
-    socklen_t len <span class="token operator">=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>cliaddr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    CINFO <span class="token operator">*</span>info<span class="token punctuation">;</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">int</span> cfd <span class="token operator">=</span> <span class="token function">Accept</span><span class="token punctuation">(</span>lfd<span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token keyword">struct</span> sockaddr <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>cliaddr<span class="token punctuation">,</span><span class="token operator">&amp;</span>len<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">char</span> ip<span class="token punctuation">[</span><span class="token number">16</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">""</span><span class="token punctuation">;</span>
-       <span class="token comment" spellcheck="true">// printf("new client ip=%s port=%d\n",inet_ntop(AF_INET,&amp;cliaddr.sin_addr.s_addr,ip,16),ntohs(cliaddr.sin_port));</span>
+    struct sockaddr_in cliaddr;
+    socklen_t len = sizeof(cliaddr);
+    CINFO *info;
+    while(1)&#123;
+        int cfd = Accept(lfd,(struct sockaddr *)&amp;cliaddr,&amp;len);
+        char ip[16]=&quot;&quot;;
+       // printf(&quot;new client ip=%s port=%d\n&quot;,inet_ntop(AF_INET,&amp;cliaddr.sin_addr.s_addr,ip,16),ntohs(cliaddr.sin_port));
 
-        pthread_t pthid<span class="token punctuation">;</span>
-        info <span class="token operator">=</span> <span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>CINFO<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        info<span class="token operator">-></span>cfd <span class="token operator">=</span> cfd<span class="token punctuation">;</span>
-        info<span class="token operator">-></span>cliaddr <span class="token operator">=</span> cliaddr<span class="token punctuation">;</span>
-       <span class="token comment" spellcheck="true">// pthread_create(&amp;pthid,NULL,client_fun,info);</span>
-         <span class="token function">pthread_create</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pthid<span class="token punctuation">,</span><span class="token operator">&amp;</span>attr<span class="token punctuation">,</span>client_fun<span class="token punctuation">,</span>info<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        pthread_t pthid;
+        info = malloc(sizeof(CINFO));
+        info-&gt;cfd = cfd;
+        info-&gt;cliaddr = cliaddr;
+       // pthread_create(&amp;pthid,NULL,client_fun,info);
+         pthread_create(&amp;pthid,&amp;attr,client_fun,info);
+    &#125;
 
 
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    return 0;
+&#125;
 
-<span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">client_fun</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>arg<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    CINFO <span class="token operator">*</span>info <span class="token operator">=</span> <span class="token punctuation">(</span>CINFO <span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
-    <span class="token keyword">char</span> ip<span class="token punctuation">[</span><span class="token number">16</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"new client ip=%s port=%d\n"</span><span class="token punctuation">,</span><span class="token function">inet_ntop</span><span class="token punctuation">(</span>AF_INET<span class="token punctuation">,</span><span class="token operator">&amp;</span>info<span class="token operator">-></span>cliaddr<span class="token punctuation">.</span>sin_addr<span class="token punctuation">.</span>s_addr<span class="token punctuation">,</span>ip<span class="token punctuation">,</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">ntohs</span><span class="token punctuation">(</span>info<span class="token operator">-></span>cliaddr<span class="token punctuation">.</span>sin_port<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">char</span> buf<span class="token punctuation">[</span><span class="token number">1024</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">""</span><span class="token punctuation">;</span>
-        <span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token function">read</span><span class="token punctuation">(</span>info<span class="token operator">-></span>cfd<span class="token punctuation">,</span>buf<span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>n <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token function">perror</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>n <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"client close\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token keyword">else</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%s\n"</span><span class="token punctuation">,</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token function">write</span><span class="token punctuation">(</span>info<span class="token operator">-></span>cfd<span class="token punctuation">,</span>buf<span class="token punctuation">,</span>n<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token function">close</span><span class="token punctuation">(</span>info<span class="token operator">-></span>cfd<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">free</span><span class="token punctuation">(</span>info<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="端口复用"><a href="#端口复用" class="headerlink" title="端口复用"></a>端口复用</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> opt <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
-<span class="token function">setsockopt</span><span class="token punctuation">(</span>listenfd<span class="token punctuation">,</span> SOL_SOCKET<span class="token punctuation">,</span> SO_REUSEADDR<span class="token punctuation">,</span> <span class="token operator">&amp;</span>opt<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>opt<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+void* client_fun(void *arg)&#123;
+    CINFO *info = (CINFO *)arg;
+    char ip[16];
+    printf(&quot;new client ip=%s port=%d\n&quot;,inet_ntop(AF_INET,&amp;info-&gt;cliaddr.sin_addr.s_addr,ip,16),ntohs(info-&gt;cliaddr.sin_port));
+    while(1)&#123;
+        char buf[1024]=&quot;&quot;;
+        int n = read(info-&gt;cfd,buf,sizeof(buf));
+        if(n &lt; 0)&#123;
+            perror(&quot;&quot;);
+            break;
+        &#125;else if(n == 0)&#123;
+            printf(&quot;client close\n&quot;);
+            break;
+        &#125;else&#123;
+            printf(&quot;%s\n&quot;,buf);
+            write(info-&gt;cfd,buf,n);
+        &#125;
+    &#125;
+    close(info-&gt;cfd);
+    free(info);
+&#125;
+</code></pre>
+<h4 id="端口复用"><a href="#端口复用" class="headerlink" title="端口复用"></a>端口复用</h4><pre><code class="c">int opt = 1;
+setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &amp;opt, sizeof(opt));
+</code></pre>
 
                 
             </div>
@@ -1139,6 +1152,217 @@ q
 
     
 
+    
+        <style>
+    .waline-card {
+        margin: 1.5rem auto;
+    }
+    .waline-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #waline p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+    #waline blockquote p {
+        text-indent: 0.2rem;
+    }
+    #waline a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    #waline img {
+        max-width: 100%;
+        cursor: pointer;
+    }
+    #waline ol li {
+        list-style-type: decimal;
+    }
+    #waline ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+    #waline ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+    #waline ul li {
+        list-style-type: disc;
+    }
+    #waline ul ul li {
+        list-style-type: circle;
+    }
+    #waline table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+    #waline table, th, td {
+        border: 0;
+    }
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+    #waline table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+    #waline table td {
+        min-width: 80px;
+    }
+    #waline h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+    #waline h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+    #waline h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+    #waline h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+    #waline h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+    #waline h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+    #waline p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+    #waline hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+    #waline blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+    #waline pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+    #waline code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+    #waline pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+    #waline pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+    #waline code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+    #waline [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+    #waline b,
+    strong {
+        font-weight: bold;
+    }
+    #waline dfn {
+        font-style: italic;
+    }
+    #waline small {
+        font-size: 85%;
+    }
+    #waline cite {
+        font-style: normal;
+    }
+    #waline mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+    #waline table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+    #waline table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+    #waline table td {
+        min-width: 80px;
+    }
+    #waline [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+  </style>
+  
+  <div class="card waline-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="waline" class="card-content" style="display: grid">
+    </div>
+  </div>
+  
+
+  <!-- <script src="//cdn.jsdelivr.net/npm/@waline/client"></script> -->
+  <script src="/libs/waline/Waline.min.js"></script>
+  <script>
+    new Waline({
+        el: '#waline',
+        serverURL: 'https://waline-test-liart.vercel.app',
+        avatar: 'mm'    
+    });
+  </script> 
     
 
     
@@ -1436,6 +1660,9 @@ q
             
             <br>
             
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">23.5k</span>
+            
             
             
                 
@@ -1460,13 +1687,9 @@ q
             
         </div>
         <div class="col s12 m4 l4 social-link social-statis">
-    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
 
 
-
-    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+    <a href="mailto:258168436@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
         <i class="fas fa-envelope-open"></i>
     </a>
 
@@ -1476,7 +1699,7 @@ q
 
 
 
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=258168436" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 258168436" data-position="top" data-delay="50">
         <i class="fab fa-qq"></i>
     </a>
 
@@ -1650,6 +1873,14 @@ $(function () {
     
 
     <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
     
 
      

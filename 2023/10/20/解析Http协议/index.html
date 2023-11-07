@@ -54,9 +54,7 @@ HTTP(hypertext transport protocol 超文本传输协议）：一种无状态的�
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-hopscotch.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><script src="/js/prism.js"></script>
-<script src="/js/prism-line-numbers.min.js"></script></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -399,10 +397,25 @@ HTTP(hypertext transport protocol 超文本传输协议）：一种无状态的�
                 
 
                 
-
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.1k
+                </div>
                 
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    4 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
             </div>
         </div>
         <hr class="clearfix">
@@ -421,14 +434,14 @@ HTTP(hypertext transport protocol 超文本传输协议）：一种无状态的�
                 <p>在写webSever时了解了一点关于http协议的内容，更方便后面的学习</p>
 <span id="more"></span>
 <p><strong>HTTP</strong>(hypertext transport protocol 超文本传输协议）：一种无状态的，以请求&#x2F;应答方式运行的协议，它使用可扩展的语义和自描述消息格式，与基于网络的超文本信息系统灵活的互动。</p>
-<h2 id="1-http请求"><a href="#1-http请求" class="headerlink" title="1. http请求"></a>1. http请求</h2><pre class="line-numbers language-txt"><code class="language-txt">http请求消息分为四部分
+<h2 id="1-http请求"><a href="#1-http请求" class="headerlink" title="1. http请求"></a>1. http请求</h2><pre><code class="txt">http请求消息分为四部分
 1. 请求行
     不管是get请求还是post请求，请求行分为三部分
 2. 请求头
 3. 空行
 4. 客户端想服务器提交的数据
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-txt"><code class="language-txt">GET /doing HTTP/1.1
+</code></pre>
+<pre><code class="txt">GET /doing HTTP/1.1
 Host: 10.1.18.4
 User-Agent: Mozilla/5.0 (Windows NT 6.2; rv:40.0) Gecko/20100101 Firefox/40.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
@@ -436,8 +449,8 @@ Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
 Accept-Encoding: gzip, deflate
 Referer: http://10.1.18.4/
 Connection: keep-alive
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-txt"><code class="language-txt">1. 请求行	GET /doing HTTP/1.1
+</code></pre>
+<pre><code class="txt">1. 请求行	GET /doing HTTP/1.1
 三部分：请求方式	请求的资源（/不代表服务器根目录，是服务器给客户端提供的资源目录）	
         HTTP协议版本	还有看不见的\r\n
 2. 请求头	若干个键值对
@@ -448,7 +461,7 @@ Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
 Accept-Encoding: gzip, deflate
 Referer: http://10.1.18.4/
 Connection: keep-alive
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <ul>
 <li><p>get</p>
 <ul>
@@ -479,7 +492,7 @@ Connection: keep-alive
 <li>响应正文，服务器返回给客户端的文本信息，空行后面的<code>html</code>部分为响应正文。</li>
 </ol>
 <h2 id="1-3-http状态码"><a href="#1-3-http状态码" class="headerlink" title="1.3 http状态码"></a>1.3 http状态码</h2><p>状态代码有三位数字组成，第一个数字定义了响应的类别，共分五种类别:</p>
-<pre class="line-numbers language-txt"><code class="language-txt">1xx:指示信息--表示请求已接收，继续处理
+<pre><code class="txt">1xx:指示信息--表示请求已接收，继续处理
 
 2xx:成功--表示请求已被成功接收、理解、接受
 
@@ -488,16 +501,16 @@ Connection: keep-alive
 4xx:客户端错误--请求有语法错误或请求无法实现
 
 5xx:服务器端错误--服务器未能实现合法的请求
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 <p>常见状态码</p>
-<pre class="line-numbers language-txt"><code class="language-txt">200 OK	客户端请求成功
+<pre><code class="txt">200 OK	客户端请求成功
 400 Bad Request客户端请求有语法错误，不能被服务器所理解
 401 Unauthorized请求未经授权，这个状态代码必须和Www-Authenticate报头域一起使用
 403 Forbidden 服务器收到请求，但是拒绝提供服务
 404 Not Found 请求资源不存在，eg:输入了错误的URL
 500 Internal Server Error服务器发生不可预期的错误
 503 Server Unavailable 服务器当前不能处理客户端的请求，一段时间后可能恢复正常
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
 
                 
             </div>
@@ -631,6 +644,217 @@ Connection: keep-alive
 
     
 
+    
+        <style>
+    .waline-card {
+        margin: 1.5rem auto;
+    }
+    .waline-card .card-content {
+        padding: 20px 20px 5px 20px;
+    }
+
+    #waline p {
+        margin: 2px 2px 10px;
+        font-size: 1.05rem;
+        line-height: 1.78rem;
+    }
+    #waline blockquote p {
+        text-indent: 0.2rem;
+    }
+    #waline a {
+        padding: 0 2px;
+        color: #4cbf30;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    #waline img {
+        max-width: 100%;
+        cursor: pointer;
+    }
+    #waline ol li {
+        list-style-type: decimal;
+    }
+    #waline ol,
+    ul {
+        display: block;
+        padding-left: 2em;
+        word-spacing: 0.05rem;
+    }
+    #waline ul li,
+    ol li {
+        display: list-item;
+        line-height: 1.8rem;
+        font-size: 1rem;
+    }
+    #waline ul li {
+        list-style-type: disc;
+    }
+    #waline ul ul li {
+        list-style-type: circle;
+    }
+    #waline table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+    #waline table, th, td {
+        border: 0;
+    }
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+    #waline table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+    #waline table td {
+        min-width: 80px;
+    }
+    #waline h1 {
+        font-size: 1.85rem;
+        font-weight: bold;
+        line-height: 2.2rem;
+    }
+    #waline h2 {
+        font-size: 1.65rem;
+        font-weight: bold;
+        line-height: 1.9rem;
+    }
+    #waline h3 {
+        font-size: 1.45rem;
+        font-weight: bold;
+        line-height: 1.7rem;
+    }
+    #waline h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+    #waline h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.4rem;
+    }
+    #waline h6 {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+    #waline p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+    #waline hr {
+        margin: 12px 0;
+        border: 0;
+        border-top: 1px solid #ccc;
+    }
+    #waline blockquote {
+        margin: 15px 0;
+        border-left: 5px solid #42b983;
+        padding: 1rem 0.8rem 0.3rem 0.8rem;
+        color: #666;
+        background-color: rgba(66, 185, 131, .1);
+    }
+    #waline pre {
+        font-family: monospace, monospace;
+        padding: 1.2em;
+        margin: .5em 0;
+        background: #272822;
+        overflow: auto;
+        border-radius: 0.3em;
+        tab-size: 4;
+    }
+    #waline code {
+        font-family: monospace, monospace;
+        padding: 1px 3px;
+        font-size: 0.92rem;
+        color: #e96900;
+        background-color: #f8f8f8;
+        border-radius: 2px;
+    }
+    #waline pre code {
+        font-family: monospace, monospace;
+        padding: 0;
+        color: #e8eaf6;
+        background-color: #272822;
+    }
+    #waline pre[class*="language-"] {
+        padding: 1.2em;
+        margin: .5em 0;
+    }
+    #waline code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e8eaf6;
+    }
+    #waline [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+    #waline b,
+    strong {
+        font-weight: bold;
+    }
+    #waline dfn {
+        font-style: italic;
+    }
+    #waline small {
+        font-size: 85%;
+    }
+    #waline cite {
+        font-style: normal;
+    }
+    #waline mark {
+        background-color: #fcf8e3;
+        padding: .2em;
+    }
+    #waline table, th, td {
+        padding: 12px 13px;
+        border: 1px solid #dfe2e5;
+    }
+    table tr:nth-child(2n), thead {
+        background-color: #fafafa;
+    }
+    #waline table th {
+        background-color: #f2f2f2;
+        min-width: 80px;
+    }
+    #waline table td {
+        min-width: 80px;
+    }
+    #waline [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+        position: inherit;
+        margin-left: -1.3rem;
+        margin-right: 0.4rem;
+        margin-top: -1px;
+        vertical-align: middle;
+        left: unset;
+        visibility: visible;
+    }
+  </style>
+  
+  <div class="card waline-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; padding-left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="waline" class="card-content" style="display: grid">
+    </div>
+  </div>
+  
+
+  <!-- <script src="//cdn.jsdelivr.net/npm/@waline/client"></script> -->
+  <script src="/libs/waline/Waline.min.js"></script>
+  <script>
+    new Waline({
+        el: '#waline',
+        serverURL: 'https://waline-test-liart.vercel.app',
+        avatar: 'mm'    
+    });
+  </script> 
     
 
     
@@ -932,6 +1156,9 @@ Connection: keep-alive
             
             <br>
             
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">23.5k</span>
+            
             
             
                 
@@ -956,13 +1183,9 @@ Connection: keep-alive
             
         </div>
         <div class="col s12 m4 l4 social-link social-statis">
-    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
 
 
-
-    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+    <a href="mailto:258168436@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
         <i class="fas fa-envelope-open"></i>
     </a>
 
@@ -972,7 +1195,7 @@ Connection: keep-alive
 
 
 
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=258168436" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 258168436" data-position="top" data-delay="50">
         <i class="fab fa-qq"></i>
     </a>
 
@@ -1146,6 +1369,14 @@ $(function () {
     
 
     <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
     
 
      
