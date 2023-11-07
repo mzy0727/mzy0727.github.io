@@ -55,7 +55,8 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-solarizedlight.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -404,14 +405,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    4.7k
+                    136
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    24 分
+                    1 分
                 </div>
                 
 
@@ -441,19 +442,19 @@
 
 <h3 id="功能1：鼠标点击图片显示坐标和像素"><a href="#功能1：鼠标点击图片显示坐标和像素" class="headerlink" title="功能1：鼠标点击图片显示坐标和像素"></a>功能1：鼠标点击图片显示坐标和像素</h3><p>最近工作设及到一些关于qt编程的工作，主要内容就是在一个<code>QGraphicsView</code>上显示了一个<code>QGraphicsPixmapItem</code>的相机监控的图片，并用鼠标点击图片显示坐标和像素。</p>
 <p>最初在网上找到的解决方案是重写<code>mousePressEvent()</code>方法</p>
-<pre><code class="c++">void ImgHelper::mousePressEvent(QGraphicsSceneMouseEvent* event)
+<pre class="line-numbers language-c++"><code class="language-c++">void ImgHelper::mousePressEvent(QGraphicsSceneMouseEvent* event)
 &#123;
-    std::cout &lt;&lt; &quot;Item: (&quot; &lt;&lt; event-&gt;scenePos().x() &lt;&lt; &quot;, &quot; &lt;&lt; event-&gt;scenePos().y() &lt;&lt; &#39;)&#39; &lt;&lt; std::endl; 
+    std::cout << "Item: (" << event->scenePos().x() << ", " << event->scenePos().y() << ')' << std::endl; 
 &#125;
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>测试发现未响应鼠标事件，网上找到说：重写鼠标点击事件函数时发现鼠标点击事件在子类化后的<code>QGraphicsScene</code>中被响应，但是子类化后的<code>QGraphicsPixmapItem</code>无法响应。<code>QGraphicsView</code>的事件传递机制的顺序是<code>View-&gt;Scene-&gt;Item</code>，也就是说事件被子类化的<code>QGraphicsScene</code>吞没了，没有传递到下一级的<code>item</code>。<br>解决方案，在子类化的<code>QGraphicsScene</code>中重写<code>mousePressEvent()</code>方法内部一定要要记得调用：</p>
-<pre><code class="c++">QGraphicsScene::mousePressEvent(event);
-</code></pre>
+<pre class="line-numbers language-c++"><code class="language-c++">QGraphicsScene::mousePressEvent(event);
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>注意，要想返回图像坐标系的位置，就需要在子类化的<code>QGraphicsPixmapItem</code>中调用<code>scenePos()</code>函数。即使放大图像，点击图像中相同位置也会返回相同坐标结果。</p>
 <p>结果发现还是没有反应，还有一种说法就是加上下面这句话</p>
-<pre><code class="c++">//使能QGraphcisView控件的鼠标跟踪
-view-&gt;setMouseTracking(true);
-</code></pre>
+<pre class="line-numbers language-c++"><code class="language-c++">//使能QGraphcisView控件的鼠标跟踪
+view->setMouseTracking(true);
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>最后尝试把<code>mousePressEvent</code>函数在最上层的<code>mainwindow</code>中重写并使能鼠标，有效果，但是坐标并不是我想要的效果，现在的坐标系是整个界面的，我想要的是图像的坐标，然后能通过图像控件的位置和长宽进行筛选，但是获得的图像是经过qt自适应缩放在<code>600X600</code>的容器里的。</p>
 <p>在一筹莫展的时候，突然看到<code>eventFilter</code>事件过滤器。</p>
 <p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/20210320141253167.png" alt="在这里插入图片描述"></p>
@@ -464,11 +465,11 @@ view-&gt;setMouseTracking(true);
 <li>重写<code>eventFilter(QObject *obj, QEvent *event)</code>函数进行处理。<!-- more -->
 首先使用参数<code>obj</code>进行与绑定的控件对象进行判断，是否与其相等；然后在使用参数<code>event-&gt;type()</code>的返回值与枚举鼠标或者键盘进行判断；最后将<code>event</code>转换为鼠标事件对象或者键盘对象事件，就可以进行操作了。</li>
 </ol>
-<pre><code class="c++">bool ImgHelper::eventFilter(QObject *watched, QEvent *event)
+<pre class="line-numbers language-c++"><code class="language-c++">bool ImgHelper::eventFilter(QObject *watched, QEvent *event)
 &#123;
     //判断信号是不是来自QGraphicsView
-    if(watched == view-&gt;viewport())&#123;
-        switch (event-&gt;type()) &#123;
+    if(watched == view->viewport())&#123;
+        switch (event->type()) &#123;
         //鼠标移动事件
         case  QEvent::MouseMove:
         &#123;
@@ -479,37 +480,37 @@ view-&gt;setMouseTracking(true);
                 break;
             &#125;
 
-           // QPoint point = m_event-&gt;pos();
+           // QPoint point = m_event->pos();
 
-            QPixmap pix= pixmapItem-&gt;pixmap();
+            QPixmap pix= pixmapItem->pixmap();
             QImage img = pix.toImage();
-          //  QSize size = pixmapItem-&gt;pixmap().size();
+          //  QSize size = pixmapItem->pixmap().size();
 
 
-            QPoint point = m_event-&gt;pos();
-           // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
-            // 坐标系转换 - 视图 -&gt; 场景
-            QPointF scenePoint = view-&gt;mapToScene(point);
-            //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
-            // 坐标系转换 - 场景 -&gt; 图元
-            QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
-           // qDebug()&lt;&lt;&quot;itempoint:&quot;&lt;&lt;itempoint&lt;&lt;endl;
+            QPoint point = m_event->pos();
+           // qDebug()<<"point:"<<point<<endl;
+            // 坐标系转换 - 视图 -> 场景
+            QPointF scenePoint = view->mapToScene(point);
+            //qDebug()<<"scenePoint:"<<scenePoint<<endl;
+            // 坐标系转换 - 场景 -> 图元
+            QPointF itempoint = pixmapItem->mapFromScene(scenePoint);
+           // qDebug()<<"itempoint:"<<itempoint<<endl;
             QString str;
             // 判断所选点是否在图像范围内
-            if(itempoint.x()&gt;=0 &amp;&amp;itempoint.x()&lt;=pix.width() &amp;&amp; itempoint.y()&gt;=0 &amp;&amp; itempoint.y()&lt;= pix.height())&#123;
+            if(itempoint.x()>=0 &&itempoint.x()<=pix.width() && itempoint.y()>=0 && itempoint.y()<= pix.height())&#123;
                 QRgb pixColor = img.pixel(itempoint.x(),itempoint.y());
-               // qDebug()&lt;&lt;pixColor&lt;&lt;&quot; &quot;&lt;&lt;qRed(pixColor)&lt;&lt;&quot; &quot;&lt;&lt;qGreen(pixColor)&lt;&lt;&quot; &quot;&lt;&lt;qBlue(pixColor)&lt;&lt;endl;
-                str = QString(&quot;X:%1\nY:%2\nR:%3\nG:%4\nB:%5\n&quot;).arg(QString::number(itempoint.x(),&#39;f&#39;,1))
-                                                                .arg(QString::number(itempoint.y(),&#39;f&#39;,1))
+               // qDebug()<<pixColor<<" "<<qRed(pixColor)<<" "<<qGreen(pixColor)<<" "<<qBlue(pixColor)<<endl;
+                str = QString("X:%1\nY:%2\nR:%3\nG:%4\nB:%5\n").arg(QString::number(itempoint.x(),'f',1))
+                                                                .arg(QString::number(itempoint.y(),'f',1))
                                                                 .arg(qRed(pixColor))
                                                                 .arg(qGreen(pixColor))
                                                                 .arg(qBlue(pixColor)).toLocal8Bit();
             &#125;
             else&#123;
-                str = &quot;&quot;;
+                str = "";
             &#125;
-            img_xy_pix-&gt;setText(str);
-            img_xy_pix-&gt;setStyleSheet(&quot;color:red;&quot;);
+            img_xy_pix->setText(str);
+            img_xy_pix->setStyleSheet("color:red;");
             break;
         &#125;
         // 鼠标点击事件
@@ -520,19 +521,19 @@ view-&gt;setMouseTracking(true);
             &#125;
             QMouseEvent *m_event = (QMouseEvent*)event;
             // 左键点击确定起点
-            if(m_event-&gt;button() == Qt::LeftButton )&#123;
+            if(m_event->button() == Qt::LeftButton )&#123;
 
-             //   QPixmap pix= pixmapItem-&gt;pixmap();
-                QPainter painter(view-&gt;viewport());
+             //   QPixmap pix= pixmapItem->pixmap();
+                QPainter painter(view->viewport());
                 painter.setPen(QPen(Qt::blue,1));
               //  QImage img = pix.toImage();
-              //  QSize size = pixmapItem-&gt;pixmap().size();
-               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
-                QPoint point = m_event-&gt;pos();
-               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
-                QPointF scenePoint = view-&gt;mapToScene(point);
-                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
-                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+              //  QSize size = pixmapItem->pixmap().size();
+               // qDebug()<<"size:"<<size<<endl;
+                QPoint point = m_event->pos();
+               // qDebug()<<"point:"<<point<<endl;
+                QPointF scenePoint = view->mapToScene(point);
+                //qDebug()<<"scenePoint:"<<scenePoint<<endl;
+                QPointF itempoint = pixmapItem->mapFromScene(scenePoint);
                 startPoint = itempoint;
                 break;
             &#125;
@@ -545,25 +546,25 @@ view-&gt;setMouseTracking(true);
                 break;
             &#125;
             QMouseEvent *m_event = (QMouseEvent*)event;
-            if(m_event-&gt;button() == Qt::LeftButton )&#123;
+            if(m_event->button() == Qt::LeftButton )&#123;
 
-//                QPixmap pix= pixmapItem-&gt;pixmap();
-                QPainter painter(view-&gt;viewport());
+//                QPixmap pix= pixmapItem->pixmap();
+                QPainter painter(view->viewport());
                 painter.setPen(QPen(Qt::blue,1));
               //  QImage img = pix.toImage();
-              //  QSize size = pixmapItem-&gt;pixmap().size();
-               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
-                QPoint point = m_event-&gt;pos();
-               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
-                QPointF scenePoint = view-&gt;mapToScene(point);
-                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
-                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+              //  QSize size = pixmapItem->pixmap().size();
+               // qDebug()<<"size:"<<size<<endl;
+                QPoint point = m_event->pos();
+               // qDebug()<<"point:"<<point<<endl;
+                QPointF scenePoint = view->mapToScene(point);
+                //qDebug()<<"scenePoint:"<<scenePoint<<endl;
+                QPointF itempoint = pixmapItem->mapFromScene(scenePoint);
                 QPointF endPoint = itempoint;
-                if(startPoint.x() != 0 &amp;&amp; startPoint.y() != 0)&#123;
+                if(startPoint.x() != 0 && startPoint.y() != 0)&#123;
                     QRectF rectangle(startPoint.x(),startPoint.y(),endPoint.x()-startPoint.x(),endPoint.y()-startPoint.y());
                     painter.drawRect(rectangle);
                     painter.setPen(QPen(Qt::red,1));
-                    rects = scene-&gt;addRect(rectangle,rectPen);
+                    rects = scene->addRect(rectangle,rectPen);
 //                    float rectInfo[8];
 //                    rectcounts++;
 //                    rectInfo[0] = rectcounts;
@@ -571,7 +572,7 @@ view-&gt;setMouseTracking(true);
 //                    float y = (endPoint.y()-startPoint.y()) / 2 + startPoint.y();
 //                    float height;
 //                    float width;
-//                    if(endPoint.x()-startPoint.x() &gt; endPoint.y()-startPoint.y())&#123;
+//                    if(endPoint.x()-startPoint.x() > endPoint.y()-startPoint.y())&#123;
 //                       height = endPoint.x()-startPoint.x();
 //                       width = endPoint.y()-startPoint.y();
 //                    &#125;else&#123;
@@ -589,13 +590,13 @@ view-&gt;setMouseTracking(true);
 //                     bool flag = false;
   
 //                    int rectCountsAddr = 353345520;
-//                    flag = udpClient-&gt;writeBytesByModbus(rectCountsAddr, (char*)&amp;rectcounts, sizeof(short), hostIpAddr, hostPort);
+//                    flag = udpClient->writeBytesByModbus(rectCountsAddr, (char*)&rectcounts, sizeof(short), hostIpAddr, hostPort);
 //                    if(!flag) &#123;
 //                        delete udpClient;
 //                         break;
 //                    &#125;
 //                    int startAddr = 427778712;
-//                    flag = udpClient-&gt;writeBytesByModbus(startAddr + sizeof(float)*8 *(rectcounts - 1), (char*)rectInfo, sizeof(float)*8, hostIpAddr, hostPort);
+//                    flag = udpClient->writeBytesByModbus(startAddr + sizeof(float)*8 *(rectcounts - 1), (char*)rectInfo, sizeof(float)*8, hostIpAddr, hostPort);
 //                    if(!flag) &#123;
 //                        delete udpClient;
 //                         break;
@@ -618,10 +619,10 @@ view-&gt;setMouseTracking(true);
 
     return false;
 &#125;
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="功能2：Qt拖动鼠标画一个矩形"><a href="#功能2：Qt拖动鼠标画一个矩形" class="headerlink" title="功能2：Qt拖动鼠标画一个矩形"></a>功能2：Qt拖动鼠标画一个矩形</h3><p>想要画一个矩形就需要过滤鼠标点击事件，鼠标按下时确定矩形的起点，然后拖动一段距离，松开确定终点。</p>
 <!-- more -->
-<pre><code class="c++">// 鼠标点击事件
+<pre class="line-numbers language-c++"><code class="language-c++">// 鼠标点击事件
         case QEvent::MouseButtonPress:
         &#123;
             if(pixmapItem == NULL)&#123;
@@ -629,19 +630,19 @@ view-&gt;setMouseTracking(true);
             &#125;
             QMouseEvent *m_event = (QMouseEvent*)event;
             // 左键点击确定起点
-            if(m_event-&gt;button() == Qt::LeftButton )&#123;
+            if(m_event->button() == Qt::LeftButton )&#123;
 
-             //   QPixmap pix= pixmapItem-&gt;pixmap();
-                QPainter painter(view-&gt;viewport());
+             //   QPixmap pix= pixmapItem->pixmap();
+                QPainter painter(view->viewport());
                 painter.setPen(QPen(Qt::blue,1));
               //  QImage img = pix.toImage();
-              //  QSize size = pixmapItem-&gt;pixmap().size();
-               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
-                QPoint point = m_event-&gt;pos();
-               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
-                QPointF scenePoint = view-&gt;mapToScene(point);
-                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
-                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+              //  QSize size = pixmapItem->pixmap().size();
+               // qDebug()<<"size:"<<size<<endl;
+                QPoint point = m_event->pos();
+               // qDebug()<<"point:"<<point<<endl;
+                QPointF scenePoint = view->mapToScene(point);
+                //qDebug()<<"scenePoint:"<<scenePoint<<endl;
+                QPointF itempoint = pixmapItem->mapFromScene(scenePoint);
                 startPoint = itempoint;
                 break;
             &#125;
@@ -654,42 +655,42 @@ view-&gt;setMouseTracking(true);
                 break;
             &#125;
             QMouseEvent *m_event = (QMouseEvent*)event;
-            if(m_event-&gt;button() == Qt::LeftButton )&#123;
+            if(m_event->button() == Qt::LeftButton )&#123;
 
-//                QPixmap pix= pixmapItem-&gt;pixmap();
-                QPainter painter(view-&gt;viewport());
+//                QPixmap pix= pixmapItem->pixmap();
+                QPainter painter(view->viewport());
                 painter.setPen(QPen(Qt::blue,1));
               //  QImage img = pix.toImage();
-              //  QSize size = pixmapItem-&gt;pixmap().size();
-               // qDebug()&lt;&lt;&quot;size:&quot;&lt;&lt;size&lt;&lt;endl;
-                QPoint point = m_event-&gt;pos();
-               // qDebug()&lt;&lt;&quot;point:&quot;&lt;&lt;point&lt;&lt;endl;
-                QPointF scenePoint = view-&gt;mapToScene(point);
-                //qDebug()&lt;&lt;&quot;scenePoint:&quot;&lt;&lt;scenePoint&lt;&lt;endl;
-                QPointF itempoint = pixmapItem-&gt;mapFromScene(scenePoint);
+              //  QSize size = pixmapItem->pixmap().size();
+               // qDebug()<<"size:"<<size<<endl;
+                QPoint point = m_event->pos();
+               // qDebug()<<"point:"<<point<<endl;
+                QPointF scenePoint = view->mapToScene(point);
+                //qDebug()<<"scenePoint:"<<scenePoint<<endl;
+                QPointF itempoint = pixmapItem->mapFromScene(scenePoint);
                 QPointF endPoint = itempoint;
-                if(startPoint.x() != 0 &amp;&amp; startPoint.y() != 0)&#123;
+                if(startPoint.x() != 0 && startPoint.y() != 0)&#123;
                     QRectF rectangle(startPoint.x(),startPoint.y(),endPoint.x()-startPoint.x(),endPoint.y()-startPoint.y());
                     painter.drawRect(rectangle);
                     painter.setPen(QPen(Qt::red,1));
-                    rects = scene-&gt;addRect(rectangle,rectPen);
-</code></pre>
+                    rects = scene->addRect(rectangle,rectPen);
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这是在网上看到其他人重写的一个<code>QGraphicsRectItem</code>类，画出来的矩形可以拖动，变形，旋转，使用时只需要导入这个类</p>
 <ul>
 <li><p>mygraphicrectitem.h</p>
 <!-- more -->
-<pre><code class="c++">#ifndef MYGRAPHICRECTITEM_H
+<pre class="line-numbers language-c++"><code class="language-c++">#ifndef MYGRAPHICRECTITEM_H
 #define MYGRAPHICRECTITEM_H
-#include &lt;QObject&gt;
-#include &lt;QWidget&gt;
-#include &lt;QMouseEvent&gt;
-#include &lt;QGraphicsScene&gt;
-#include &lt;QGraphicsRectItem&gt;
-#include &lt;QGraphicsSceneMouseEvent&gt;
-#include &lt;QRect&gt;
-#include &lt;QPainter&gt;
-#include &lt;QPolygon&gt;
-#include &lt;QList&gt;
+#include <QObject>
+#include <QWidget>
+#include <QMouseEvent>
+#include <QGraphicsScene>
+#include <QGraphicsRectItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QRect>
+#include <QPainter>
+#include <QPolygon>
+#include <QList>
 enum STATE_FLAG&#123;
     DEFAULT_FLAG=0,
     MOV_LEFT_LINE,//标记当前为用户按下矩形的左边界区域
@@ -715,7 +716,7 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void SetRotate(qreal RotateAngle,QPointF ptCenter=QPointF(-999,-999));
     QPointF getRotatePoint(QPointF ptCenter, QPointF ptIn, qreal angle);//获取旋转后的点
-    QList&lt;QPointF&gt; getRotatePoints(QPointF ptCenter,QList&lt;QPointF&gt; ptIns,qreal angle);//获取多个旋转后的点
+    QList<QPointF> getRotatePoints(QPointF ptCenter,QList<QPointF> ptIns,qreal angle);//获取多个旋转后的点
     QPolygonF getRotatePolygonFromRect(QPointF ptCenter,QRectF rectIn,qreal angle);//将矩形旋转之后返回多边形
     QRectF getCrtPosRectToSceen();
     QRectF m_SmallRotateRect;//矩形顶部用来表示旋转的标记的矩形
@@ -750,13 +751,13 @@ protected:
 
 &#125;;
 #endif // MYGRAPHICRECTITEM_H
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>mygraphicrectitem.cpp</p>
 <!-- more -->
-<pre><code class="c++">#include &quot;mygraphicrectitem.h&quot;
-#include &lt;QtMath&gt;
-#include &lt;QDebug&gt;
+<pre class="line-numbers language-c++"><code class="language-c++">#include "mygraphicrectitem.h"
+#include <QtMath>
+#include <QDebug>
 
 myGraphicRectItem::myGraphicRectItem(QGraphicsItem *parent):
     m_bResize(false),
@@ -767,7 +768,7 @@ myGraphicRectItem::myGraphicRectItem(QGraphicsItem *parent):
 &#123;
     //setParent(parent);
     setRectSize(m_oldRect);
-    setToolTip(&quot;Click and drag me!&quot;);  //提示
+    setToolTip("Click and drag me!");  //提示
     setCursor(Qt::ArrowCursor);   //改变光标形状,手的形状
     setFlag(QGraphicsItem::ItemIsMovable);
     //    setAcceptDrops(true);
@@ -824,24 +825,24 @@ void myGraphicRectItem::setRectSize(QRectF mrect, bool bResetRotateCenter)
 void myGraphicRectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 &#123;
     QPen mPen = QPen(Qt::yellow);
-    painter-&gt;setPen(mPen);
+    painter->setPen(mPen);
     //绘制旋转后的矩形
-    painter-&gt;drawPolygon(m_oldRectPolygon);
+    painter->drawPolygon(m_oldRectPolygon);
     //绘制旋转圆形
     mPen.setWidth(2);
     mPen.setColor(Qt::green);
-    painter-&gt;setPen(mPen);
+    painter->setPen(mPen);
     QPointF pf = getSmallRotateRectCenter(m_oldRectPolygon[0],m_oldRectPolygon[1]);
     QRectF rect = QRectF(pf.x()-10,pf.y()-10,20,20);
-    painter-&gt;drawEllipse(rect);//绘制圆形
-    painter-&gt;drawPoint(pf);//绘制点
+    painter->drawEllipse(rect);//绘制圆形
+    painter->drawPoint(pf);//绘制点
 &#125;
 
 void myGraphicRectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 &#123;
-    if(event-&gt;button()== Qt::LeftButton)
+    if(event->button()== Qt::LeftButton)
     &#123;
-        m_startPos = event-&gt;pos();//鼠标左击时，获取当前鼠标在图片中的坐标，
+        m_startPos = event->pos();//鼠标左击时，获取当前鼠标在图片中的坐标，
         if(m_SmallRotatePolygon.containsPoint(m_startPos,Qt::WindingFill))//旋转矩形
         &#123;
             setCursor(Qt::PointingHandCursor);
@@ -892,26 +893,26 @@ void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 &#123;
     if(m_StateFlag == ROTATE)
     &#123;
-       int nRotateAngle = atan2((event-&gt;pos().x()-m_RotateCenter.x()),(event-&gt;pos().y()-m_RotateCenter.y()))*180/M_PI;
+       int nRotateAngle = atan2((event->pos().x()-m_RotateCenter.x()),(event->pos().y()-m_RotateCenter.y()))*180/M_PI;
        SetRotate(180-nRotateAngle);
        setRectSize(m_oldRect);
-       //qDebug()&lt;&lt;nRotateAngle;
+       //qDebug()<<nRotateAngle;
     &#125;
     else if(m_StateFlag == MOV_RECT)
     &#123;
-        QPointF point = (event-&gt;pos() - m_startPos);
+        QPointF point = (event->pos() - m_startPos);
         moveBy(point.x(), point.y());
         setRectSize(m_oldRect);
-        scene()-&gt;update();
+        scene()->update();
     &#125;
     else if(m_StateFlag == MOV_LEFT_LINE)
     &#123;
         QPointF pf = QPointF((m_oldRectPolygon.at(1).x()+m_oldRectPolygon.at(2).x())/2,((m_oldRectPolygon.at(1).y()+m_oldRectPolygon.at(2).y())/2));
         //计算到右侧边中点的距离
-        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
-        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
-        qreal dis2RT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(1).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(1).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(1).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(1).y()));
-        if(dis&lt;16||dis2LT&gt;dis2RT)
+        qreal dis = sqrt((event->pos().x()-pf.x())*(event->pos().x()-pf.x()) +(event->pos().y()-pf.y())*(event->pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event->pos().x()-m_oldRectPolygon.at(0).x())*(event->pos().x()-m_oldRectPolygon.at(0).x()) +(event->pos().y()-m_oldRectPolygon.at(0).y())*(event->pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2RT = sqrt((event->pos().x()-m_oldRectPolygon.at(1).x())*(event->pos().x()-m_oldRectPolygon.at(1).x()) +(event->pos().y()-m_oldRectPolygon.at(1).y())*(event->pos().y()-m_oldRectPolygon.at(1).y()));
+        if(dis<16||dis2LT>dis2RT)
         &#123;
             return;
         &#125;
@@ -924,7 +925,7 @@ void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
             m_oldRect.moveCenter(m_RotateCenter);
             setRectSize(m_oldRect);
-            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+            scene()->update();//必须要用scene()->update()，不能用update();否则会出现重影
         &#125;
     &#125;
     else if(m_StateFlag == MOV_TOP_LINE)
@@ -932,10 +933,10 @@ void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         //底边中点
         QPointF pf = QPointF((m_oldRectPolygon.at(2).x()+m_oldRectPolygon.at(3).x())/2,((m_oldRectPolygon.at(2).y()+m_oldRectPolygon.at(3).y())/2));
         //计算到底边中点的距离
-        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
-        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
-        qreal dis2LB = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(3).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(3).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(3).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(3).y()));
-        if(dis&lt;16||dis2LT&gt;dis2LB)
+        qreal dis = sqrt((event->pos().x()-pf.x())*(event->pos().x()-pf.x()) +(event->pos().y()-pf.y())*(event->pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event->pos().x()-m_oldRectPolygon.at(0).x())*(event->pos().x()-m_oldRectPolygon.at(0).x()) +(event->pos().y()-m_oldRectPolygon.at(0).y())*(event->pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2LB = sqrt((event->pos().x()-m_oldRectPolygon.at(3).x())*(event->pos().x()-m_oldRectPolygon.at(3).x()) +(event->pos().y()-m_oldRectPolygon.at(3).y())*(event->pos().y()-m_oldRectPolygon.at(3).y()));
+        if(dis<16||dis2LT>dis2LB)
         &#123;
             return;
         &#125;
@@ -948,17 +949,17 @@ void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
             m_oldRect.moveCenter(m_RotateCenter);
             setRectSize(m_oldRect);
-            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+            scene()->update();//必须要用scene()->update()，不能用update();否则会出现重影
         &#125;
     &#125;
     else if(m_StateFlag == MOV_RIGHT_LINE)
     &#123;
         QPointF pf = QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(3).x())/2,((m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(3).y())/2));
         //计算到左侧边中点的距离
-        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
-        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
-        qreal dis2RT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(1).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(1).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(1).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(1).y()));
-        if(dis&lt;16||dis2LT&lt;dis2RT)
+        qreal dis = sqrt((event->pos().x()-pf.x())*(event->pos().x()-pf.x()) +(event->pos().y()-pf.y())*(event->pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event->pos().x()-m_oldRectPolygon.at(0).x())*(event->pos().x()-m_oldRectPolygon.at(0).x()) +(event->pos().y()-m_oldRectPolygon.at(0).y())*(event->pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2RT = sqrt((event->pos().x()-m_oldRectPolygon.at(1).x())*(event->pos().x()-m_oldRectPolygon.at(1).x()) +(event->pos().y()-m_oldRectPolygon.at(1).y())*(event->pos().y()-m_oldRectPolygon.at(1).y()));
+        if(dis<16||dis2LT<dis2RT)
         &#123;
             return;
         &#125;
@@ -971,7 +972,7 @@ void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
             m_oldRect.moveCenter(m_RotateCenter);
             setRectSize(m_oldRect);
-            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+            scene()->update();//必须要用scene()->update()，不能用update();否则会出现重影
         &#125;
     &#125;
     else if(m_StateFlag == MOV_BOTTOM_LINE)
@@ -979,10 +980,10 @@ void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         //顶边中点
         QPointF pf = QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(1).x())/2,((m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(1).y())/2));
         //计算到底边中点的距离
-        qreal dis = sqrt((event-&gt;pos().x()-pf.x())*(event-&gt;pos().x()-pf.x()) +(event-&gt;pos().y()-pf.y())*(event-&gt;pos().y()-pf.y()));
-        qreal dis2LT = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(0).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(0).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(0).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(0).y()));
-        qreal dis2LB = sqrt((event-&gt;pos().x()-m_oldRectPolygon.at(3).x())*(event-&gt;pos().x()-m_oldRectPolygon.at(3).x()) +(event-&gt;pos().y()-m_oldRectPolygon.at(3).y())*(event-&gt;pos().y()-m_oldRectPolygon.at(3).y()));
-        if(dis&lt;16||dis2LT&lt;dis2LB)
+        qreal dis = sqrt((event->pos().x()-pf.x())*(event->pos().x()-pf.x()) +(event->pos().y()-pf.y())*(event->pos().y()-pf.y()));
+        qreal dis2LT = sqrt((event->pos().x()-m_oldRectPolygon.at(0).x())*(event->pos().x()-m_oldRectPolygon.at(0).x()) +(event->pos().y()-m_oldRectPolygon.at(0).y())*(event->pos().y()-m_oldRectPolygon.at(0).y()));
+        qreal dis2LB = sqrt((event->pos().x()-m_oldRectPolygon.at(3).x())*(event->pos().x()-m_oldRectPolygon.at(3).x()) +(event->pos().y()-m_oldRectPolygon.at(3).y())*(event->pos().y()-m_oldRectPolygon.at(3).y()));
+        if(dis<16||dis2LT<dis2LB)
         &#123;
             return;
         &#125;
@@ -995,7 +996,7 @@ void myGraphicRectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             m_RotateCenter=QPointF((m_oldRectPolygon.at(0).x()+m_oldRectPolygon.at(2).x())/2,(m_oldRectPolygon.at(0).y()+m_oldRectPolygon.at(2).y())/2);
             m_oldRect.moveCenter(m_RotateCenter);
             setRectSize(m_oldRect);
-            scene()-&gt;update();//必须要用scene()-&gt;update()，不能用update();否则会出现重影
+            scene()->update();//必须要用scene()->update()，不能用update();否则会出现重影
         &#125;
     &#125;
 &#125;
@@ -1015,7 +1016,7 @@ void myGraphicRectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void myGraphicRectItem::SetRotate(qreal RotateAngle, QPointF ptCenter)
 &#123;
     m_bRotate = true;
-    if(ptCenter.x()==-999 &amp;&amp; ptCenter.y()==-999)
+    if(ptCenter.x()==-999 && ptCenter.y()==-999)
     &#123;
         m_RotateCenter = QPointF(m_oldRect.x()+m_oldRect.width()/2,m_oldRect.y()+m_oldRect.height()/2);
     &#125;
@@ -1024,7 +1025,7 @@ void myGraphicRectItem::SetRotate(qreal RotateAngle, QPointF ptCenter)
         m_RotateCenter = ptCenter;
     &#125;
     m_RotateAngle = RotateAngle;
-    this-&gt;update();
+    this->update();
 &#125;
 
 QPointF myGraphicRectItem::getRotatePoint(QPointF ptCenter, QPointF ptIn, qreal angle)
@@ -1040,10 +1041,10 @@ QPointF myGraphicRectItem::getRotatePoint(QPointF ptCenter, QPointF ptIn, qreal 
     return QPointF(xx,yy);
 &#125;
 
-QList&lt;QPointF&gt; myGraphicRectItem::getRotatePoints(QPointF ptCenter, QList&lt;QPointF&gt; ptIns, qreal angle)
+QList<QPointF> myGraphicRectItem::getRotatePoints(QPointF ptCenter, QList<QPointF> ptIns, qreal angle)
 &#123;
-    QList&lt;QPointF&gt; lstPt;
-    for(int i = 0;i&lt;ptIns.count();i++)
+    QList<QPointF> lstPt;
+    for(int i = 0;i<ptIns.count();i++)
     &#123;
         lstPt.append(getRotatePoint(ptCenter,ptIns.at(i),angle));
     &#125;
@@ -1052,7 +1053,7 @@ QList&lt;QPointF&gt; myGraphicRectItem::getRotatePoints(QPointF ptCenter, QList&
 
 QPolygonF myGraphicRectItem::getRotatePolygonFromRect(QPointF ptCenter, QRectF rectIn, qreal angle)
 &#123;
-    QVector&lt;QPointF&gt; vpt;
+    QVector<QPointF> vpt;
     QPointF pf = getRotatePoint(ptCenter,rectIn.topLeft(),angle);
     vpt.append(pf);
     pf = getRotatePoint(ptCenter,rectIn.topRight(),angle);
@@ -1081,9 +1082,9 @@ QPointF myGraphicRectItem::getSmallRotateRectCenter(QPointF ptA,QPointF ptB)
     QPointF ptCenter = QPointF((ptA.x()+ptB.x())/2,(ptA.y()+ptB.y())/2);//A,B点的中点C
     //中垂线方程式为 y=x*k + b;
     qreal x,y;//旋转图标矩形的中心
-    if(abs(ptB.y()-ptA.y())&lt;0.1)
+    if(abs(ptB.y()-ptA.y())<0.1)
     &#123;
-        if(ptA.x()&lt;ptB.x())//矩形左上角在上方
+        if(ptA.x()<ptB.x())//矩形左上角在上方
         &#123;
             x = ptCenter.x();
             y = ptCenter.y()-20;
@@ -1094,7 +1095,7 @@ QPointF myGraphicRectItem::getSmallRotateRectCenter(QPointF ptA,QPointF ptB)
             y = ptCenter.y()+20;
         &#125;
     &#125;
-    else if(ptB.y()&gt;ptA.y())//顺时针旋转0-180
+    else if(ptB.y()>ptA.y())//顺时针旋转0-180
     &#123;
         qreal k = (ptA.x()-ptB.x())/(ptB.y()-ptA.y());//中垂线斜率
         qreal b = (ptA.y()+ptB.y())/2-k*(ptA.x()+ptB.x())/2;
@@ -1102,7 +1103,7 @@ QPointF myGraphicRectItem::getSmallRotateRectCenter(QPointF ptA,QPointF ptB)
         x = 20*cos(atan(k))+ptCenter.x();
         y = k*x+b;
     &#125;
-    else if(ptB.y()&lt;ptA.y())//顺时针旋转180-360
+    else if(ptB.y()<ptA.y())//顺时针旋转180-360
     &#123;
         qreal k = (ptA.x()-ptB.x())/(ptB.y()-ptA.y());//中垂线斜率
         qreal b = (ptA.y()+ptB.y())/2-k*(ptA.x()+ptB.x())/2;
@@ -1112,89 +1113,89 @@ QPointF myGraphicRectItem::getSmallRotateRectCenter(QPointF ptA,QPointF ptB)
     &#125;
     return QPointF(x,y);
 &#125;
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ul>
 <h3 id="功能3：Qt中设置QGraphicsView的背景色为透明且无边框"><a href="#功能3：Qt中设置QGraphicsView的背景色为透明且无边框" class="headerlink" title="功能3：Qt中设置QGraphicsView的背景色为透明且无边框"></a>功能3：Qt中设置<code>QGraphicsView</code>的背景色为透明且无边框</h3><ol>
 <li>设置背景色为透明：在<code>QGraphicsView</code>上调用<code>setStyleSheet()</code>方法，并将背景色样式设置为透明。示例代码如下：</li>
 </ol>
-<pre><code class="c++">QGraphicsView* view = new QGraphicsView;
-view-&gt;setStyleSheet(&quot;background-color: transparent;&quot;);
-</code></pre>
+<pre class="line-numbers language-c++"><code class="language-c++">QGraphicsView* view = new QGraphicsView;
+view->setStyleSheet("background-color: transparent;");
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <ol start="2">
 <li>设置边框：在<code>QGraphicsView</code>上调用<code>setFrameStyle()</code>方法，并将边框样式设置为无边框。示例代码如下：</li>
 </ol>
-<pre><code class="c++">QGraphicsView* view = new QGraphicsView;
-view-&gt;setFrameStyle(QFrame::NoFrame);
-</code></pre>
+<pre class="line-numbers language-c++"><code class="language-c++">QGraphicsView* view = new QGraphicsView;
+view->setFrameStyle(QFrame::NoFrame);
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>在Qt中使用一个按钮清除<code>QGraphicsView</code>上监控的图片<code>QGraphicsPixmapItem</code>上画出来不需要的矩形<code>QGraphicsRectItem</code></p>
 <ol>
 <li><p>首先，在<code>QGraphicsView</code>上绑定一个按钮<code>QPushButton</code></p>
-<pre><code class="c++">QPushButton* clearBtn = new QPushButton(view);
+<pre class="line-numbers language-c++"><code class="language-c++">QPushButton* clearBtn = new QPushButton(view);
 # 将按钮放置在view的左下角
 btn.setGeometry(0,view.geometry().height()-40,40,20);
-btn.setText(&quot;clear&quot;);
-</code></pre>
+btn.setText("clear");
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>给按钮绑定槽函数，用于清除矩形</p>
-<pre><code class="c++">#在.h文件中定义槽函数
+<pre class="line-numbers language-c++"><code class="language-c++">#在.h文件中定义槽函数
 private slots:
     void on_btn_clicked();
-</code></pre>
-<pre><code class="c++"># 在构造函数中绑定槽函数
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c++"><code class="language-c++"># 在构造函数中绑定槽函数
 connect(clearBtn,SIGNAL(clicked()),this,SLOT(on_btn_clicked()));
-</code></pre>
-<pre><code class="c++"># 槽函数的具体实现
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c++"><code class="language-c++"># 槽函数的具体实现
 void ImgHelper::on_btn_clicked()&#123;
     rectcounts = 0;	#设矩形个数为0
-    scene-&gt;clear();	# 清空scene
+    scene->clear();	# 清空scene
     imgUpdated(cloneImage);	# 将直接保存的监控图片重新添加进scene
 &#125;
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ol>
 <h3 id="功能4：保存错误图片"><a href="#功能4：保存错误图片" class="headerlink" title="功能4：保存错误图片"></a>功能4：保存错误图片</h3><p>当发现监控的图片有问题时，就可以一键保存监控的图片，按日期创建文件夹，方便查看问题</p>
-<pre><code class="c++">void ImgHelper::onSaveErrorImage()
+<pre class="line-numbers language-c++"><code class="language-c++">void ImgHelper::onSaveErrorImage()
 &#123;
     //20230908
     QString currentPath = QDir::currentPath();
 
-    QString filedir = currentPath + QDir::separator() + &quot;errorImg&quot;;
+    QString filedir = currentPath + QDir::separator() + "errorImg";
     QDir dir(filedir);
     if(!dir.exists())&#123;
        if(dir.mkdir(filedir))&#123;
 
        &#125;else&#123;
-           qDebug()&lt;&lt;&quot;创建目录失败&quot;;
+           qDebug()<<"创建目录失败";
        &#125;
     &#125;
-    QString nowDate = QDateTime::QDateTime::currentDateTime().toString(&quot;yyyy-MM-dd&quot;) ;
+    QString nowDate = QDateTime::QDateTime::currentDateTime().toString("yyyy-MM-dd") ;
     QString filedirdate = filedir + QDir::separator() + nowDate;
     QDir dirdate(filedirdate);
     if(!dirdate.exists())&#123;
        if(dirdate.mkdir(filedirdate))&#123;
 
        &#125;else&#123;
-           qDebug()&lt;&lt;&quot;创建目录失败&quot;;
+           qDebug()<<"创建目录失败";
        &#125;
     &#125;
-    for(int i = 1; i &lt;= 8; i++)&#123;
-        QString imgpath = filedirdate + QDir::separator() + &quot;tt&quot; + QString::number(i) +&quot;.bmp&quot;;
+    for(int i = 1; i <= 8; i++)&#123;
+        QString imgpath = filedirdate + QDir::separator() + "tt" + QString::number(i) +".bmp";
         QFile file(imgpath);
         //判断文件是否存在
         if(file.exists())&#123;
            continue;
         &#125;
         if(pixmapItem != NULL)&#123;
-            pixmapItem-&gt;pixmap().save(imgpath);
+            pixmapItem->pixmap().save(imgpath);
         &#125;
         break;
     &#125;
 &#125;
-</code></pre>
-<h3 id="功能5：修复图片通道异常"><a href="#功能5：修复图片通道异常" class="headerlink" title="功能5：修复图片通道异常"></a>功能5：修复图片通道异常</h3><pre><code class="c++">//2023926加  修复PLC查看图片出现的通道异常
-        for(int x = 0 ; x &lt; image.height(); x++)&#123;
-                    for(int y = 0 ; y &lt; image.width(); y++)&#123;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="功能5：修复图片通道异常"><a href="#功能5：修复图片通道异常" class="headerlink" title="功能5：修复图片通道异常"></a>功能5：修复图片通道异常</h3><pre class="line-numbers language-c++"><code class="language-c++">//2023926加  修复PLC查看图片出现的通道异常
+        for(int x = 0 ; x < image.height(); x++)&#123;
+                    for(int y = 0 ; y < image.width(); y++)&#123;
                         QRgb pixel = image.pixel(x,y);
                         int red = qBlue(pixel);
                         int green =qRed(pixel);
@@ -1204,7 +1205,7 @@ void ImgHelper::on_btn_clicked()&#123;
 
                     &#125;
                 &#125;
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
                 
             </div>
@@ -1855,7 +1856,7 @@ void ImgHelper::on_btn_clicked()&#123;
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">15.9k</span>
             
             
             

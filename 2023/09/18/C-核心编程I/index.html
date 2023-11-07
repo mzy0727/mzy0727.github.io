@@ -59,7 +59,8 @@ C++核心编程1. 内存分区模型
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-solarizedlight.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -448,16 +449,16 @@ C++核心编程1. 内存分区模型
 <h3 id="2-内联函数"><a href="#2-内联函数" class="headerlink" title="2. 内联函数"></a>2. 内联函数</h3><p>在C++中，使用关键字 <code>inline</code> 可以将函数定义为内联函数。内联函数的特点是它们的定义必须在每个调用它们的源文件中可见，通常这意味着函数的定义通常会写在头文件（.h）中。</p>
 <p>目的：在编译时将函数的代码嵌入到调用它们的地方，而不是像普通函数一样在链接时进行函数调用。因此，如果函数定义不在可见范围内，编译器无法将其内联到调用点。</p>
 <p><strong>在头文件中声明内联函数的原型（函数声明），并在同一头文件中定义函数的具体实现。</strong></p>
-<pre><code class="c++">#构造函数可以直接赋初值，构造函数特性
+<pre class="line-numbers language-c++"><code class="language-c++">#构造函数可以直接赋初值，构造函数特性
 complex (double r = 0, double i = 0) : re(r),im(i)&#123;&#125;
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p><em><strong>1. 不带指针的构造函数多半不需要写析构函数</strong></em>	     	<strong>如果class里面带指针，就必须有拷贝构造和拷贝复制</strong></p>
 <p><strong>2. 写在class里面的方法是内联函数（建议编译器内联，最后还是看编译器）</strong></p>
 <p><em><strong>3. 数据一定要放在private里面，构造函数可以放在private里面，详情见后</strong></em></p>
 <p>以下的常成员函数在常量对象调用时起作用，若没加 <code>const</code>常量对象调用时会报错 ,所以该加<code>const</code>的地方一定要加</p>
-<pre><code class="c++">
+<pre class="line-numbers language-c++"><code class="language-c++">
 double real() const &#123; return re; &#125;  #常成员函数
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <ul>
 <li><p><em><strong>参数传递尽量用引用，返回也是</strong></em></p>
 </li>
@@ -480,9 +481,9 @@ double real() const &#123; return re; &#125;  #常成员函数
 
 <p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230920200351109.png" alt="12"></p>
 <p>变量可以声明多次，但只能定义一次</p>
-<pre><code class="c++">extern int a;		#声明
+<pre class="line-numbers language-c++"><code class="language-c++">extern int a;		#声明
 extern int a = 0;   #定义
-</code></pre>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p><strong>静态函数属于类，而不属于对象</strong></p>
 <p><strong>模板类在编译时要把.h文件和.cpp文件都要添加</strong></p>
 
@@ -1136,7 +1137,7 @@ extern int a = 0;   #定义
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">15.9k</span>
             
             
             
