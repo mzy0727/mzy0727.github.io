@@ -1663,7 +1663,7 @@ void ImgHelper::on_btn_clicked()&#123;
   </script> 
 
 <script type="text/javascript">
-    fetch('https://v1.hitokoto.cn')
+    fetch('https://v1.hitokoto.cn/?c=f&encode=text')
      .then(response => response.json())
      .then(data => {
        document.getElementById("veditor").setAttribute("placeholder",data.hitokoto+"__"+data.from);
