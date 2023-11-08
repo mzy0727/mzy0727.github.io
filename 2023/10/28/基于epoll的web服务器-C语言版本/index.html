@@ -2232,6 +2232,14 @@ compar:函数指针，指向对遍历结果进行排序函数，alphasort函数�
      .catch(console.error)
  </script>
 
+<script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+<script type="text/javascript">
+ jinrishici.load(function(result) {
+     var jrsc_plac =  result.data.content + "\n「" + result.data.origin.title + "」" + result.data.origin.dynasty + " · " + result.data.origin.author;
+     document.getElementById("veditor").setAttribute("placeholder",jrsc_plac);
+ })
+</script>
+
 <style>
     .v[data-class=v] .veditor {
         background-image: url(http://ovoa.cc/api/dongman.php?type=jpg);
