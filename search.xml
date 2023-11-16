@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>内存对齐</title>
+      <link href="/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/"/>
+      <url>/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/</url>
+      
+        <content type="html"><![CDATA[<h2 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h2><h3 id="什么是内存对齐"><a href="#什么是内存对齐" class="headerlink" title="什么是内存对齐"></a>什么是内存对齐</h3><p>内存对齐是指在分配内存时，数据存储在<strong>内存中的起始地址</strong>是按照一定的规则对齐的。</p><p>假设现在CPU是按照每4个字节来访问内存，有地址0、和地址1，现在要存1个char变量（假设char变量占1字节）和1个int变量（假设int变量占4字节），那么可以有内存对齐和内存不对齐的存储方式，如下图：</p><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231116194307036.png" alt="image-20231116194307036"></p><p>假如不采用内存对齐的方式存储数据，那么CPU需要访问地址0和地址1，再进行合并，才能得到最终的结果；采用内存对齐的方式进行存储数据的话，则只需访问地址1就可以得到最终的结果。因此，<strong>采用内存对齐的存储方式可以减少CPU的访问运行时间</strong>，缺点是<strong>没有充分利用存储空间</strong>。</p><h3 id="对齐规则"><a href="#对齐规则" class="headerlink" title="对齐规则"></a><strong>对齐规则</strong></h3><p>数据是根据初始化的顺序存储的，先定义的先储存，存储地址需要是<code>sizeof</code>(数据变量)的整数倍。</p><p>例如，假设<code>sizeof(char) = 1，sizeof(int) = 4，sizeof(int) = 4，sizeof(double) = 8</code>。结构的对齐规则是要先确定对齐字节数（<strong>对齐字节数&#x3D;结构体中的变量占用空间最大的那个字节数</strong>，下面的结构体<code>t3、t4</code>就是<code>sizeof(double) = 8</code>），然后再保证存储地址是<code>sizeof</code>(数据变量)的整数倍。</p><pre class="line-numbers language-c++"><code class="language-c++">#include <iostream>using namespace std;struct t1&#123;    char a;    short c;    int x;    char b;&#125;;struct t2&#123;    int x;    char b;    char c;    short a;&#125;;struct t3&#123;    short a;    double c;    int x;    char b;&#125;;struct t4&#123;    char a, b;    int x;    double c;&#125;;int main()&#123;        cout << sizeof(t1) << endl; //12    cout << sizeof(t2) << endl; //8    cout << sizeof(t3) << endl; //24    cout << sizeof(t4) << endl; //16    return 0;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231116194937640.png" alt="image-20231116194937640"></p><p>在C&#x2F;C++中，内存对齐是由编译器负责的。编译器会按照平台的要求为数据进行对齐，通常会将数据按照其自身大小对齐到特定字节的倍数。这个特定字节的倍数通常由平台决定，例如，在32位系统中可能是4字节，而在64位系统中可能是8字节。</p><p>C&#x2F;C++中可以使用一些特殊的关键字或编译器指令来控制内存对齐，例如：<code>alignas</code>关键字：C++11引入了<code>alignas</code>关键字，用于指定对齐方式。</p><pre class="line-numbers language-c++"><code class="language-c++">alignas(16) struct MyStruct &#123;    // 结构体成员&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a><strong>作用</strong></h3><ol><li>提高访问速度：许多计算机体系结构要求数据按照特定的边界地址存储，而不是任意地址。当数据被按照这些边界对齐时，处理器能够更快地访问这些数据，提高数据存取速度。</li><li>硬件要求：一些硬件平台对于特定类型的数据要求按照一定的对齐方式存储，不遵循这个规则可能导致硬件异常或性能下降。</li><li>减少浪费：内存对齐可以减少内存碎片，提高内存利用率。</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>虚函数</title>
       <link href="/2023/11/15/%E8%99%9A%E5%87%BD%E6%95%B0/"/>
       <url>/2023/11/15/%E8%99%9A%E5%87%BD%E6%95%B0/</url>
@@ -20,7 +45,7 @@
       
         <tags>
             
-            <tag> C++ </tag>
+            <tag> c++ </tag>
             
         </tags>
       
@@ -122,13 +147,13 @@
       
         <tags>
             
+            <tag> c++ </tag>
+            
             <tag> c </tag>
             
             <tag> linux </tag>
             
             <tag> 网络编程 </tag>
-            
-            <tag> C++ </tag>
             
             <tag> 线程池 </tag>
             

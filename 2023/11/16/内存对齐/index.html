@@ -4,15 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="C++使用MYSQL API 操作数据库, Hexo">
-    <meta name="description" content="C++使用MYSQL API 操作数据库在程序中连接数据库服务器，主要包含以下步骤：
-
-初始化连接环境
-连接mysql的服务器需要提供：
-服务器IP
-服务器监听的端口（默认3306）
-服务器的用户名（默认root）和对应的密码
-服务器要操作">
+    <meta name="keywords" content="内存对齐, Hexo">
+    <meta name="description" content="内存对齐什么是内存对齐内存对齐是指在分配内存时，数据存储在内存中的起始地址是按照一定的规则对齐的。
+假设现在CPU是按照每4个字节来访问内存，有地址0、和地址1，现在要存1个char变量（假设char变量占1字节）和1个int变量（假设in">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -24,7 +18,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>C++使用MYSQL API 操作数据库 | Hexo</title>
+    <title>内存对齐 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -449,12 +443,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">C++使用MYSQL API 操作数据库</h1>
+                    <h1 class="description center-align post-title">内存对齐</h1>
                 </div>
             </div>
         </div>
@@ -482,10 +476,6 @@
                                 <span class="chip bg-color">c++</span>
                             </a>
                         
-                            <a href="/tags/mysql/">
-                                <span class="chip bg-color">mysql</span>
-                            </a>
-                        
                     </div>
                     
                 </div>
@@ -494,8 +484,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E7%AC%94%E8%AE%B0/" class="post-category">
-                                笔记
+                            <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
+                                每日一题
                             </a>
                         
                     </div>
@@ -507,7 +497,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-11-14
+                    2023-11-16
                 </div>
                 
 
@@ -516,14 +506,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    958
+                    446
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    1 分
                 </div>
                 
 
@@ -548,168 +538,66 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="C-使用MYSQL-API-操作数据库"><a href="#C-使用MYSQL-API-操作数据库" class="headerlink" title="C++使用MYSQL API 操作数据库"></a>C++使用MYSQL API 操作数据库</h1><p>在程序中连接数据库服务器，主要包含以下步骤：</p>
-<ol>
-<li>初始化连接环境</li>
-<li>连接<code>mysql</code>的服务器需要提供：<ul>
-<li>服务器<code>IP</code></li>
-<li>服务器监听的端口（默认<code>3306</code>）</li>
-<li>服务器的用户名（默认<code>root</code>）和对应的密码</li>
-<li>服务器要操作的具体数据库名</li>
-</ul>
-</li>
-<li>对数据库中的数据进行增删改查</li>
-<li>事物处理<ul>
-<li>成功：提交事务</li>
-<li>失败：数据回滚</li>
-</ul>
-</li>
-<li>数据库的读数据操作-&gt;查询-&gt;得到结果集</li>
-<li>遍历结果集-&gt;获得自己需要的数据</li>
-<li>释放资源</li>
-</ol>
-<h2 id="API介绍"><a href="#API介绍" class="headerlink" title="API介绍"></a>API介绍</h2><h3 id="初始化连接环境"><a href="#初始化连接环境" class="headerlink" title="初始化连接环境"></a>初始化连接环境</h3><pre class="line-numbers language-c++"><code class="language-c++">// 返回值: 该函数将分配、初始化、并返回新对象
-// 通过返回的这个对象去连接MySQL的服务器
-MYSQL *mysql_init(MYSQL *mysql) ;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h3 id="连接mysql服务器"><a href="#连接mysql服务器" class="headerlink" title="连接mysql服务器"></a>连接<code>mysql</code>服务器</h3><pre class="line-numbers language-c++"><code class="language-c++">/*
-返回值: 
-    成功: 返回MYSQL*连接句柄, 对于成功的连接，返回值与第1个参数的值相同。返回值指向的内存和第一个参数指针指向的内存一样
-    失败，返回NULL。
-    句柄: 是windows中的一个概念, 句柄可以理解为一个实例(或者对象)
-*/ 
-MYSQL *mysql_real_connect(
-    MYSQL *mysql,           // mysql_init() 函数的返回值
-    const char *host,       // mysql服务器的主机地址, 写IP地址即可
-                            // localhost, null -> 代表本地连接
-    const char *user,       // 连接mysql服务器的用户名, 默认: root 
-    const char *passwd,     // 连接mysql服务器用户对应的密码, root用户的密码
-    const char *db,         // 要使用的数据库的名字
-    unsigned int port,      // 连接的mysql服务器监听的端口
-                            // 如果==0, 使用mysql的默认端口3306, !=0, 使用指定的这个端口
-    const char *unix_socket,// 本地套接字, 不使用指定为 NULL
-    unsigned long client_flag); // 通常指定为0
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="执行sql语句"><a href="#执行sql语句" class="headerlink" title="执行sql语句"></a>执行<code>sql</code>语句</h3><pre class="line-numbers language-c++"><code class="language-c++">// 执行一个sql语句, 添删查改的sql语句都可以
-int mysql_query(MYSQL *mysql, const char *query);
-参数:
-    - mysql: mysql_real_connect() 的返回值
-    - query: 一个可以执行的sql语句, 结尾的位置不需要加 ;
-返回值: 
-    - 如果查询成功，返回0。如果是查询, 结果集在mysql 对象中
-    - 如果出现错误，返回非0值。 
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="获得结果集"><a href="#获得结果集" class="headerlink" title="获得结果集"></a>获得结果集</h3><pre class="line-numbers language-c++"><code class="language-c++">// 将结果集从 mysql(参数) 对象中取出
-// MYSQL_RES 对应一块内存, 里边保存着这个查询之后得到的结果集
-// 如何将行和列的数据从结果集中取出, 需要使用其他函数
-// 返回值: 具有多个结果的MYSQL_RES结果集合。如果出现错误，返回NULL。 
-MYSQL_RES *mysql_store_result(MYSQL *mysql);
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="得到结果集的列数"><a href="#得到结果集的列数" class="headerlink" title="得到结果集的列数"></a>得到结果集的列数</h3><pre class="line-numbers language-c++"><code class="language-c++">// 从结果集中列的个数
-// 参数: 调用 mysql_store_result() 得到的返回值
-// 返回值: 结果集中的列数
-unsigned int mysql_num_fields(MYSQL_RES *result)
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="获取表头-字段名"><a href="#获取表头-字段名" class="headerlink" title="获取表头 -&gt; 字段名"></a>获取表头 -&gt; 字段名</h3><pre class="line-numbers language-c++"><code class="language-c++">// 参数: 调用 mysql_store_result() 得到的返回值
-// 返回值: MYSQL_FIELD* 指向一个结构体
-// 通过查询官方文档, 返回是一个结构体的数组
-// 通过这个函数得到结果集中所有列的名字
-MYSQL_FIELD *mysql_fetch_fields(MYSQL_RES *result);
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>返回值 <code>MYSQL_FIELD</code> 对应的是一个结构体，在 <code>mysql.h</code> 中定义如下:</p>
-<pre class="line-numbers language-c++"><code class="language-c++">// mysql.h
-// 结果集中的每一个列对应一个 MYSQL_FIELD
-typedef struct st_mysql_field &#123;
-  char *name;                 /* 列名-> 字段的名字 */
-  char *org_name;             /* Original column name, if an alias */
-  char *table;                /* Table of column if column was a field */
-  char *org_table;            /* Org table name, if table was an alias */
-  char *db;                   /* Database for table */
-  char *catalog;              /* Catalog for table */
-  char *def;                  /* Default value (set by mysql_list_fields) */
-  unsigned long length;       /* Width of column (create length) */
-  unsigned long max_length;   /* Max width for selected set */
-  unsigned int name_length;
-  unsigned int org_name_length;                                                                                        
-  unsigned int table_length;
-  unsigned int org_table_length;
-  unsigned int db_length;
-  unsigned int catalog_length;
-  unsigned int def_length;
-  unsigned int flags;         /* Div flags */
-  unsigned int decimals;      /* Number of decimals in field */
-  unsigned int charsetnr;     /* Character set */
-  enum enum_field_types type; /* Type of field. See mysql_com.h for types */
-  void *extension;
-&#125; MYSQL_FIELD;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><strong>使用示例</strong></p>
-<pre class="line-numbers language-c++"><code class="language-c++">// 得到存储头信息的数组的地址
-MYSQL_FIELD* fields = mysql_fetch_fields(res);
-// 得到列数
-int num = mysql_num_fields(res);
-// 遍历得到每一列的列名
-for(int i=0; i<num; ++i)
+                <h2 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h2><h3 id="什么是内存对齐"><a href="#什么是内存对齐" class="headerlink" title="什么是内存对齐"></a>什么是内存对齐</h3><p>内存对齐是指在分配内存时，数据存储在<strong>内存中的起始地址</strong>是按照一定的规则对齐的。</p>
+<p>假设现在CPU是按照每4个字节来访问内存，有地址0、和地址1，现在要存1个char变量（假设char变量占1字节）和1个int变量（假设int变量占4字节），那么可以有内存对齐和内存不对齐的存储方式，如下图：</p>
+<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231116194307036.png" alt="image-20231116194307036"></p>
+<p>假如不采用内存对齐的方式存储数据，那么CPU需要访问地址0和地址1，再进行合并，才能得到最终的结果；采用内存对齐的方式进行存储数据的话，则只需访问地址1就可以得到最终的结果。因此，<strong>采用内存对齐的存储方式可以减少CPU的访问运行时间</strong>，缺点是<strong>没有充分利用存储空间</strong>。</p>
+<h3 id="对齐规则"><a href="#对齐规则" class="headerlink" title="对齐规则"></a><strong>对齐规则</strong></h3><p>数据是根据初始化的顺序存储的，先定义的先储存，存储地址需要是<code>sizeof</code>(数据变量)的整数倍。</p>
+<p>例如，假设<code>sizeof(char) = 1，sizeof(int) = 4，sizeof(int) = 4，sizeof(double) = 8</code>。结构的对齐规则是要先确定对齐字节数（<strong>对齐字节数&#x3D;结构体中的变量占用空间最大的那个字节数</strong>，下面的结构体<code>t3、t4</code>就是<code>sizeof(double) = 8</code>），然后再保证存储地址是<code>sizeof</code>(数据变量)的整数倍。</p>
+<pre class="line-numbers language-c++"><code class="language-c++">#include <iostream>
+using namespace std;
+
+struct t1&#123;
+    char a;
+    short c;
+    int x;
+    char b;
+
+&#125;;
+
+struct t2&#123;
+    int x;
+    char b;
+    char c;
+    short a;
+&#125;;
+
+struct t3&#123;
+    short a;
+    double c;
+    int x;
+    char b;
+
+&#125;;
+
+struct t4&#123;
+    char a, b;
+    int x;
+    double c;
+
+&#125;;
+int main()
 &#123;
-    printf("当前列的名字: %s\n", fields[i].name);
-&#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="得到结果集中字段的长度"><a href="#得到结果集中字段的长度" class="headerlink" title="得到结果集中字段的长度"></a>得到结果集中字段的长度</h3><pre class="line-numbers language-txt"><code class="language-txt">/* 
-返回结果集内当前行的列的长度:
-    1. 如果打算复制字段值，使用该函数能避免调用strlen()。
-    2. 如果结果集包含二进制数据，必须使用该函数来确定数据的大小，原因在于，对于包含Null字符的任何字段，strlen()将返回错误的结果。
-*/
-unsigned long *mysql_fetch_lengths(MYSQL_RES *result);
-参数: 
-    - result: 通过查询得到的结果集
-返回值:
-    - 无符号长整数的数组表示各列的大小。如果出现错误，返回NULL。
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="遍历结果集"><a href="#遍历结果集" class="headerlink" title="遍历结果集"></a>遍历结果集</h3><pre class="line-numbers language-txt"><code class="language-txt">typedef char** MYSQL_ROW;
-// 遍历结果集的下一行 
-// 如果想遍历整个结果集, 需要对该函数进行循环调用
-// 返回值是二级指针, char** 指向一个什么类型的内存呢?
-//    -- 指向一个指针数组, 类型是数组,里边的每个元素都是指针, char* 类型
-//    -- char* []; 数组中的字符串对应的一列数据
-
-// 需要对 MYSQL_ROW 遍历就可以得到每一列的值
-// 如果要遍历整个结果集, 需要循环调用这个函数
-MYSQL_ROW mysql_fetch_row(MYSQL_RES *result);
-参数: 
-    - result: 通过查询得到的结果集
-返回值: 
-    - 成功: 得到了当前记录中每个字段的值
-    - 失败: NULL, 说明数据已经读完了
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="资源回收"><a href="#资源回收" class="headerlink" title="资源回收"></a>资源回收</h3><pre class="line-numbers language-c++"><code class="language-c++">// 释放结果集
-void mysql_free_result(MYSQL_RES *result);
-// 关闭mysql实例
-void mysql_close(MYSQL *mysql);
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="事物操作"><a href="#事物操作" class="headerlink" title="事物操作"></a>事物操作</h3><pre class="line-numbers language-c++"><code class="language-c++">// mysql中默认会进行事务的提交
-// 因为自动提交事务, 会对我们的操作造成影响
-// 如果我们操作的步骤比较多, 集合的开始和结束需要用户自己去设置, //需要改为手动方式提交事务
-my_bool mysql_autocommit(MYSQL *mysql, my_bool mode) 
-/*
-参数:
-    如果模式为“1”，启用autocommit模式；如果模式为“0”，禁止autocommit模式。
-返回值
-   如果成功，返回0，如果出现错误，返回非0值。
-
- 事务提交
- */
-my_bool mysql_commit(MYSQL *mysql);
-//返回值: 成功: 0, 失败: 非0
     
-// 数据回滚
-my_bool mysql_rollback(MYSQL *mysql) 
-//返回值: 成功: 0, 失败: 非0
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="打印错误日志"><a href="#打印错误日志" class="headerlink" title="打印错误日志"></a>打印错误日志</h3><pre class="line-numbers language-c++"><code class="language-c++">// 返回错误的描述
-const char *mysql_error(MYSQL *mysql);
-// 返回错误的编号
-unsigned int mysql_errno(MYSQL *mysql);
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+    cout << sizeof(t1) << endl; //12
+    cout << sizeof(t2) << endl; //8
+    cout << sizeof(t3) << endl; //24
+    cout << sizeof(t4) << endl; //16
+    return 0;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231116194937640.png" alt="image-20231116194937640"></p>
+<p>在C&#x2F;C++中，内存对齐是由编译器负责的。编译器会按照平台的要求为数据进行对齐，通常会将数据按照其自身大小对齐到特定字节的倍数。这个特定字节的倍数通常由平台决定，例如，在32位系统中可能是4字节，而在64位系统中可能是8字节。</p>
+<p>C&#x2F;C++中可以使用一些特殊的关键字或编译器指令来控制内存对齐，例如：<code>alignas</code>关键字：C++11引入了<code>alignas</code>关键字，用于指定对齐方式。</p>
+<pre class="line-numbers language-c++"><code class="language-c++">alignas(16) struct MyStruct &#123;
+    // 结构体成员
+&#125;;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a><strong>作用</strong></h3><ol>
+<li>提高访问速度：许多计算机体系结构要求数据按照特定的边界地址存储，而不是任意地址。当数据被按照这些边界对齐时，处理器能够更快地访问这些数据，提高数据存取速度。</li>
+<li>硬件要求：一些硬件平台对于特定类型的数据要求按照一定的对齐方式存储，不遵循这个规则可能导致硬件异常或性能下降。</li>
+<li>减少浪费：内存对齐可以减少内存碎片，提高内存利用率。</li>
+</ol>
 
                 
             </div>
@@ -736,7 +624,7 @@ unsigned int mysql_errno(MYSQL *mysql);
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://dybil.top/2023/11/14/C-%E4%BD%BF%E7%94%A8MYSQL-API-%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93/">http://dybil.top/2023/11/14/C-%E4%BD%BF%E7%94%A8MYSQL-API-%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93/</a>
+                    <a href="http://dybil.top/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/">http://dybil.top/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -776,10 +664,6 @@ unsigned int mysql_errno(MYSQL *mysql);
                             
                                 <a href="/tags/c/">
                                     <span class="chip bg-color">c++</span>
-                                </a>
-                            
-                                <a href="/tags/mysql/">
-                                    <span class="chip bg-color">mysql</span>
                                 </a>
                             
                         </div>
@@ -1097,17 +981,18 @@ unsigned int mysql_errno(MYSQL *mysql);
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/11/15/%E8%99%9A%E5%87%BD%E6%95%B0/">
+                <a href="/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="虚函数">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="内存对齐">
                         
-                        <span class="card-title">虚函数</span>
+                        <span class="card-title">内存对齐</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1117,9 +1002,9 @@ unsigned int mysql_errno(MYSQL *mysql);
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-15
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-16
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1132,6 +1017,7 @@ unsigned int mysql_errno(MYSQL *mysql);
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -1150,13 +1036,13 @@ unsigned int mysql_errno(MYSQL *mysql);
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/11/10/C-11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%88II%EF%BC%89/">
+                <a href="/2023/11/15/%E8%99%9A%E5%87%BD%E6%95%B0/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="C++11新特性（II)">
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="虚函数">
                         
-                        <span class="card-title">C++11新特性（II)</span>
+                        <span class="card-title">虚函数</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1167,14 +1053,14 @@ unsigned int mysql_errno(MYSQL *mysql);
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-10
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-15
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E7%AC%94%E8%AE%B0/" class="post-category">
-                                    笔记
+                            <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
+                                    每日一题
                                 </a>
                             
                             
