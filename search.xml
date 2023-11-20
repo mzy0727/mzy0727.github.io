@@ -4,6 +4,106 @@
   
     
     <entry>
+      <title>Linux中最大socket数量</title>
+      <link href="/2023/11/20/Linux%E4%B8%AD%E6%9C%80%E5%A4%A7socket%E6%95%B0%E9%87%8F/"/>
+      <url>/2023/11/20/Linux%E4%B8%AD%E6%9C%80%E5%A4%A7socket%E6%95%B0%E9%87%8F/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Linux中最大socket数量"><a href="#Linux中最大socket数量" class="headerlink" title="Linux中最大socket数量"></a>Linux中最大socket数量</h2><p><strong>linux系统默认<code>ulimit</code>为<code>1024</code>个访问，用户最多可开启的程序数目。一般一个端口的最高连接为2的16次方<code>65535</code>。</strong></p><p>查看全局文件句柄数限制(系统支持的最大值)</p><pre class="line-numbers language-shell"><code class="language-shell">cat /proc/sys/fs/file-max<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>查看每个进程文件句柄数限制</p><pre class="line-numbers language-shell"><code class="language-shell">ulimit -n<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>如何修改最大连接数量<a href="https://blog.csdn.net/LINZEYU666/article/details/121548591">870-Linux下解决高并发socket最大连接数限制_socket 连接数_林林林ZEYU的博客-CSDN博客</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Linux中kill、kill -15、kill -9的区别</title>
+      <link href="/2023/11/19/Linux%E4%B8%ADkill%E3%80%81kill-15%E3%80%81kill-9%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/11/19/Linux%E4%B8%ADkill%E3%80%81kill-15%E3%80%81kill-9%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Linux中kill-、kill-15、kill-9-的区别"><a href="#Linux中kill-、kill-15、kill-9-的区别" class="headerlink" title="Linux中kill 、kill -15、kill -9 的区别"></a>Linux中<code>kill</code> 、<code>kill -15</code>、<code>kill -9</code> 的区别</h2><p><code>kill（不加 -* 默认kill -15）</code>命令</p><p>系统会发送一个<code>SIGTERM</code>信号给对应的程序。当程序接收到该<code>signal</code>信号后，将会发生以下事情：</p><ul><li>程序立刻停止</li><li>当程序释放相应资源后再停止</li><li>程序可能仍然继续运行</li></ul><p>大部分程序接收到<code>SIGTERM</code>信号后，会先释放自己的资源，然后再停止。但是也有程序可能接收信号后，做一些其他的事情（如果程序正在等待IO，可能就不会立马做出响应），也就是说，**<code>SIGTERM</code>有可能是会被阻塞的**。</p><p><code>kill -9</code>命令</p><p><strong>系统给对应程序发送的信号是<code>SIGKILL</code>，即<code>exit</code>。<code>exit</code>信号不会被系统阻塞，所以<code>kill -9</code>能顺利杀掉进程。</strong></p><ul><li><strong>在使用<code>kill -9</code> 前，应该先使用<code> kill -15</code>，给目标进程一个清理善后工作的机会。如果没有，可能会留下一些不完整的文件或状态，从而影响服务的再次启动。</strong></li></ul><h3 id="kill-9这个信号可以捕获吗"><a href="#kill-9这个信号可以捕获吗" class="headerlink" title="kill -9这个信号可以捕获吗"></a><code>kill -9</code>这个信号可以捕获吗</h3><p><code>kill -9</code>命令用于发送<code>SIGKILL</code>信号给指定的进程，强制终止该进程。<code>SIGKILL</code>是一个无法捕获或阻止的信号，它会立即终止目标进程，不给进程做清理或善后工作的机会。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>strlen和sizeof的区别</title>
+      <link href="/2023/11/18/strlen%E5%92%8Csizeof%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/11/18/strlen%E5%92%8Csizeof%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h2 id="strlen-和-sizeof的区别"><a href="#strlen-和-sizeof的区别" class="headerlink" title="strlen 和 sizeof的区别"></a><code>strlen</code> 和 <code>sizeof</code>的区别</h2><p><code>sizeof</code>是C语言中的一个单目运算符，用来计算数据类型所占空间的大小，单位为字节；而<code>strlen</code>是一个函数，用来计算字符串长度。简单来说，就是<code>sizeof</code>不包含<code>\0</code>,而<code>strlen</code>包含<code>\0</code>。</p><pre class="line-numbers language-c++"><code class="language-c++">#include <stdio.h>#include <string.h>int main()&#123;    char arr1[]="abcd";//d的后面自动补上\0;    char arr2[]=&#123;'a','b','c','d'&#125;;//以单个元素赋值，没有\0的结束符    printf("strlen1=%d\n",strlen(arr1));//strlen()计算\0之前的字符长度    printf("strlen2=%d\n",strlen(arr2));//该处计算结果应为随机值，因为arr2[]没定义元素个数，就无法知道在哪能遇到\0;    printf("sizeof1=%d\n",sizeof(arr1));//计算了包含\0的数据空间大小    printf("sizeof2=%d\n",sizeof(arr2));    return 0; &#125; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><pre class="line-numbers language-txt"><code class="language-txt">strlen1=4strlen2=8sizeof1=5sizeof2=4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>C++迭代器和指针的区别</title>
+      <link href="/2023/11/17/C-%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/11/17/C-%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h2 id="C-迭代器和指针的区别"><a href="#C-迭代器和指针的区别" class="headerlink" title="C++迭代器和指针的区别"></a>C++迭代器和指针的区别</h2><ul><li><strong>范围</strong>：指针属于迭代器的一种（指针可以用来遍历容器[数组]），<strong>迭代器使用后就释放了，不能再继续使用，指针能</strong>；<strong>指针能指向函数，迭代器不行，只能指向容器</strong></li><li><strong>功能</strong>：迭代器有着比指针更细的划分并对应能力不同的功能（<strong>重载不同的运算符</strong>）</li><li><strong>行为</strong>：迭代器比指针更统一和良好的用法（<strong>更轻易使用begin()和end()，不用担心越界</strong>）。</li></ul><h3 id="为什么需要迭代器"><a href="#为什么需要迭代器" class="headerlink" title="为什么需要迭代器"></a>为什么需要迭代器</h3><ul><li><strong>抽象层次：</strong> <strong>迭代器提供了对容器元素的高层次抽象</strong>，允许使用一致的方式遍历不同类型的容器，而不用关心底层实现。</li><li><strong>安全性：</strong> 使用迭代器可以减少指针错误的可能性，因为迭代器受到容器的保护，<strong>不容易越界访问或访问非法内存</strong>。</li><li><strong>容器封装：</strong> 迭代器为容器提供了一种封装，<strong>允许容器实现者更灵活地改变底层数据结构</strong>，而不会对使用容器的代码产生影响。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>内存对齐</title>
       <link href="/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/"/>
       <url>/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/</url>
@@ -149,9 +249,9 @@
             
             <tag> c++ </tag>
             
-            <tag> c </tag>
-            
             <tag> linux </tag>
+            
+            <tag> c </tag>
             
             <tag> 网络编程 </tag>
             
@@ -205,9 +305,9 @@
       
         <tags>
             
-            <tag> c </tag>
-            
             <tag> linux </tag>
+            
+            <tag> c </tag>
             
             <tag> 网络编程 </tag>
             
@@ -286,9 +386,9 @@
       
         <tags>
             
-            <tag> linux </tag>
-            
             <tag> git </tag>
+            
+            <tag> linux </tag>
             
         </tags>
       
@@ -315,9 +415,9 @@
             
             <tag> c++ </tag>
             
-            <tag> c </tag>
-            
             <tag> linux </tag>
+            
+            <tag> c </tag>
             
             <tag> 网络编程 </tag>
             
