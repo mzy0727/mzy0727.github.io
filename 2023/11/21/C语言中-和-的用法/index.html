@@ -510,14 +510,14 @@ using namespace std;
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    473
+                    412
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    1 分
                 </div>
                 
 
@@ -563,15 +563,14 @@ using namespace std<span class="token punctuation">;</span>
 <div class="note success"><p>当宏参数是另一个宏的时候，需要注意的是凡宏定义里有用<code>#</code>或<code>##</code>的地方宏参数是不会再展开。 <strong>只有当前宏生效, 参数里的宏不会生效</strong> ！！！</p>
 </div>
 
-<p class="note note-primary">当宏参数是另一个宏的时候，需要注意的是凡宏定义里有用`#`或`##`的地方宏参数是不会再展开。 只有当前宏生效, 参数里的宏不会生效 ！！！</p>
 
-<p><span class="label label-primary">举例</span></p>
-<pre><code>#define A          (2)
+<p>举例</p>
+<pre class="line-numbers language-c++"><code class="language-c++">#define A          (2)
 #define STR(s)     #s
 #define CONS(a,b)  int(a##e##b)
-printf(&quot;int max: %s\n&quot;,  STR(INT_MAX));    // INT_MAX ＃include&lt;climits&gt;
-printf(&quot;%s\n&quot;, CONS(A, A));                // compile error --- int(AeA)
-</code></pre>
+printf("int max: %s\n",  STR(INT_MAX));    // INT_MAX ＃include<climits>
+printf("%s\n", CONS(A, A));                // compile error --- int(AeA)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>两句<code>printf</code>会被展开为：</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"int max: %s\n"</span><span class="token punctuation">,</span><span class="token string">"INT_MAX"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%s\n"</span><span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token punctuation">(</span>AeA<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -1276,7 +1275,7 @@ int main()
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">21.7k</span>
+                        class="white-color">21.6k</span>
             
             
             
