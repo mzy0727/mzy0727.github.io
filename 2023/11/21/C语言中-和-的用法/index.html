@@ -510,7 +510,7 @@ using namespace std;
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    479
+                    473
                 </div>
                 
 
@@ -589,21 +589,21 @@ printf(&quot;%s\n&quot;, CONS(A, A));                // compile error --- int(Ae
 <span class="token macro property">#<span class="token directive keyword">define</span> _CONS(a,b)  int(a##e##b)</span>
 <span class="token macro property">#<span class="token directive keyword">define</span> CONS(a,b)   _CONS(a,b)       </span><span class="token comment" spellcheck="true">// 转换宏</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;cstdio></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;climits></span></span>
-using namespace std<span class="token punctuation">;</span>
-<span class="token macro property">#<span class="token directive keyword">define</span> A           2</span>
-<span class="token macro property">#<span class="token directive keyword">define</span> _STR(s)     #s</span>
-<span class="token macro property">#<span class="token directive keyword">define</span> STR(s)      _STR(s)          </span><span class="token comment" spellcheck="true">// 转换宏</span>
-<span class="token macro property">#<span class="token directive keyword">define</span> _CONS(a,b)  int(a##e##b)</span>
-<span class="token macro property">#<span class="token directive keyword">define</span> CONS(a,b)   _CONS(a,b)       </span><span class="token comment" spellcheck="true">// 转换宏</span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token function">STR</span><span class="token punctuation">(</span>INT_MAX<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token comment" spellcheck="true">// 输出字符串"abc"</span>
-   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> <span class="token function">CONS</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>A<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 2e3 输出:2000</span>
-   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<pre class="line-numbers language-c++"><code class="language-c++">#include<cstdio>
+#include<climits>
+using namespace std;
+#define A           2
+#define _STR(s)     #s
+#define STR(s)      _STR(s)          // 转换宏
+#define _CONS(a,b)  int(a##e##b)
+#define CONS(a,b)   _CONS(a,b)       // 转换宏
+int main()
+&#123;
+   printf(STR(INT_MAX));           // 输出字符串"abc"
+   printf("\n");
+   printf("%d\n", CONS(A,A));  // 2e3 输出:2000
+   return 0;
+&#125;
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <pre class="line-numbers language-txt"><code class="language-txt">0x7fffffff
 200
