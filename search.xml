@@ -4,6 +4,56 @@
   
     
     <entry>
+      <title>信号量和互斥锁有什么区别</title>
+      <link href="/2023/11/23/%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/11/23/%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h2 id="信号量和互斥锁有什么区别"><a href="#信号量和互斥锁有什么区别" class="headerlink" title="信号量和互斥锁有什么区别"></a><strong>信号量和互斥锁有什么区别</strong></h2><div class="note success"><p>信号量用于线程的同步，互斥锁用于线程的互斥。</p><p>信号量值可以为非负整数，互斥锁值只能为<strong>0&#x2F;1</strong>。</p><p>信号量可以由一个线程释放，另一个线程得到，互斥锁的加锁和解锁必须由<strong>同一线程</strong>分别对应使用。</p><p>信号量用在多线程多任务同步的，一个线程完成了某一个动作就通过信号量告诉别的线程，别的线程再进行某些动作。互斥锁是用在多线程多任务互斥的，一个线程占用了某一个资源，那么别的线程就无法访问，直到这个线程unlock，其他的线程才开始可以利用这个资源。</p></div>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>vector怎么扩容</title>
+      <link href="/2023/11/22/vector%E6%80%8E%E4%B9%88%E6%89%A9%E5%AE%B9/"/>
+      <url>/2023/11/22/vector%E6%80%8E%E4%B9%88%E6%89%A9%E5%AE%B9/</url>
+      
+        <content type="html"><![CDATA[<h2 id="vector怎么扩容"><a href="#vector怎么扩容" class="headerlink" title="vector怎么扩容"></a><strong>vector怎么扩容</strong></h2><p>在 C++ 的标准库中，<code>std::vector</code> 是一个动态数组，其扩容是<strong>通过重新分配内存来实现的</strong>。当<code> std::vector</code> 的元素数量达到当前分配的内存大小时，系统会为<code>std::vector</code>分配一块更大的内存，并将原来的元素复制到新的内存中。这个过程中原来的内存会被释放。</p><p><code>std::vector</code> 扩容的基本步骤：</p><ol><li>分配新的内存：当 <code>std::vector</code> 中的元素个数达到当前分配的内存大小时，需要分配一块新的内存。新的内存大小通常是当前内存大小的两倍(Linux端），(Windows是1.5倍），这样做是为了保证<code>std::vector</code>的操作复杂度为平摊 O(1)。</li><li>将元素复制到新内存：将原来的元素逐个复制到新分配的内存中。</li><li>释放旧内存：释放原来的内存空间。</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>sprintf与snprintf区别</title>
       <link href="/2023/11/21/sprintf%E4%B8%8Esnprintf%E5%8C%BA%E5%88%AB/"/>
       <url>/2023/11/21/sprintf%E4%B8%8Esnprintf%E5%8C%BA%E5%88%AB/</url>

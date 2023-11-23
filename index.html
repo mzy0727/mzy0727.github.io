@@ -642,16 +642,18 @@ auto c = 1.9;//自动推断
                 <div class="container">
                     <div class="row">
                         <div class="col s10 offset-s1">
-                            <div class="title center-align">手写线程池</div>
+                            <div class="title center-align">基于epoll的web服务器(C语言版本)</div>
                             <div class="description center-align">
                                 
-                                    手写线程池线程池原理线程池的组成主要分为3个部分，这三部分配合工作就可以得到一个完整的线程池：
+                                    记录学习使用epoll实现web服务器
 
-任务队列，存储需要处理的任务，由工作的线程来处理这些任务通过线程池提供的API函数，将一个待处理的任务添加到任务队列，或者从任务队列中删除已处
+
+基于epoll的web服务器(C语言版本)1. 初始化监听套接字包括创建监听套接字，设置端口复用，绑定，设置监听等步骤
+1.1 创建监听套接字（socket函数）socket()打开一个网络通讯端
                                 
                             </div>
                             <div class="cover-btns">
-                                <a href="/2023/11/08/%E6%89%8B%E5%86%99%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="waves-effect waves-light btn"
+                                <a href="/2023/10/28/%E5%9F%BA%E4%BA%8Eepoll%E7%9A%84web%E6%9C%8D%E5%8A%A1%E5%99%A8-C%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC/" class="waves-effect waves-light btn"
                                    target="_blank">
                                     <i class="icon fa fa-eye fa-fw"></i>阅读更多
                                 </a>
@@ -667,18 +669,16 @@ auto c = 1.9;//自动推断
                 <div class="container">
                     <div class="row">
                         <div class="col s10 offset-s1">
-                            <div class="title center-align">基于epoll的web服务器(C语言版本)</div>
+                            <div class="title center-align">手写线程池</div>
                             <div class="description center-align">
                                 
-                                    记录学习使用epoll实现web服务器
+                                    手写线程池线程池原理线程池的组成主要分为3个部分，这三部分配合工作就可以得到一个完整的线程池：
 
-
-基于epoll的web服务器(C语言版本)1. 初始化监听套接字包括创建监听套接字，设置端口复用，绑定，设置监听等步骤
-1.1 创建监听套接字（socket函数）socket()打开一个网络通讯端
+任务队列，存储需要处理的任务，由工作的线程来处理这些任务通过线程池提供的API函数，将一个待处理的任务添加到任务队列，或者从任务队列中删除已处
                                 
                             </div>
                             <div class="cover-btns">
-                                <a href="/2023/10/28/%E5%9F%BA%E4%BA%8Eepoll%E7%9A%84web%E6%9C%8D%E5%8A%A1%E5%99%A8-C%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC/" class="waves-effect waves-light btn"
+                                <a href="/2023/11/08/%E6%89%8B%E5%86%99%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="waves-effect waves-light btn"
                                    target="_blank">
                                     <i class="icon fa fa-eye fa-fw"></i>阅读更多
                                 </a>
@@ -787,6 +787,107 @@ auto c = 1.9;//自动推断
     <!-- 所有文章卡片 -->
     <article id="articles" class="container articles">
         <div class="row article-row">
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2023/11/23/%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="信号量和互斥锁有什么区别">
+                            
+                            <span class="card-title">信号量和互斥锁有什么区别</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                信号量和互斥锁有什么区别信号量用于线程的同步，互斥锁用于线程的互斥。
+信号量值可以为非负整数，互斥锁值只能为0&#x2F;1。
+信号量可以由一个线程释放，另一个线程得到，互斥锁的加锁和解锁必须由同一线程分别对应使用。
+信号量用在多线程多任务
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-23
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
+                                    每日一题
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/c/">
+                            <span class="chip bg-color">c++</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2023/11/22/vector%E6%80%8E%E4%B9%88%E6%89%A9%E5%AE%B9/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="vector怎么扩容">
+                            
+                            <span class="card-title">vector怎么扩容</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                vector怎么扩容在 C++ 的标准库中，std::vector 是一个动态数组，其扩容是通过重新分配内存来实现的。当 std::vector 的元素数量达到当前分配的内存大小时，系统会为std::vector分配一块更大的内存，并将原来
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-22
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
+                                    每日一题
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/c/">
+                            <span class="chip bg-color">c++</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
             
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
@@ -1200,117 +1301,6 @@ public:
             </div>
               <!-- 隐藏某个文章 -->
             
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2023/11/14/C-%E4%BD%BF%E7%94%A8MYSQL-API-%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E5%BA%93/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="C++使用MYSQL API 操作数据库">
-                            
-                            <span class="card-title">C++使用MYSQL API 操作数据库</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                C++使用MYSQL API 操作数据库在程序中连接数据库服务器，主要包含以下步骤：
-
-初始化连接环境
-连接mysql的服务器需要提供：
-服务器IP
-服务器监听的端口（默认3306）
-服务器的用户名（默认root）和对应的密码
-服务器要操作
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-14
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E7%AC%94%E8%AE%B0/" class="post-category">
-                                    笔记
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/c/">
-                            <span class="chip bg-color">c++</span>
-                        </a>
-                        
-                        <a href="/tags/mysql/">
-                            <span class="chip bg-color">mysql</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2023/11/10/C-11%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%88II%EF%BC%89/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="C++11新特性（II)">
-                            
-                            <span class="card-title">C++11新特性（II)</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                C++11新特性（II）lambda表达式auto func = [capture] (params) opt -> ret &#123; func_body; &#125;;
-
-其中func是可以当作lambda表达式的名字，作为一个函数
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-10
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E7%AC%94%E8%AE%B0/" class="post-category">
-                                    笔记
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/c/">
-                            <span class="chip bg-color">c++</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
         </div>
     </article>
 
@@ -1327,7 +1317,7 @@ public:
             
         </div>
         <div class="page-info col m4 l4 hide-on-small-only">
-            <div class="center-align b-text-gray">1 / 2</div>
+            <div class="center-align b-text-gray">1 / 3</div>
         </div>
         <div class="col s6 m4 l4">
             
@@ -1414,7 +1404,7 @@ public:
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">22k</span>
+                        class="white-color">22.4k</span>
             
             
             
