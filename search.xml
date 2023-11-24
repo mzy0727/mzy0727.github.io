@@ -4,11 +4,61 @@
   
     
     <entry>
+      <title>野(wild)指针与悬空(dangling)指针有什么区别？如何避免？</title>
+      <link href="/2023/11/24/%E9%87%8E-wild-%E6%8C%87%E9%92%88%E4%B8%8E%E6%82%AC%E7%A9%BA-dangling-%E6%8C%87%E9%92%88%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%EF%BC%9F/"/>
+      <url>/2023/11/24/%E9%87%8E-wild-%E6%8C%87%E9%92%88%E4%B8%8E%E6%82%AC%E7%A9%BA-dangling-%E6%8C%87%E9%92%88%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%EF%BC%9F/</url>
+      
+        <content type="html"><![CDATA[<h2 id="野-wild-指针与悬空-dangling-指针有什么区别？如何避免？"><a href="#野-wild-指针与悬空-dangling-指针有什么区别？如何避免？" class="headerlink" title="野(wild)指针与悬空(dangling)指针有什么区别？如何避免？"></a>野(wild)指针与悬空(dangling)指针有什么区别？如何避免？</h2><p><strong>野指针</strong>(wild pointer)：就是<strong>没有被初始化过的指针</strong>。用 <code>gcc -Wall</code> 编译, 会出现 <code>used uninitialized</code>警告。</p><p><strong>悬空指针</strong>：是<strong>指针最初指向的内存已经被释放了</strong>的一种指针。</p><p>无论是野指针还是悬空指针，都是<strong>指向无效内存区域(这里的无效指的是”不安全不可控”)的指针</strong>。 访问”不安全可控”(invalid)的内存区域将导致”Undefined Behavior”。</p><p><strong>如何避免使用野指针？</strong></p><p>在平时的编码中，养成在定义指针后且在使用之前完成<strong>初始化</strong>的习惯或者使用智能指针。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>define和const区别</title>
+      <link href="/2023/11/24/define%E5%92%8Cconst%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/11/24/define%E5%92%8Cconst%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h2 id="define-和-const-区别"><a href="#define-和-const-区别" class="headerlink" title="define 和 const 区别"></a>define 和 const 区别</h2><p><strong>对于 <code>define </code>来说，</strong> 宏定义实际上是在<strong>预编译阶段</strong>进行处理，<strong>没有类型</strong>，也就没有类型检查，仅仅做的是<strong>遇到宏定义进行字符串的展开</strong>，遇到多少次就展开多少次，而且这个简单的展开过程中，很容易出现边界效应，达不到预期的效果。因为<code>define</code>宏定义仅仅是展开，因此<strong>运行时系统并不为宏定义分配内存</strong>，（但是从汇编的角度来讲，<code>define</code>却以<strong>立即数</strong>的方式<strong>保留了多份数据的拷贝</strong>）。</p><p><strong>对于 <code>const</code> 来说，</strong> <code>const</code> 是在<strong>编译期间</strong>进行处理的，<code>const </code><strong>有类型</strong>，也<strong>有类型检查</strong>，程序运行时系统会为 <code>const</code> 常量分配内存，而且从汇编的角度讲，<code>const</code> 常量在出现的地方保留的是真正数据的内存地址，<strong>只保留了一份数据的拷贝</strong>，省去了不必要的内存空间。而且，有时编译器不会为普通的<code>const</code>常量分配内存，而是直接将<code>const</code>常量添加到符号表中，省去了读取和写入内存的操作，效率更高。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>单例模式</title>
       <link href="/2023/11/23/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
       <url>/2023/11/23/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</url>
       
-        <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p class="note note-info">最简单也是被问到最多的设计模式之一，保证一个类只创建一个实例，同时提供全局访问的方法。</p><h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><p>在使用这个实例对象时才去创建，创建对象时加锁保证有且仅有一个（有线程安全问题）</p><p><strong>实现方式</strong></p><ol><li><p>静态局部变量</p></li><li><p>互斥锁</p></li><li><p>使用C++11新特性call_once</p></li></ol><h3 id="经典的线程安全例子"><a href="#经典的线程安全例子" class="headerlink" title="经典的线程安全例子"></a>经典的线程安全例子</h3><pre><code>class single&#123;private:    //私有静态指针变量指向唯一实例    static single *p;    //静态锁，是由于静态函数只能访问静态成员    static pthread_mutex_t lock;    //私有化构造函数    single()&#123;        pthread_mutex_init(&amp;lock, NULL);    &#125;    ~single()&#123;&#125;public:    //公有静态方法获取实例    static single* getinstance();&#125;;pthread_mutex_t single::lock;single* single::p = NULL;single* single::getinstance()&#123;    if (NULL == p)&#123;        pthread_mutex_lock(&amp;lock);        if (NULL == p)&#123;            p = new single;        &#125;        pthread_mutex_unlock(&amp;lock);    &#125;    return p;&#125;</code></pre><p><strong><code>为什么要用双检测，只检测一次不行吗？</code></strong></p><p>如果只检测一次，在每次调用获取实例的方法时，都需要加锁，这将严重影响程序性能。双层检测可以有效避免这种情况，仅在第一次创建单例的时候加锁，其他时候都不再符合NULL &#x3D;&#x3D; p的情况，直接返回已创建好的实例。</p><h3 id="局部静态变量之线程安全懒汉模式"><a href="#局部静态变量之线程安全懒汉模式" class="headerlink" title="局部静态变量之线程安全懒汉模式"></a><strong>局部静态变量之线程安全懒汉模式</strong></h3><pre><code>class single&#123;private:    single()&#123;&#125;    ~single()&#123;&#125;public:    static single* getinstance();&#125;;single* single::getinstance()&#123;    static single obj;    return &amp;obj;&#125;</code></pre><p><strong><code>这种方法不加锁会不会造成线程安全问题？</code></strong></p><p><code>C++0X</code>以后，要求<strong>编译器保证内部静态变量的线程安全性</strong>。</p><h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><p>不管是否使用这个实例对象，只要类被创建出来，实例对象就被创建（无线程安全问题）</p><p>饿汉模式不需要用锁，就可以实现线程安全。原因在于，在程序运行时就定义了对象，并对其初始化。之后，不管哪个线程调用成员函数<code>getinstance()</code>，都只不过是返回一个对象的指针而已。所以是线程安全的，不需要在获取实例的成员函数中加锁。</p><pre class="line-numbers language-c++"><code class="language-c++">class single&#123;private:    static single* p;    single()&#123;&#125;    ~single()&#123;&#125;public:    static single* getinstance();&#125;;single* single::p = new single();single* single::getinstance()&#123;    return p;&#125;//测试方法int main()&#123;    single *p1 = single::getinstance();    single *p2 = single::getinstance();    if (p1 == p2)        cout << "same" << endl;    system("pause");    return 0;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>饿汉模式存在隐藏的问题，在于非静态对象（函数外的static对象）在不同编译单元中的<strong>初始化顺序是未定义</strong>的。如果在<strong>初始化完成之前调用 <code>getInstance() </code>方法会返回一个未定义的实例</strong>。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p class="note note-info">最简单也是被问到最多的设计模式之一，保证一个类只创建一个实例，同时提供全局访问的方法。</p><h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><p>在使用这个实例对象时才去创建，创建对象时加锁保证有且仅有一个（有线程安全问题）</p><p><strong>实现方式</strong></p><ol><li><p>静态局部变量</p></li><li><p>互斥锁</p></li><li><p>使用C++11新特性call_once</p></li></ol><h3 id="经典的线程安全例子"><a href="#经典的线程安全例子" class="headerlink" title="经典的线程安全例子"></a>经典的线程安全例子</h3><pre class="line-numbers language-c++"><code class="language-c++">class single&#123;private:    //私有静态指针变量指向唯一实例    static single *p;    //静态锁，是由于静态函数只能访问静态成员    static pthread_mutex_t lock;    //私有化构造函数    single()&#123;        pthread_mutex_init(&lock, NULL);    &#125;    ~single()&#123;&#125;public:    //公有静态方法获取实例    static single* getinstance();&#125;;pthread_mutex_t single::lock;single* single::p = NULL;single* single::getinstance()&#123;    if (NULL == p)&#123;        pthread_mutex_lock(&lock);        if (NULL == p)&#123;            p = new single;        &#125;        pthread_mutex_unlock(&lock);    &#125;    return p;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><strong><code>为什么要用双检测，只检测一次不行吗？</code></strong></p><p>如果只检测一次，在每次调用获取实例的方法时，都需要加锁，这将严重影响程序性能。双层检测可以有效避免这种情况，仅在第一次创建单例的时候加锁，其他时候都不再符合NULL &#x3D;&#x3D; p的情况，直接返回已创建好的实例。</p><h3 id="局部静态变量之线程安全懒汉模式"><a href="#局部静态变量之线程安全懒汉模式" class="headerlink" title="局部静态变量之线程安全懒汉模式"></a><strong>局部静态变量之线程安全懒汉模式</strong></h3><pre class="line-numbers language-c++"><code class="language-c++">class single&#123;private:    single()&#123;&#125;    ~single()&#123;&#125;public:    static single* getinstance();&#125;;single* single::getinstance()&#123;    static single obj;    return &obj;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><strong><code>这种方法不加锁会不会造成线程安全问题？</code></strong></p><p><code>C++0X</code>以后，要求<strong>编译器保证内部静态变量的线程安全性</strong>。</p><h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><p>不管是否使用这个实例对象，只要类被创建出来，实例对象就被创建（无线程安全问题）</p><p>饿汉模式不需要用锁，就可以实现线程安全。原因在于，在程序运行时就定义了对象，并对其初始化。之后，不管哪个线程调用成员函数<code>getinstance()</code>，都只不过是返回一个对象的指针而已。所以是线程安全的，不需要在获取实例的成员函数中加锁。</p><pre class="line-numbers language-c++"><code class="language-c++">class single&#123;private:    static single* p;    single()&#123;&#125;    ~single()&#123;&#125;public:    static single* getinstance();&#125;;single* single::p = new single();single* single::getinstance()&#123;    return p;&#125;//测试方法int main()&#123;    single *p1 = single::getinstance();    single *p2 = single::getinstance();    if (p1 == p2)        cout << "same" << endl;    system("pause");    return 0;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>饿汉模式存在隐藏的问题，在于非静态对象（函数外的static对象）在不同编译单元中的<strong>初始化顺序是未定义</strong>的。如果在<strong>初始化完成之前调用 <code>getInstance() </code>方法会返回一个未定义的实例</strong>。</p>]]></content>
       
       
       <categories>
