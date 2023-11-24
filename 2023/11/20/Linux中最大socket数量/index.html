@@ -54,8 +54,7 @@ cat /proc/sys/fs/fil">
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-duotone-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -529,6 +528,9 @@ cat /proc/sys/fs/fil">
         <hr class="clearfix">
 
         
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
 
         
         <!-- 代码块折行 -->
@@ -541,11 +543,11 @@ cat /proc/sys/fs/fil">
             <div id="articleContent">
                 <h2 id="Linux中最大socket数量"><a href="#Linux中最大socket数量" class="headerlink" title="Linux中最大socket数量"></a>Linux中最大socket数量</h2><p><strong>linux系统默认<code>ulimit</code>为<code>1024</code>个访问，用户最多可开启的程序数目。一般一个端口的最高连接为2的16次方<code>65535</code>。</strong></p>
 <p>查看全局文件句柄数限制(系统支持的最大值)</p>
-<pre class="line-numbers language-shell"><code class="language-shell">cat /proc/sys/fs/file-max
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> /proc/sys/fs/file-max<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>查看每个进程文件句柄数限制</p>
-<pre class="line-numbers language-shell"><code class="language-shell">ulimit -n
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">ulimit</span> <span class="token parameter variable">-n</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>如何修改最大连接数量<a target="_blank" rel="noopener" href="https://blog.csdn.net/LINZEYU666/article/details/121548591">870-Linux下解决高并发socket最大连接数限制_socket 连接数_林林林ZEYU的博客-CSDN博客</a></p>
 
                 
@@ -1037,6 +1039,9 @@ cat /proc/sys/fs/fil">
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
 
 <!-- 代码语言 -->
 
@@ -1213,7 +1218,7 @@ cat /proc/sys/fs/fil">
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">34.3k</span>
             
             
             

@@ -55,8 +55,7 @@ public:
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-duotone-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -508,7 +507,7 @@ public:
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    111
+                    494
                 </div>
                 
 
@@ -530,6 +529,9 @@ public:
         <hr class="clearfix">
 
         
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
 
         
         <!-- 代码块折行 -->
@@ -541,46 +543,46 @@ public:
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="1-虚函数"><a href="#1-虚函数" class="headerlink" title="1. 虚函数"></a>1. 虚函数</h2><h3 id="1-1-什么是虚函数"><a href="#1-1-什么是虚函数" class="headerlink" title="1.1 什么是虚函数"></a>1.1 什么是虚函数</h3><p>虚函数是在基类中声明的，而在派生类中进行重写的函数。通过使用virtual关键字声明一个函数为虚函数，它使得在运行时能够动态地确定调用的是哪个版本的函数。</p>
-<pre class="line-numbers language-c++"><code class="language-c++">class Base &#123;
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class Base &#123;
 public:
     virtual void show() &#123;
-        std::cout << "Base class\n";
+        std::cout &lt;&lt; &quot;Base class\n&quot;;
     &#125;
 &#125;;
 
 class Derived : public Base &#123;
 public:
     void show() override &#123;
-        std::cout << "Derived class\n";
+        std::cout &lt;&lt; &quot;Derived class\n&quot;;
     &#125;
-&#125;;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="1-2-虚函数的作用"><a href="#1-2-虚函数的作用" class="headerlink" title="1.2 虚函数的作用"></a>1.2 <strong>虚函数的作用</strong></h3><ul>
 <li>实现多态性（Polymorphism）：允许通过基类指针或引用调用派生类对象的函数，根据实际对象的类型选择相应的函数实现。</li>
 <li>运行时绑定（Runtime Binding）：虚函数通过表格（虚函数表）的方式实现，使得在运行时动态地绑定函数调用。</li>
 </ul>
 <h3 id="1-3-虚函数表（vtable）"><a href="#1-3-虚函数表（vtable）" class="headerlink" title="1.3 虚函数表（vtable）"></a>1.3 <strong>虚函数表（vtable）</strong></h3><p>每个含有虚函数的类都有一个虚函数表，其中<strong>存储了虚函数的地址</strong>。对象的内存布局中包含一个指向虚函数表的指针。派生类的虚函数表包含基类的虚函数表，并在适当的位置添加或替换新的虚函数地址。</p>
 <h3 id="1-4-纯虚函数"><a href="#1-4-纯虚函数" class="headerlink" title="1.4 纯虚函数"></a>1.4 <strong>纯虚函数</strong></h3><p><strong>纯虚函数是一个在基类中声明但没有提供实现的虚函数</strong>，它通过在声明中使用 &#x3D; 0 来标识。类含有纯虚函数的类被称为<strong>抽象类</strong>，不能被实例化。派生类必须实现纯虚函数，否则也会变为抽象类。</p>
-<pre class="line-numbers language-c++"><code class="language-c++">class AbstractBase &#123;
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class AbstractBase &#123;
 public:
-    virtual void pureVirtualFunction() = 0;
-&#125;;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+    virtual void pureVirtualFunction() &#x3D; 0;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="1-5-虚析构函数"><a href="#1-5-虚析构函数" class="headerlink" title="1.5 虚析构函数"></a>1.5 <strong>虚析构函数</strong></h3><p>如果基类的析构函数是虚函数，当通过基类指针删除派生类对象时，会调用派生类的析构函数。这是为了确保正确的对象销毁。</p>
-<pre class="line-numbers language-c++"><code class="language-c++">class Base &#123;
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class Base &#123;
 public:
     virtual ~Base() &#123;
-        std::cout << "Base destructor\n";
+        std::cout &lt;&lt; &quot;Base destructor\n&quot;;
     &#125;
 &#125;;
 
 class Derived : public Base &#123;
 public:
     ~Derived() override &#123;
-        std::cout << "Derived destructor\n";
+        std::cout &lt;&lt; &quot;Derived destructor\n&quot;;
     &#125;
-&#125;;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 
                 
             </div>
@@ -1075,6 +1077,9 @@ public:
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
 
 <!-- 代码语言 -->
 
@@ -1251,7 +1256,7 @@ public:
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">34.3k</span>
             
             
             

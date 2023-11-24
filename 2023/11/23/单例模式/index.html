@@ -61,8 +61,7 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-duotone-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -518,7 +517,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    594
+                    697
                 </div>
                 
 
@@ -539,6 +538,9 @@
         </div>
         <hr class="clearfix">
 
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
         
 
         
@@ -562,43 +564,43 @@
 <li><p>使用C++11新特性call_once</p>
 </li>
 </ol>
-<h3 id="经典的线程安全例子"><a href="#经典的线程安全例子" class="headerlink" title="经典的线程安全例子"></a>经典的线程安全例子</h3><pre class="line-numbers language-c++"><code class="language-c++">class single&#123;
+<h3 id="经典的线程安全例子"><a href="#经典的线程安全例子" class="headerlink" title="经典的线程安全例子"></a>经典的线程安全例子</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class single&#123;
 private:
-    //私有静态指针变量指向唯一实例
+    &#x2F;&#x2F;私有静态指针变量指向唯一实例
     static single *p;
 
-    //静态锁，是由于静态函数只能访问静态成员
+    &#x2F;&#x2F;静态锁，是由于静态函数只能访问静态成员
     static pthread_mutex_t lock;
 
-    //私有化构造函数
+    &#x2F;&#x2F;私有化构造函数
     single()&#123;
-        pthread_mutex_init(&lock, NULL);
+        pthread_mutex_init(&amp;lock, NULL);
     &#125;
     ~single()&#123;&#125;
 
 public:
-    //公有静态方法获取实例
+    &#x2F;&#x2F;公有静态方法获取实例
     static single* getinstance();
 
 &#125;;
 
 pthread_mutex_t single::lock;
 
-single* single::p = NULL;
+single* single::p &#x3D; NULL;
 single* single::getinstance()&#123;
-    if (NULL == p)&#123;
-        pthread_mutex_lock(&lock);
-        if (NULL == p)&#123;
-            p = new single;
+    if (NULL &#x3D;&#x3D; p)&#123;
+        pthread_mutex_lock(&amp;lock);
+        if (NULL &#x3D;&#x3D; p)&#123;
+            p &#x3D; new single;
         &#125;
-        pthread_mutex_unlock(&lock);
+        pthread_mutex_unlock(&amp;lock);
     &#125;
     return p;
-&#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong><code>为什么要用双检测，只检测一次不行吗？</code></strong></p>
 <p>如果只检测一次，在每次调用获取实例的方法时，都需要加锁，这将严重影响程序性能。双层检测可以有效避免这种情况，仅在第一次创建单例的时候加锁，其他时候都不再符合NULL &#x3D;&#x3D; p的情况，直接返回已创建好的实例。</p>
-<h3 id="局部静态变量之线程安全懒汉模式"><a href="#局部静态变量之线程安全懒汉模式" class="headerlink" title="局部静态变量之线程安全懒汉模式"></a><strong>局部静态变量之线程安全懒汉模式</strong></h3><pre class="line-numbers language-c++"><code class="language-c++">class single&#123;
+<h3 id="局部静态变量之线程安全懒汉模式"><a href="#局部静态变量之线程安全懒汉模式" class="headerlink" title="局部静态变量之线程安全懒汉模式"></a><strong>局部静态变量之线程安全懒汉模式</strong></h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class single&#123;
 private:
     single()&#123;&#125;
     ~single()&#123;&#125;
@@ -610,14 +612,14 @@ public:
 
 single* single::getinstance()&#123;
     static single obj;
-    return &obj;
-&#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    return &amp;obj;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong><code>这种方法不加锁会不会造成线程安全问题？</code></strong></p>
 <p><code>C++0X</code>以后，要求<strong>编译器保证内部静态变量的线程安全性</strong>。</p>
 <h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><p>不管是否使用这个实例对象，只要类被创建出来，实例对象就被创建（无线程安全问题）</p>
 <p>饿汉模式不需要用锁，就可以实现线程安全。原因在于，在程序运行时就定义了对象，并对其初始化。之后，不管哪个线程调用成员函数<code>getinstance()</code>，都只不过是返回一个对象的指针而已。所以是线程安全的，不需要在获取实例的成员函数中加锁。</p>
-<pre class="line-numbers language-c++"><code class="language-c++">class single&#123;
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class single&#123;
 private:
     static single* p;
     single()&#123;&#125;
@@ -627,24 +629,24 @@ public:
     static single* getinstance();
 
 &#125;;
-single* single::p = new single();
+single* single::p &#x3D; new single();
 single* single::getinstance()&#123;
     return p;
 &#125;
 
-//测试方法
+&#x2F;&#x2F;测试方法
 int main()&#123;
 
-    single *p1 = single::getinstance();
-    single *p2 = single::getinstance();
+    single *p1 &#x3D; single::getinstance();
+    single *p2 &#x3D; single::getinstance();
 
-    if (p1 == p2)
-        cout << "same" << endl;
+    if (p1 &#x3D;&#x3D; p2)
+        cout &lt;&lt; &quot;same&quot; &lt;&lt; endl;
 
-    system("pause");
+    system(&quot;pause&quot;);
     return 0;
-&#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>饿汉模式存在隐藏的问题，在于非静态对象（函数外的static对象）在不同编译单元中的<strong>初始化顺序是未定义</strong>的。如果在<strong>初始化完成之前调用 <code>getInstance() </code>方法会返回一个未定义的实例</strong>。</p>
 
                 
@@ -1140,6 +1142,9 @@ int main()&#123;
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
 
 <!-- 代码语言 -->
 
@@ -1316,7 +1321,7 @@ int main()&#123;
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">34.3k</span>
             
             
             

@@ -6,9 +6,8 @@
     <meta charset="utf-8">
     <meta name="keywords" content="C++11新特性（I）, Hexo">
     <meta name="description" content="C++11新特性1. auto 自动推导类型auto可以在声明变量的时候根据变量初始值的类型自动为此变量选择匹配的类型
-int a = 10;
-auto b = a;//自动推断类型，b为 int类型
-auto c = 1.9;//自动推断">
+int a &amp;#x3D; 10;
+auto b &amp;#x3D; a;&amp;#x2F;&amp;#x2F;自动推断类型，b为 int类型">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -55,8 +54,7 @@ auto c = 1.9;//自动推断">
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-duotone-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -508,7 +506,7 @@ auto c = 1.9;//自动推断">
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.3k
+                    1.4k
                 </div>
                 
 
@@ -530,6 +528,9 @@ auto c = 1.9;//自动推断">
         <hr class="clearfix">
 
         
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
 
         
         <!-- 代码块折行 -->
@@ -541,32 +542,33 @@ auto c = 1.9;//自动推断">
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="C-11新特性"><a href="#C-11新特性" class="headerlink" title="C++11新特性"></a>C++11新特性</h1><h3 id="1-auto-自动推导类型"><a href="#1-auto-自动推导类型" class="headerlink" title="1. auto 自动推导类型"></a>1. auto 自动推导类型</h3><p><code>auto</code>可以在声明变量的时候根据变量初始值的类型自动为此变量选择匹配的类型</p>
-<pre class="line-numbers language-c++"><code class="language-c++">int a = 10;
-auto b = a;//自动推断类型，b为 int类型
-auto c = 1.9;//自动推断类型，c为double类型
-auto d = 1.2e12L;//自动推断类型，d 是 long double
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int a &#x3D; 10;
+auto b &#x3D; a;&#x2F;&#x2F;自动推断类型，b为 int类型
+auto c &#x3D; 1.9;&#x2F;&#x2F;自动推断类型，c为double类型
+auto d &#x3D; 1.2e12L;&#x2F;&#x2F;自动推断类型，d 是 long double<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="2-using-定义别名"><a href="#2-using-定义别名" class="headerlink" title="2. using 定义别名"></a>2. using 定义别名</h3><p>之前在 C++中可以通过<code> typedef</code> 重定义一个类型，语法格式如下：</p>
-<pre class="line-numbers language-c++"><code class="language-c++">typedef 旧的类型名 新的类型名;
-// 使用举例
-typedef unsigned int uint_t;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef 旧的类型名 新的类型名;
+&#x2F;&#x2F; 使用举例
+typedef unsigned int uint_t;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>关键字<code>using</code>作为别名声明的开始，其后紧跟别名和等号，其作用是把等号左侧的名字规定成等号右侧类型的别名。<strong>类型别名和类型的名字等价，只要是类型的名字能出现的地方，就能使用类型别名。使用<code>typedef</code>定义的别名和使用<code>using</code>定义的别名在语义上是等效的。</strong></p>
-<pre class="line-numbers language-c++"><code class="language-c++">using 新的类型 = 旧的类型;
-// 使用举例
-using uint_t = int;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">using 新的类型 &#x3D; 旧的类型;
+&#x2F;&#x2F; 使用举例
+using uint_t &#x3D; int;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>定义函数指针</p>
-<pre class="line-numbers language-c++"><code class="language-c++">// 使用typedef定义函数指针
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 使用typedef定义函数指针
 typedef int(*func_ptr)(int, double);
 
-// 使用using定义函数指针
-using func_ptr1 = int(*)(int, double);
+&#x2F;&#x2F; 使用using定义函数指针
+using func_ptr1 &#x3D; int(*)(int, double);
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>在C++11中，新增了一个特性就是可以通过使用<code>using</code>来为一个模板定义别名，但是<code>typedef</code>不行</p>
-<pre class="line-numbers language-c++"><code class="language-c++">template <typename T>
-using mymap = map<int, T>;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">template &lt;typename T&gt;
+using mymap &#x3D; map&lt;int, T&gt;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p><code>using</code>语法和<code>typedef</code>一样，并不会创建出新的类型，它们只是给某些类型定义了新的别名。<code>using</code>相较于<code>typedef</code>的优势在于<strong>定义函数指针别名时看起来更加直观，并且可以给模板定义别名</strong>。</p>
 <h3 id="3-右值引用"><a href="#3-右值引用" class="headerlink" title="3. &amp;&amp; 右值引用"></a>3. &amp;&amp; 右值引用</h3><ol>
 <li><strong>左值是指存储在内存中、有明确存储地址（可取地址）的数据；</strong></li>
@@ -590,12 +592,12 @@ using mymap = map<int, T>;
 <li>通过右值推导 T&amp;&amp; 或者 auto&amp;&amp; 得到的是一个右值引用类型，其余都是左值引用类型。</li>
 </ol>
 <h3 id="4-nullptr-标识空指针"><a href="#4-nullptr-标识空指针" class="headerlink" title="4. nullptr 标识空指针"></a>4. nullptr 标识空指针</h3><p>在C++中<code>NULL</code>和<code>0</code>是等价的，C++11 标准并没有对 NULL 的宏定义做任何修改，而是另其炉灶，引入了一个新的关键字<code>nullptr</code>。<code>nullptr </code>专用于初始化空类型指针，不同类型的指针变量都可以使用 <code>nullptr </code>来初始化。</p>
-<pre class="line-numbers language-c++"><code class="language-c++">int*    ptr1 = nullptr;
-char*   ptr2 = nullptr;
-double* ptr3 = nullptr;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int*    ptr1 &#x3D; nullptr;
+char*   ptr2 &#x3D; nullptr;
+double* ptr3 &#x3D; nullptr;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p><code>NULL</code>底层源码</p>
-<pre class="line-numbers language-c++"><code class="language-c++">#ifndef NULL
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#ifndef NULL
     #ifdef __cplusplus
         #define NULL 0
     #else
@@ -603,23 +605,24 @@ double* ptr3 = nullptr;
     #endif
 #endif
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>C++ 中，<code>void * </code>类型无法隐式转换为其他类型的指针，此时使用 <code>0 </code>代替 <code>(void *)0)</code>，用于解决空指针的问题。</p>
 <p><strong><code>nullptr</code> 无法隐式转换为整形，但是可以隐式匹配指针类型。在 C++11 标准下，相比 <code>NULL</code> 和<code> 0</code>，使用 <code>nullptr</code> 初始化空指针可以令我们编写的程序更加健壮</strong></p>
 <h3 id="5-decltype-类型推导"><a href="#5-decltype-类型推导" class="headerlink" title="5. decltype 类型推导"></a>5. decltype 类型推导</h3><p><code>decltype</code>类型说明符，它的作用是选择并返回操作数的数据类型，在此过程中，编译器分析表达式并得到它的类型，却不实际计算表达式的值。 </p>
-<pre class="line-numbers language-c++"><code class="language-c++">int getSize();
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int getSize();
 
 int main(void)
 &#123;
-    int tempA = 2;
+    int tempA &#x3D; 2;
     
-    /*1.dclTempA为int*/
+    &#x2F;*1.dclTempA为int*&#x2F;
     decltype(tempA) dclTempA;
-    /*2.dclTempB为int，对于getSize根本没有定义，但是程序依旧正常，因为decltype只做分析，并不调用getSize，*/
+    &#x2F;*2.dclTempB为int，对于getSize根本没有定义，但是程序依旧正常，因为decltype只做分析，并不调用getSize，*&#x2F;
     decltype(getSize()) dclTempB;
 
     return 0;
-&#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p> <code>decltype</code>和<code>auto</code>都可以用来推断类型，但是二者有几处明显的差异： </p>
 <ol>
 <li><p><code>auto</code>忽略顶层<code>const</code>，<code>decltype</code>保留顶层<code>const</code>；</p>
@@ -632,18 +635,18 @@ int main(void)
 </li>
 </ol>
 <h3 id="6-委托构造"><a href="#6-委托构造" class="headerlink" title="6. 委托构造"></a>6. 委托构造</h3><p>C++11 引入了委托构造的概念，这使得构造函数可以在同一个类中一个构造函数调用另一个构造函数，从而达到简化代码的目的</p>
-<pre class="line-numbers language-c++"><code class="language-c++">class Base &#123;
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class Base &#123;
 public:
     int value1;
     int value2;
     Base() &#123;
-        value1 = 1;
+        value1 &#x3D; 1;
     &#125;
-    Base(int value) : Base() &#123;  // 委托 Base() 构造函数
-        value2 = 2;
+    Base(int value) : Base() &#123;  &#x2F;&#x2F; 委托 Base() 构造函数
+        value2 &#x3D; 2;
     &#125;
-&#125;;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 
                 
             </div>
@@ -1156,6 +1159,9 @@ public:
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
 
 <!-- 代码语言 -->
 
@@ -1332,7 +1338,7 @@ public:
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">34.3k</span>
             
             
             

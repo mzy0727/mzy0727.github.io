@@ -5,9 +5,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="sprintf与snprintf区别, Hexo">
-    <meta name="description" content="sprintf与snprintf区别  int sprintf(char *str, const char &amp;format, ...);
+    <meta name="description" content="sprintf与snprintf区别int sprintf(char *str, const char &amp;amp;format, ...);
 
-sprintf是字符串格式化命令，主要功能是把格式化的数据写入字符串str中，返回值为写入str的字">
+sprintf是字符串格式化命令，主要功能是把格式化的数据写入字符串str中，返回值为写入str">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -54,8 +54,7 @@ sprintf是字符串格式化命令，主要功能是把格式化的数据写入�
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-duotone-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -507,7 +506,7 @@ sprintf是字符串格式化命令，主要功能是把格式化的数据写入�
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    317
+                    318
                 </div>
                 
 
@@ -529,6 +528,9 @@ sprintf是字符串格式化命令，主要功能是把格式化的数据写入�
         <hr class="clearfix">
 
         
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
 
         
         <!-- 代码块折行 -->
@@ -539,15 +541,15 @@ sprintf是字符串格式化命令，主要功能是把格式化的数据写入�
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="sprintf与snprintf区别"><a href="#sprintf与snprintf区别" class="headerlink" title="sprintf与snprintf区别"></a>sprintf与snprintf区别</h2><pre class="line-numbers language-c++"><code class="language-c++">  int sprintf(char *str, const char &format, ...);
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+                <h2 id="sprintf与snprintf区别"><a href="#sprintf与snprintf区别" class="headerlink" title="sprintf与snprintf区别"></a>sprintf与snprintf区别</h2><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int sprintf(char *str, const char &amp;format, ...);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p><code>sprintf</code>是字符串格式化命令，主要功能是把<strong>格式化的数据写入字符串</strong><code>str</code>中，返回值为写入<code>str</code>的字节数，<strong>结束字符<code>\0</code>不计入内</strong>。其中， <code>str</code>是指要写入的缓冲区，<code>format</code>控制要写入<code>str</code>中数据的格式，例如<code>%s、%d、%x</code>等。</p>
-<pre class="line-numbers language-c++"><code class="language-c++">int snprintf(char *str, size_t size, const char *format, ...);
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int snprintf(char *str, size_t size, const char *format, ...);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p><code>snprintf</code>是字符串格式化命令，主要功能是把<strong>格式化的数据写入字符串</strong><code>str</code>中，最多写<code>size</code>个字节，包括自动添加在字符串末尾处的结束字符<code>\0</code>;返回值为写入<code>str</code>的字节数，**包括结束字符<code>\0</code>**。</p>
 <p><strong><code>sprintf</code>函数返回的是实际输出到字符串缓冲中的字符个数,而<code>snprintf</code>函数返回的是应该输出到字符串缓冲的字符个数</strong></p>
-<pre class="line-numbers language-c++"><code class="language-c++">#define snprintf_nowarn(...) (snprintf(__VA_ARGS__) < 0 ? abort() : (void)0)
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#define snprintf_nowarn(...) (snprintf(__VA_ARGS__) &lt; 0 ? abort() : (void)0)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>该宏用于调用 <code>snprintf</code> 函数，并检查其返回值是否小于 0。<code>snprintf</code> 函数是一个安全的字符串格式化函数，用于将格式化的数据写入字符串。这里的目的是在调用 <code>snprintf</code> 时，如果返回值小于 0，就调用 <code>abort()</code> 函数，中止程序运行，以防止潜在的错误。</p>
 
                 
@@ -1039,6 +1041,9 @@ sprintf是字符串格式化命令，主要功能是把格式化的数据写入�
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
 
 <!-- 代码语言 -->
 
@@ -1215,7 +1220,7 @@ sprintf是字符串格式化命令，主要功能是把格式化的数据写入�
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">34.3k</span>
             
             
             

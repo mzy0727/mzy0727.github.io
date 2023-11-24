@@ -54,8 +54,7 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="/css/prism-duotone-dark.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 
 <body>
@@ -523,14 +522,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.8k
+                    3.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    13 分
+                    18 分
                 </div>
                 
 
@@ -544,6 +543,9 @@
         </div>
         <hr class="clearfix">
 
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
         
 
         
@@ -562,110 +564,110 @@
 <li>管理者线程（不处理任务队列中的任务），1个<br>它的任务是周期性的对任务队列中的任务数量以及处于忙状态的工作线程个数进行检测<br>当任务过多的时候, 可以适当的创建一些新的工作线程<br>当任务过少的时候, 可以适当的销毁一些工作的线程</li>
 </ol>
 <p><img src="https://subingwen.cn/linux/threadpool/R9c00030b842edb1ae3d6a2b286e53916" alt="查看源图像"></p>
-<h2 id="1-c语言版"><a href="#1-c语言版" class="headerlink" title="1. c语言版"></a>1. c语言版</h2><h3 id="main-c"><a href="#main-c" class="headerlink" title="main.c"></a>main.c</h3><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"threadpool.h"</span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;pthread.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+<h2 id="1-c语言版"><a href="#1-c语言版" class="headerlink" title="1. c语言版"></a>1. c语言版</h2><h3 id="main-c"><a href="#main-c" class="headerlink" title="main.c"></a>main.c</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"threadpool.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;pthread.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
 
-<span class="token keyword">void</span> <span class="token function">taskFunc</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">taskFunc</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token keyword">int</span> num <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
     <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"thread is working, number = %d, tid = %ld\n"</span><span class="token punctuation">,</span>num<span class="token punctuation">,</span><span class="token function">pthread_self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token function">usleep</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
 
-    <span class="token comment" spellcheck="true">// 创建线程池</span>
+    <span class="token comment">// 创建线程池</span>
     ThreadPool<span class="token operator">*</span> pool <span class="token operator">=</span> <span class="token function">threadPoolCreate</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         
-        <span class="token comment" spellcheck="true">// threadPoolAdd(pool,taskFunc,&amp;i);</span>
+        <span class="token comment">// threadPoolAdd(pool,taskFunc,&amp;i);</span>
         <span class="token keyword">int</span><span class="token operator">*</span> num <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token operator">*</span>num <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">100</span><span class="token punctuation">;</span>
         <span class="token function">threadPoolAdd</span><span class="token punctuation">(</span>pool<span class="token punctuation">,</span> taskFunc<span class="token punctuation">,</span> num<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
     <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
     <span class="token function">threadPoolDestory</span><span class="token punctuation">(</span>pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
    
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="threadpool-c"><a href="#threadpool-c" class="headerlink" title="threadpool.c"></a>threadpool.c</h3><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"threadpool.h"</span></span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="threadpool-c"><a href="#threadpool-c" class="headerlink" title="threadpool.c"></a>threadpool.c</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"threadpool.h"</span></span>
 
 
 <span class="token keyword">const</span> <span class="token keyword">int</span> NUMBER <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
 
-<span class="token comment" spellcheck="true">//  任务结构体</span>
-<span class="token keyword">typedef</span> <span class="token keyword">struct</span>  Task<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>function<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//函数指针</span>
+<span class="token comment">//  任务结构体</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span>  <span class="token class-name">Task</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>function<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">//函数指针</span>
     <span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>Task<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>Task<span class="token punctuation">;</span>
 
-<span class="token comment" spellcheck="true">//线程池结构体</span>
-<span class="token keyword">struct</span> ThreadPool<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//任务队列</span>
+<span class="token comment">//线程池结构体</span>
+<span class="token keyword">struct</span> <span class="token class-name">ThreadPool</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">//任务队列</span>
     Task<span class="token operator">*</span> taskQ<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> queueCapacity<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 容量 </span>
-    <span class="token keyword">int</span> queueSize<span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//当前任务个数</span>
-    <span class="token keyword">int</span> queueFront<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//队头  ->取数据</span>
-    <span class="token keyword">int</span> queueRear<span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//队尾  &lt;-存数据</span>
+    <span class="token keyword">int</span> queueCapacity<span class="token punctuation">;</span>  <span class="token comment">// 容量 </span>
+    <span class="token keyword">int</span> queueSize<span class="token punctuation">;</span>      <span class="token comment">//当前任务个数</span>
+    <span class="token keyword">int</span> queueFront<span class="token punctuation">;</span>     <span class="token comment">//队头  ->取数据</span>
+    <span class="token keyword">int</span> queueRear<span class="token punctuation">;</span>      <span class="token comment">//队尾  &lt;-存数据</span>
 
-    <span class="token comment" spellcheck="true">//管理者线程</span>
-    pthread_t   managerID<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//管理者线程ID</span>
-    <span class="token comment" spellcheck="true">//工作线程</span>
-    pthread_t   <span class="token operator">*</span>threadIDs<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//工作的线程ID</span>
+    <span class="token comment">//管理者线程</span>
+    <span class="token class-name">pthread_t</span>   managerID<span class="token punctuation">;</span>  <span class="token comment">//管理者线程ID</span>
+    <span class="token comment">//工作线程</span>
+    <span class="token class-name">pthread_t</span>   <span class="token operator">*</span>threadIDs<span class="token punctuation">;</span> <span class="token comment">//工作的线程ID</span>
     
-    <span class="token keyword">int</span> minNum<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//最小线程数量</span>
-    <span class="token keyword">int</span> maxNum<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//最大线程数量</span>
-    <span class="token keyword">int</span> busyNum<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//忙的线程个数</span>
-    <span class="token keyword">int</span> liveNum<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//存活的线程个数</span>
-    <span class="token keyword">int</span> exitNum<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//要销毁的线程个数</span>
-    <span class="token comment" spellcheck="true">//互斥锁</span>
-    pthread_mutex_t mutexPool<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//锁整个的线程池</span>
-    pthread_mutex_t mutexBusy<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//锁busyNum变量</span>
-    <span class="token comment" spellcheck="true">//条件变量</span>
-    pthread_cond_t notFull<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//任务队列是不是满了</span>
-    pthread_cond_t notEmpty<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//任务队列是不是空了</span>
+    <span class="token keyword">int</span> minNum<span class="token punctuation">;</span>     <span class="token comment">//最小线程数量</span>
+    <span class="token keyword">int</span> maxNum<span class="token punctuation">;</span>     <span class="token comment">//最大线程数量</span>
+    <span class="token keyword">int</span> busyNum<span class="token punctuation">;</span>    <span class="token comment">//忙的线程个数</span>
+    <span class="token keyword">int</span> liveNum<span class="token punctuation">;</span>    <span class="token comment">//存活的线程个数</span>
+    <span class="token keyword">int</span> exitNum<span class="token punctuation">;</span>    <span class="token comment">//要销毁的线程个数</span>
+    <span class="token comment">//互斥锁</span>
+    <span class="token class-name">pthread_mutex_t</span> mutexPool<span class="token punctuation">;</span>  <span class="token comment">//锁整个的线程池</span>
+    <span class="token class-name">pthread_mutex_t</span> mutexBusy<span class="token punctuation">;</span>  <span class="token comment">//锁busyNum变量</span>
+    <span class="token comment">//条件变量</span>
+    <span class="token class-name">pthread_cond_t</span> notFull<span class="token punctuation">;</span>     <span class="token comment">//任务队列是不是满了</span>
+    <span class="token class-name">pthread_cond_t</span> notEmpty<span class="token punctuation">;</span>    <span class="token comment">//任务队列是不是空了</span>
 
-    <span class="token keyword">int</span> shutdown<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//是不是要销毁线程池，销毁为1，不销毁为0</span>
+    <span class="token keyword">int</span> shutdown<span class="token punctuation">;</span>   <span class="token comment">//是不是要销毁线程池，销毁为1，不销毁为0</span>
 
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 
-ThreadPool<span class="token operator">*</span> <span class="token function">threadPoolCreate</span><span class="token punctuation">(</span><span class="token keyword">int</span> min<span class="token punctuation">,</span> <span class="token keyword">int</span> max<span class="token punctuation">,</span> <span class="token keyword">int</span> queueSize<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+ThreadPool<span class="token operator">*</span> <span class="token function">threadPoolCreate</span><span class="token punctuation">(</span><span class="token keyword">int</span> min<span class="token punctuation">,</span> <span class="token keyword">int</span> max<span class="token punctuation">,</span> <span class="token keyword">int</span> queueSize<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     ThreadPool<span class="token operator">*</span> pool <span class="token operator">=</span> <span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>ThreadPool<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">do</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">do</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"malloc threadpool fail...\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        pool<span class="token operator">-></span>threadIDs <span class="token operator">=</span> <span class="token punctuation">(</span>pthread_t<span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>pthread_t<span class="token punctuation">)</span> <span class="token operator">*</span> max<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        pool<span class="token operator">-></span>threadIDs <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">pthread_t</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">pthread_t</span><span class="token punctuation">)</span> <span class="token operator">*</span> max<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"malloc threadIDS fail...\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-        <span class="token function">memset</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>pthread_t<span class="token punctuation">)</span> <span class="token operator">*</span> max<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">//bzero(&amp;pool->threadIDs,sizeof(pthread_t) * max);    //清0</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token function">memset</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">pthread_t</span><span class="token punctuation">)</span> <span class="token operator">*</span> max<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//bzero(&amp;pool->threadIDs,sizeof(pthread_t) * max);    //清0</span>
         pool<span class="token operator">-></span>minNum <span class="token operator">=</span> min<span class="token punctuation">;</span>
         pool<span class="token operator">-></span>maxNum <span class="token operator">=</span> max<span class="token punctuation">;</span>
         pool<span class="token operator">-></span>busyNum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-        pool<span class="token operator">-></span>liveNum <span class="token operator">=</span> min<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//与最小个数相等</span>
+        pool<span class="token operator">-></span>liveNum <span class="token operator">=</span> min<span class="token punctuation">;</span>    <span class="token comment">//与最小个数相等</span>
         pool<span class="token operator">-></span>exitNum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 
         <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">pthread_mutex_init</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">||</span>
         <span class="token function">pthread_mutex_init</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">||</span>
         <span class="token function">pthread_cond_init</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notEmpty<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span>  <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">||</span>
-        <span class="token function">pthread_cond_init</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notFull<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token function">pthread_cond_init</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notFull<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"mutex or condition init fail...\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        <span class="token comment" spellcheck="true">//任务队列</span>
+        <span class="token comment">//任务队列</span>
         pool<span class="token operator">-></span>taskQ <span class="token operator">=</span> <span class="token punctuation">(</span>Task<span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>Task<span class="token punctuation">)</span> <span class="token operator">*</span> queueSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
         pool<span class="token operator">-></span>queueCapacity <span class="token operator">=</span> queueSize<span class="token punctuation">;</span>
         pool<span class="token operator">-></span>queueSize <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
@@ -674,86 +676,86 @@ ThreadPool<span class="token operator">*</span> <span class="token function">thr
 
         pool<span class="token operator">-></span>shutdown <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 
-        <span class="token comment" spellcheck="true">//创建线程</span>
+        <span class="token comment">//创建线程</span>
         <span class="token function">pthread_create</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>managerID<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">,</span>manager<span class="token punctuation">,</span>pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> min<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> min<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             <span class="token function">pthread_create</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">,</span>worker<span class="token punctuation">,</span>pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
         <span class="token keyword">return</span> pool<span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token keyword">while</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token keyword">while</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="token comment" spellcheck="true">//释放资源</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">&amp;&amp;</span> pool<span class="token operator">-></span>threadIDs<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment">//释放资源</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">&amp;&amp;</span> pool<span class="token operator">-></span>threadIDs<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">free</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">&amp;&amp;</span> pool<span class="token operator">-></span>taskQ<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">&amp;&amp;</span> pool<span class="token operator">-></span>taskQ<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">free</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>taskQ<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>    
-    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>    
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">free</span><span class="token punctuation">(</span>pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
     <span class="token keyword">return</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">void</span> <span class="token function">threadPoolAdd</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token punctuation">(</span><span class="token operator">*</span>func<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">threadPoolAdd</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token punctuation">(</span><span class="token operator">*</span>func<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">while</span> <span class="token punctuation">(</span>pool<span class="token operator">-></span>queueSize <span class="token operator">==</span> pool<span class="token operator">-></span>queueCapacity <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span>
-    <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">//阻塞生产者线程（阻塞生产者）</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">//阻塞生产者线程（阻塞生产者）</span>
         <span class="token function">pthread_cond_wait</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notFull<span class="token punctuation">,</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">return</span> <span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// 添加任务</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 添加任务</span>
     pool<span class="token operator">-></span>taskQ<span class="token punctuation">[</span>pool<span class="token operator">-></span>queueRear<span class="token punctuation">]</span><span class="token punctuation">.</span>function <span class="token operator">=</span> func<span class="token punctuation">;</span>
     pool<span class="token operator">-></span>taskQ<span class="token punctuation">[</span>pool<span class="token operator">-></span>queueRear<span class="token punctuation">]</span><span class="token punctuation">.</span>arg <span class="token operator">=</span> arg<span class="token punctuation">;</span>
     pool<span class="token operator">-></span>queueRear <span class="token operator">=</span> <span class="token punctuation">(</span>pool<span class="token operator">-></span>queueRear <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">%</span> pool<span class="token operator">-></span>queueCapacity<span class="token punctuation">;</span>
     pool<span class="token operator">-></span>queueSize<span class="token operator">++</span><span class="token punctuation">;</span>
 
-    <span class="token function">pthread_cond_signal</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notEmpty<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//唤醒消费者</span>
+    <span class="token function">pthread_cond_signal</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notEmpty<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">//唤醒消费者</span>
    
     
     <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">int</span>  <span class="token function">threadPoolBusyNum</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span>  <span class="token function">threadPoolBusyNum</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">int</span> busyNum <span class="token operator">=</span> pool<span class="token operator">-></span>busyNum<span class="token punctuation">;</span>
     <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> busyNum<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">int</span> <span class="token function">threadPoolAliveNum</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">threadPoolAliveNum</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">int</span> liveNum <span class="token operator">=</span> pool<span class="token operator">-></span>liveNum<span class="token punctuation">;</span>
     <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> liveNum<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">int</span> <span class="token function">threadPoolDestory</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">threadPoolDestory</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pool <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    <span class="token comment" spellcheck="true">// 关闭线程池</span>
+    <span class="token comment">// 关闭线程池</span>
     pool<span class="token operator">-></span>shutdown <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// 阻塞回收管理者线程</span>
+    <span class="token comment">// 阻塞回收管理者线程</span>
     <span class="token function">pthread_join</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>managerID<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// 唤醒阻塞的消费者线程</span>
-    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pool<span class="token operator">-></span>liveNum<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment">// 唤醒阻塞的消费者线程</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pool<span class="token operator">-></span>liveNum<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">pthread_cond_signal</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notEmpty<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>taskQ<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>taskQ<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">free</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>taskQ<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">free</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    <span class="token comment" spellcheck="true">// 销毁锁和条件变量</span>
+    <span class="token comment">// 销毁锁和条件变量</span>
     <span class="token function">pthread_mutex_destroy</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token function">pthread_mutex_destroy</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token function">pthread_cond_destroy</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notEmpty<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -762,62 +764,62 @@ ThreadPool<span class="token operator">*</span> <span class="token function">thr
     pool <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
 
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token comment" spellcheck="true">// 消费者线程</span>
-<span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">worker</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token comment">// 消费者线程</span>
+<span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">worker</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     ThreadPool<span class="token operator">*</span> pool <span class="token operator">=</span> <span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
 
-    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 当前任务队列是否为空</span>
+        <span class="token comment">// 当前任务队列是否为空</span>
         <span class="token keyword">while</span> <span class="token punctuation">(</span>pool<span class="token operator">-></span>queueSize <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span>
-        <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 阻塞工作线程（阻塞消费者）</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token comment">// 阻塞工作线程（阻塞消费者）</span>
             <span class="token function">pthread_cond_wait</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notEmpty<span class="token punctuation">,</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
         
-            <span class="token comment" spellcheck="true">// 判断是不是要销毁线程</span>
-            <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>exitNum <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment">// 判断是不是要销毁线程</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>exitNum <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
                 pool<span class="token operator">-></span>exitNum<span class="token operator">--</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>liveNum <span class="token operator">></span> pool<span class="token operator">-></span>minNum<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>liveNum <span class="token operator">></span> pool<span class="token operator">-></span>minNum<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
                     pool<span class="token operator">-></span>liveNum<span class="token operator">--</span><span class="token punctuation">;</span>
-                    <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 销毁前，先解锁，防止死锁</span>
+                    <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// 销毁前，先解锁，防止死锁</span>
                     <span class="token function">threadExit</span><span class="token punctuation">(</span>pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
                 
-                <span class="token comment" spellcheck="true">//pthread_exit(NULL);</span>
-            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+                <span class="token comment">//pthread_exit(NULL);</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
         
-        <span class="token comment" spellcheck="true">// 判断线程池是否被关闭</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-            <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//防止死锁</span>
+        <span class="token comment">// 判断线程池是否被关闭</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">//防止死锁</span>
             <span class="token function">threadExit</span><span class="token punctuation">(</span>pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">//pthread_exit(NULL);</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+            <span class="token comment">//pthread_exit(NULL);</span>
+        <span class="token punctuation">&#125;</span>
 
-        <span class="token comment" spellcheck="true">// 从队列中取出一个任务</span>
+        <span class="token comment">// 从队列中取出一个任务</span>
         Task task<span class="token punctuation">;</span>
         task<span class="token punctuation">.</span>function <span class="token operator">=</span> pool<span class="token operator">-></span>taskQ<span class="token punctuation">[</span>pool<span class="token operator">-></span>queueFront<span class="token punctuation">]</span><span class="token punctuation">.</span>function<span class="token punctuation">;</span>
         task<span class="token punctuation">.</span>arg <span class="token operator">=</span> pool<span class="token operator">-></span>taskQ<span class="token punctuation">[</span>pool<span class="token operator">-></span>queueFront<span class="token punctuation">]</span><span class="token punctuation">.</span>arg<span class="token punctuation">;</span>
 
-        <span class="token comment" spellcheck="true">// 移动头节点</span>
+        <span class="token comment">// 移动头节点</span>
         pool<span class="token operator">-></span>queueFront <span class="token operator">=</span> <span class="token punctuation">(</span>pool<span class="token operator">-></span>queueFront <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">%</span> pool<span class="token operator">-></span>queueCapacity<span class="token punctuation">;</span>
         pool<span class="token operator">-></span>queueSize<span class="token operator">--</span><span class="token punctuation">;</span>
 
-        <span class="token comment" spellcheck="true">//解锁</span>
-        <span class="token function">pthread_cond_signal</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notFull<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//唤醒生产者   </span>
+        <span class="token comment">//解锁</span>
+        <span class="token function">pthread_cond_signal</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notFull<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">//唤醒生产者   </span>
         <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        <span class="token comment" spellcheck="true">//开始工作</span>
+        <span class="token comment">//开始工作</span>
         <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"thread %ld  start working...\n"</span><span class="token punctuation">,</span><span class="token function">pthread_self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
         pool<span class="token operator">-></span>busyNum<span class="token operator">++</span><span class="token punctuation">;</span>
         <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        <span class="token comment" spellcheck="true">//调用任务里的函数</span>
-        task<span class="token punctuation">.</span><span class="token function">function</span><span class="token punctuation">(</span>task<span class="token punctuation">.</span>arg<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//参数建议传堆内存</span>
-        <span class="token comment" spellcheck="true">//(*task.function)(task.arg);   //另一种写法</span>
+        <span class="token comment">//调用任务里的函数</span>
+        task<span class="token punctuation">.</span><span class="token function">function</span><span class="token punctuation">(</span>task<span class="token punctuation">.</span>arg<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">//参数建议传堆内存</span>
+        <span class="token comment">//(*task.function)(task.arg);   //另一种写法</span>
         <span class="token function">free</span><span class="token punctuation">(</span>task<span class="token punctuation">.</span>arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
         task<span class="token punctuation">.</span>arg <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
 
@@ -826,129 +828,129 @@ ThreadPool<span class="token operator">*</span> <span class="token function">thr
         pool<span class="token operator">-></span>busyNum<span class="token operator">--</span><span class="token punctuation">;</span>
         <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
     <span class="token keyword">return</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">manager</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">manager</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     ThreadPool<span class="token operator">*</span> pool <span class="token operator">=</span> <span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// 每3s检测一次</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span>pool<span class="token operator">-></span>shutdown<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token comment">// 每3s检测一次</span>
         <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        <span class="token comment" spellcheck="true">// 取出线程池中日任务的数量和当前线程的数量</span>
+        <span class="token comment">// 取出线程池中日任务的数量和当前线程的数量</span>
         <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">int</span> queueSize <span class="token operator">=</span> pool<span class="token operator">-></span>queueSize<span class="token punctuation">;</span>
         <span class="token keyword">int</span> liveNum <span class="token operator">=</span> pool<span class="token operator">-></span>liveNum<span class="token punctuation">;</span>
         <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
         
-        <span class="token comment" spellcheck="true">// 取出忙的线程的数量</span>
+        <span class="token comment">// 取出忙的线程的数量</span>
         <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">int</span> busyNum <span class="token operator">=</span> pool<span class="token operator">-></span>busyNum<span class="token punctuation">;</span>
         <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexBusy<span class="token punctuation">)</span><span class="token punctuation">;</span>
         
-        <span class="token comment" spellcheck="true">//添加线程</span>
-        <span class="token comment" spellcheck="true">//自定义规则：任务的个数>存活的线程个数 &amp;&amp; 存活的线程个数 &lt; 线程的最大个数</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>queueSize <span class="token operator">></span> liveNum <span class="token operator">&amp;&amp;</span> liveNum <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment">//添加线程</span>
+        <span class="token comment">//自定义规则：任务的个数>存活的线程个数 &amp;&amp; 存活的线程个数 &lt; 线程的最大个数</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>queueSize <span class="token operator">></span> liveNum <span class="token operator">&amp;&amp;</span> liveNum <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">int</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
-            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum <span class="token operator">&amp;&amp;</span> count <span class="token operator">&lt;</span> NUMBER <span class="token operator">&amp;&amp;</span> pool<span class="token operator">-></span>liveNum <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum <span class="token operator">&amp;&amp;</span> count <span class="token operator">&lt;</span> NUMBER <span class="token operator">&amp;&amp;</span> pool<span class="token operator">-></span>liveNum <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
                     <span class="token function">pthread_create</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">,</span>worker<span class="token punctuation">,</span>pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
                     count<span class="token operator">++</span><span class="token punctuation">;</span>
                     pool<span class="token operator">-></span>liveNum<span class="token operator">++</span><span class="token punctuation">;</span>
-                <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
              <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        <span class="token comment" spellcheck="true">//销毁线程</span>
-        <span class="token comment" spellcheck="true">//自定义规则：忙的线程*2 &lt; 存活的线程数 &amp;&amp; 存活的线程 > 最小线程数</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>busyNum <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">&lt;</span> liveNum <span class="token operator">&amp;&amp;</span> liveNum <span class="token operator">></span> pool<span class="token operator">-></span>minNum<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment">//销毁线程</span>
+        <span class="token comment">//自定义规则：忙的线程*2 &lt; 存活的线程数 &amp;&amp; 存活的线程 > 最小线程数</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>busyNum <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">&lt;</span> liveNum <span class="token operator">&amp;&amp;</span> liveNum <span class="token operator">></span> pool<span class="token operator">-></span>minNum<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
             pool<span class="token operator">-></span>exitNum <span class="token operator">=</span> NUMBER<span class="token punctuation">;</span>
             <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>mutexPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token comment" spellcheck="true">// 让工作的线程自杀</span>
-            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> NUMBER<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-                <span class="token comment" spellcheck="true">// 唤醒工作线程</span>
+            <span class="token comment">// 让工作的线程自杀</span>
+            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> NUMBER<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                <span class="token comment">// 唤醒工作线程</span>
                 <span class="token function">pthread_cond_signal</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pool<span class="token operator">-></span>notEmpty<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
         
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
     <span class="token keyword">return</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">void</span> <span class="token function">threadExit</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    pthread_t tid <span class="token operator">=</span> <span class="token function">pthread_self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> tid<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">threadExit</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name">pthread_t</span> tid <span class="token operator">=</span> <span class="token function">pthread_self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pool<span class="token operator">-></span>maxNum<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>pool<span class="token operator">-></span>threadIDs<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> tid<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
             pool<span class="token operator">-></span>threadIDs<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
             <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"threadExit() called, %ld exiting...\n"</span><span class="token punctuation">,</span>tid<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">break</span><span class="token punctuation">;</span>
-        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
     <span class="token function">pthread_exit</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="threadpool-h"><a href="#threadpool-h" class="headerlink" title="threadpool.h"></a>threadpool.h</h3><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">ifndef</span> _THREADPOOL_H</span>
-<span class="token macro property">#<span class="token directive keyword">define</span> _THREADPOOL_H</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;pthread.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<h3 id="threadpool-h"><a href="#threadpool-h" class="headerlink" title="threadpool.h"></a>threadpool.h</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">ifndef</span> <span class="token expression">_THREADPOOL_H</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_THREADPOOL_H</span></span>
 
-<span class="token keyword">typedef</span> <span class="token keyword">struct</span> ThreadPool ThreadPool<span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;pthread.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">ThreadPool</span> ThreadPool<span class="token punctuation">;</span>
 
 
-<span class="token comment" spellcheck="true">//  创建线程池并初始化</span>
+<span class="token comment">//  创建线程池并初始化</span>
 ThreadPool<span class="token operator">*</span> <span class="token function">threadPoolCreate</span><span class="token punctuation">(</span><span class="token keyword">int</span> min<span class="token punctuation">,</span><span class="token keyword">int</span> max<span class="token punctuation">,</span><span class="token keyword">int</span> queueSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//  销毁线程池</span>
+<span class="token comment">//  销毁线程池</span>
 <span class="token keyword">int</span> <span class="token function">threadPoolDestory</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//int threadPoolDestroy(ThreadPool* pool);</span>
-<span class="token comment" spellcheck="true">//  给线程池添加任务</span>
+<span class="token comment">//int threadPoolDestroy(ThreadPool* pool);</span>
+<span class="token comment">//  给线程池添加任务</span>
 <span class="token keyword">void</span> <span class="token function">threadPoolAdd</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token punctuation">(</span><span class="token operator">*</span>func<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//  获取线程池中工作的线程的个数</span>
+<span class="token comment">//  获取线程池中工作的线程的个数</span>
 <span class="token keyword">int</span>  <span class="token function">threadPoolBusyNum</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//  获取线程池中活着的线程的个数</span>
+<span class="token comment">//  获取线程池中活着的线程的个数</span>
 <span class="token keyword">int</span> <span class="token function">threadPoolAliveNum</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token comment" spellcheck="true">//////</span>
+<span class="token comment">//////</span>
 <span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">worker</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">manager</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token keyword">void</span> <span class="token function">threadExit</span><span class="token punctuation">(</span>ThreadPool<span class="token operator">*</span> pool<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//////</span>
+<span class="token comment">//////</span>
 
-<span class="token macro property">#<span class="token directive keyword">endif</span></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="2-c-版"><a href="#2-c-版" class="headerlink" title="2. c++版"></a>2. c++版</h2><h3 id="main-cpp"><a href="#main-cpp" class="headerlink" title="main.cpp"></a>main.cpp</h3><pre class="line-numbers language-c++"><code class="language-c++">#include<iostream>
-#include<unistd.h>
-#include "ThreadPool.h"
-#include "ThreadPool.cpp"
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="2-c-版"><a href="#2-c-版" class="headerlink" title="2. c++版"></a>2. c++版</h2><h3 id="main-cpp"><a href="#main-cpp" class="headerlink" title="main.cpp"></a>main.cpp</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include&lt;iostream&gt;
+#include&lt;unistd.h&gt;
+#include &quot;ThreadPool.h&quot;
+#include &quot;ThreadPool.cpp&quot;
 using namespace std;
 
 void taskFunc(void* arg)&#123;
-    int num = *(int*)arg;
-    printf("thread is working, number = %d, tid = %ld\n",num,pthread_self());
+    int num &#x3D; *(int*)arg;
+    printf(&quot;thread is working, number &#x3D; %d, tid &#x3D; %ld\n&quot;,num,pthread_self());
     usleep(1000);
 &#125;
 
 int main()&#123;
 
-     // 创建线程池
-    ThreadPool<int> pool(3,10);
-    for(int i = 0; i < 100; i++)&#123;
+     &#x2F;&#x2F; 创建线程池
+    ThreadPool&lt;int&gt; pool(3,10);
+    for(int i &#x3D; 0; i &lt; 100; i++)&#123;
         
-        // threadPoolAdd(pool,taskFunc,&i);
-        int* num = new int(i + 100);
-        pool.threadPoolAddTask(Task<int>(taskFunc,num));
+        &#x2F;&#x2F; threadPoolAdd(pool,taskFunc,&amp;i);
+        int* num &#x3D; new int(i + 100);
+        pool.threadPoolAddTask(Task&lt;int&gt;(taskFunc,num));
         
 
 
@@ -959,146 +961,148 @@ int main()&#123;
     
 
     return 0;
-&#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="TaskQueue-cpp"><a href="#TaskQueue-cpp" class="headerlink" title="TaskQueue.cpp"></a>TaskQueue.cpp</h3><pre class="line-numbers language-cpp"><code class="language-cpp">
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"TaskQueue.h"</span></span>
+<h3 id="TaskQueue-cpp"><a href="#TaskQueue-cpp" class="headerlink" title="TaskQueue.cpp"></a>TaskQueue.cpp</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp">
 
-<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-TaskQueue<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">::</span><span class="token function">TaskQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"TaskQueue.h"</span></span>
+
+<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> <span class="token class-name">T</span><span class="token operator">></span>
+<span class="token class-name">TaskQueue</span><span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token double-colon punctuation">::</span><span class="token function">TaskQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">pthread_mutex_init</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">,</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-TaskQueue<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">::</span><span class="token operator">~</span><span class="token function">TaskQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> <span class="token class-name">T</span><span class="token operator">></span>
+TaskQueue<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token double-colon punctuation">::</span><span class="token operator">~</span><span class="token function">TaskQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">pthread_mutex_destroy</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-<span class="token keyword">void</span> TaskQueue<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">::</span><span class="token function">addTask</span><span class="token punctuation">(</span>Task<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">&amp;</span> task<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> <span class="token class-name">T</span><span class="token operator">></span>
+<span class="token keyword">void</span> <span class="token class-name">TaskQueue</span><span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token double-colon punctuation">::</span><span class="token function">addTask</span><span class="token punctuation">(</span>Task<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">&amp;</span> task<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
     m_taskQ<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>task<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-<span class="token keyword">void</span> TaskQueue<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">::</span><span class="token function">addTask</span><span class="token punctuation">(</span>callback f<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> <span class="token class-name">T</span><span class="token operator">></span>
+<span class="token keyword">void</span> <span class="token class-name">TaskQueue</span><span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token double-colon punctuation">::</span><span class="token function">addTask</span><span class="token punctuation">(</span>callback f<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
     <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    m_taskQ<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>Task<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token punctuation">(</span>f<span class="token punctuation">,</span>arg<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    m_taskQ<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token generic-function"><span class="token function">Task</span><span class="token generic class-name"><span class="token operator">&lt;</span>T<span class="token operator">></span></span></span><span class="token punctuation">(</span>f<span class="token punctuation">,</span>arg<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-Task<span class="token operator">&lt;</span>T<span class="token operator">></span> TaskQueue<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">::</span><span class="token function">getTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> <span class="token class-name">T</span><span class="token operator">></span>
+Task<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token class-name">TaskQueue</span><span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token double-colon punctuation">::</span><span class="token function">getTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
      Task<span class="token operator">&lt;</span>T<span class="token operator">></span> task<span class="token punctuation">;</span>
     <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>m_taskQ<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>m_taskQ<span class="token punctuation">.</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token keyword">return</span> task<span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
     
     task <span class="token operator">=</span> m_taskQ<span class="token punctuation">.</span><span class="token function">front</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     m_taskQ<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>m_mutex<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> task<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="TaskQueue-h"><a href="#TaskQueue-h" class="headerlink" title="TaskQueue.h"></a>TaskQueue.h</h3><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">pragma</span> once</span>
 
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;queue></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;iostream></span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;pthread.h></span></span>
+<h3 id="TaskQueue-h"><a href="#TaskQueue-h" class="headerlink" title="TaskQueue.h"></a>TaskQueue.h</h3><pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">once</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;queue></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;iostream></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;pthread.h></span></span>
 <span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
 
 <span class="token keyword">using</span> callback <span class="token operator">=</span> <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment" spellcheck="true">//  任务结构体</span>
-<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-<span class="token keyword">struct</span>  Task<span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
-    Task<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token comment">//  任务结构体</span>
+<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> <span class="token class-name">T</span><span class="token operator">></span>
+<span class="token keyword">struct</span>  <span class="token class-name">Task</span><span class="token punctuation">&#123;</span>
+    <span class="token generic-function"><span class="token function">Task</span><span class="token generic class-name"><span class="token operator">&lt;</span>T<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         function <span class="token operator">=</span> <span class="token keyword">nullptr</span><span class="token punctuation">;</span>
         arg <span class="token operator">=</span> <span class="token keyword">nullptr</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
-    Task<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token punctuation">(</span>callback f<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token generic-function"><span class="token function">Task</span><span class="token generic class-name"><span class="token operator">&lt;</span>T<span class="token operator">></span></span></span><span class="token punctuation">(</span>callback f<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         function <span class="token operator">=</span> f<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">></span>arg <span class="token operator">=</span> <span class="token punctuation">(</span>T<span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token operator">-></span>arg <span class="token operator">=</span> <span class="token punctuation">(</span>T<span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
     callback function<span class="token punctuation">;</span>
     T<span class="token operator">*</span> arg<span class="token punctuation">;</span>
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 
-<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> T<span class="token operator">></span>
-<span class="token keyword">class</span> <span class="token class-name">TaskQueue</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+<span class="token keyword">template</span> <span class="token operator">&lt;</span><span class="token keyword">typename</span> <span class="token class-name">T</span><span class="token operator">></span>
+<span class="token keyword">class</span> <span class="token class-name">TaskQueue</span><span class="token punctuation">&#123;</span>
 <span class="token keyword">public</span><span class="token operator">:</span>
     <span class="token function">TaskQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token operator">~</span><span class="token function">TaskQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="token comment" spellcheck="true">// 取出一个任务</span>
+    <span class="token comment">// 取出一个任务</span>
     Task<span class="token operator">&lt;</span>T<span class="token operator">></span> <span class="token function">getTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// 添加一个任务</span>
+    <span class="token comment">// 添加一个任务</span>
     <span class="token keyword">void</span> <span class="token function">addTask</span><span class="token punctuation">(</span>Task<span class="token operator">&lt;</span>T<span class="token operator">></span><span class="token operator">&amp;</span> task<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">void</span> <span class="token function">addTask</span><span class="token punctuation">(</span>callback f<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//重载</span>
-    <span class="token keyword">inline</span> <span class="token keyword">int</span> <span class="token function">taskNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token keyword">void</span> <span class="token function">addTask</span><span class="token punctuation">(</span>callback f<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">//重载</span>
+    <span class="token keyword">inline</span> <span class="token keyword">int</span> <span class="token function">taskNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
         <span class="token keyword">return</span> m_taskQ<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 <span class="token keyword">private</span><span class="token operator">:</span>
     pthread_mutex_t m_mutex<span class="token punctuation">;</span>
     queue<span class="token operator">&lt;</span>Task<span class="token operator">&lt;</span>T<span class="token operator">>></span> m_taskQ<span class="token punctuation">;</span> 
 
-<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="ThreadPool-cpp"><a href="#ThreadPool-cpp" class="headerlink" title="ThreadPool.cpp"></a>ThreadPool.cpp</h3><pre class="line-numbers language-c++"><code class="language-c++">
-#include "ThreadPool.h"
-#include <iostream>
-#include <string.h>
-#include <string>
-#include <pthread.h>
-#include <unistd.h>
+
+<h3 id="ThreadPool-cpp"><a href="#ThreadPool-cpp" class="headerlink" title="ThreadPool.cpp"></a>ThreadPool.cpp</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">
+#include &quot;ThreadPool.h&quot;
+#include &lt;iostream&gt;
+#include &lt;string.h&gt;
+#include &lt;string&gt;
+#include &lt;pthread.h&gt;
+#include &lt;unistd.h&gt;
 using namespace std;
 
-template <typename T>
-ThreadPool<T>::ThreadPool(int min, int max)
+template &lt;typename T&gt;
+ThreadPool&lt;T&gt;::ThreadPool(int min, int max)
 &#123;
    
     do&#123;
-        // 实例化任务对列
-        taskQ = new TaskQueue<T>;
-        if(taskQ == nullptr)&#123;
-            cout<<"malloc taskQ fail..."<<endl;
+        &#x2F;&#x2F; 实例化任务对列
+        taskQ &#x3D; new TaskQueue&lt;T&gt;;
+        if(taskQ &#x3D;&#x3D; nullptr)&#123;
+            cout&lt;&lt;&quot;malloc taskQ fail...&quot;&lt;&lt;endl;
             break;
         &#125;
-        minNum = min;
-        maxNum = max;
-        busyNum = 0;
-        liveNum = min;    //与最小个数相等
-        exitNum = 0;
-        threadIDs = new pthread_t[max];
-        if(threadIDs == nullptr)&#123;
-            cout<<"malloc threadIDS  fail..."<<endl;
+        minNum &#x3D; min;
+        maxNum &#x3D; max;
+        busyNum &#x3D; 0;
+        liveNum &#x3D; min;    &#x2F;&#x2F;与最小个数相等
+        exitNum &#x3D; 0;
+        threadIDs &#x3D; new pthread_t[max];
+        if(threadIDs &#x3D;&#x3D; nullptr)&#123;
+            cout&lt;&lt;&quot;malloc threadIDS  fail...&quot;&lt;&lt;endl;
             break;
         &#125;
-        if(pthread_mutex_init(&mutexPool,NULL) != 0 || pthread_cond_init(&notEmpty,NULL)  != 0)&#123;
-            printf("mutex or condition init fail...\n");
+        if(pthread_mutex_init(&amp;mutexPool,NULL) !&#x3D; 0 || pthread_cond_init(&amp;notEmpty,NULL)  !&#x3D; 0)&#123;
+            printf(&quot;mutex or condition init fail...\n&quot;);
             break;
         &#125;
-        shutdown = false;
-         //创建线程
-        pthread_create(&managerID,NULL,manager,this);
-        for(int i = 0; i < min; i++)&#123;
-            pthread_create(&threadIDs[i],NULL,worker,this);
+        shutdown &#x3D; false;
+         &#x2F;&#x2F;创建线程
+        pthread_create(&amp;managerID,NULL,manager,this);
+        for(int i &#x3D; 0; i &lt; min; i++)&#123;
+            pthread_create(&amp;threadIDs[i],NULL,worker,this);
         &#125;
     &#125;while(0);
 
 &#125;
 
-template <typename T>
-ThreadPool<T>::~ThreadPool()
+template &lt;typename T&gt;
+ThreadPool&lt;T&gt;::~ThreadPool()
 &#123;
-    // 关闭线程池
-    shutdown = 1;
-    // 阻塞回收管理者线程(销毁管理者线程)
+    &#x2F;&#x2F; 关闭线程池
+    shutdown &#x3D; 1;
+    &#x2F;&#x2F; 阻塞回收管理者线程(销毁管理者线程)
     pthread_join(managerID,NULL);
-    // 唤醒阻塞的消费者线程
-    for(int i = 0; i < liveNum; i++)&#123;
-        pthread_cond_signal(&notEmpty);
+    &#x2F;&#x2F; 唤醒阻塞的消费者线程
+    for(int i &#x3D; 0; i &lt; liveNum; i++)&#123;
+        pthread_cond_signal(&amp;notEmpty);
     &#125;
     if(taskQ)&#123;
         delete taskQ;
@@ -1107,154 +1111,154 @@ ThreadPool<T>::~ThreadPool()
         delete[] threadIDs;
     &#125;
 
-    // 销毁锁和条件变量
-    pthread_mutex_destroy(&mutexPool);
-    pthread_cond_destroy(&notEmpty);
+    &#x2F;&#x2F; 销毁锁和条件变量
+    pthread_mutex_destroy(&amp;mutexPool);
+    pthread_cond_destroy(&amp;notEmpty);
    
 
    
 &#125;
-template <typename T>
-void ThreadPool<T>::threadPoolAddTask(Task<T> task)&#123;
+template &lt;typename T&gt;
+void ThreadPool&lt;T&gt;::threadPoolAddTask(Task&lt;T&gt; task)&#123;
     if(shutdown)&#123;
-        //pthread_mutex_unlock(&mutexPool);
+        &#x2F;&#x2F;pthread_mutex_unlock(&amp;mutexPool);
         return ;
     &#125;
-    // 添加任务
-    taskQ->addTask(task);
-    // 唤醒工作的线程
-    pthread_cond_signal(&notEmpty);
+    &#x2F;&#x2F; 添加任务
+    taskQ-&gt;addTask(task);
+    &#x2F;&#x2F; 唤醒工作的线程
+    pthread_cond_signal(&amp;notEmpty);
 
     
 &#125;
-template <typename T>
-int ThreadPool<T>::getBusyNum()&#123;
-    pthread_mutex_lock(&mutexPool);
-    int busyNum = this->busyNum;
-    pthread_mutex_unlock(&mutexPool);
+template &lt;typename T&gt;
+int ThreadPool&lt;T&gt;::getBusyNum()&#123;
+    pthread_mutex_lock(&amp;mutexPool);
+    int busyNum &#x3D; this-&gt;busyNum;
+    pthread_mutex_unlock(&amp;mutexPool);
     return busyNum;
 &#125;
 
-template <typename T>
-int ThreadPool<T>::getAliveNum()&#123;
-    pthread_mutex_lock(&mutexPool);
-    int liveNum = this->liveNum;
-    pthread_mutex_unlock(&mutexPool);
+template &lt;typename T&gt;
+int ThreadPool&lt;T&gt;::getAliveNum()&#123;
+    pthread_mutex_lock(&amp;mutexPool);
+    int liveNum &#x3D; this-&gt;liveNum;
+    pthread_mutex_unlock(&amp;mutexPool);
     return liveNum;
 &#125;
 
-template <typename T>
-// 消费者线程
-void* ThreadPool<T>::worker(void* arg)&#123;
-    ThreadPool* pool = (ThreadPool*)arg;
+template &lt;typename T&gt;
+&#x2F;&#x2F; 消费者线程
+void* ThreadPool&lt;T&gt;::worker(void* arg)&#123;
+    ThreadPool* pool &#x3D; (ThreadPool*)arg;
 
     while(1)&#123;
-        pthread_mutex_lock(&pool->mutexPool);
-        // 当前任务队列是否为空
-        while (pool->taskQ->taskNumber() == 0 && !pool->shutdown)
+        pthread_mutex_lock(&amp;pool-&gt;mutexPool);
+        &#x2F;&#x2F; 当前任务队列是否为空
+        while (pool-&gt;taskQ-&gt;taskNumber() &#x3D;&#x3D; 0 &amp;&amp; !pool-&gt;shutdown)
         &#123;
-            // 阻塞工作线程（阻塞消费者）
-            pthread_cond_wait(&pool->notEmpty,&pool->mutexPool);
+            &#x2F;&#x2F; 阻塞工作线程（阻塞消费者）
+            pthread_cond_wait(&amp;pool-&gt;notEmpty,&amp;pool-&gt;mutexPool);
         
-            // 判断是不是要销毁线程
-            if(pool->exitNum > 0)&#123;
-                pool->exitNum--;
-                if(pool->liveNum > pool->minNum)&#123;
-                    pool->liveNum--;
-                    pthread_mutex_unlock(&pool->mutexPool);    // 销毁前，先解锁，防止死锁
-                    pool->threadExit();
+            &#x2F;&#x2F; 判断是不是要销毁线程
+            if(pool-&gt;exitNum &gt; 0)&#123;
+                pool-&gt;exitNum--;
+                if(pool-&gt;liveNum &gt; pool-&gt;minNum)&#123;
+                    pool-&gt;liveNum--;
+                    pthread_mutex_unlock(&amp;pool-&gt;mutexPool);    &#x2F;&#x2F; 销毁前，先解锁，防止死锁
+                    pool-&gt;threadExit();
                 &#125;
                 
-                //pthread_exit(NULL);
+                &#x2F;&#x2F;pthread_exit(NULL);
             &#125;
         &#125;
         
-        // 判断线程池是否被关闭
-        if(pool->shutdown)&#123;
-            pthread_mutex_unlock(&pool->mutexPool);     //防止死锁
-            pool->threadExit();
-            //pthread_exit(NULL);
+        &#x2F;&#x2F; 判断线程池是否被关闭
+        if(pool-&gt;shutdown)&#123;
+            pthread_mutex_unlock(&amp;pool-&gt;mutexPool);     &#x2F;&#x2F;防止死锁
+            pool-&gt;threadExit();
+            &#x2F;&#x2F;pthread_exit(NULL);
         &#125;
 
-        // 从队列中取出一个任务
-        Task<T> task = pool->taskQ->getTask();
+        &#x2F;&#x2F; 从队列中取出一个任务
+        Task&lt;T&gt; task &#x3D; pool-&gt;taskQ-&gt;getTask();
         
 
-        //解锁
-       // pthread_cond_signal(&pool->notFull);    //唤醒生产者
+        &#x2F;&#x2F;解锁
+       &#x2F;&#x2F; pthread_cond_signal(&amp;pool-&gt;notFull);    &#x2F;&#x2F;唤醒生产者
 
-       //开始工作
-        printf("thread %ld  start working...\n",pthread_self());
-       // pthread_mutex_lock(&pool->mutexBusy);
-        pool->busyNum++;
-       // pthread_mutex_unlock(&pool->mutexBusy);
+       &#x2F;&#x2F;开始工作
+        printf(&quot;thread %ld  start working...\n&quot;,pthread_self());
+       &#x2F;&#x2F; pthread_mutex_lock(&amp;pool-&gt;mutexBusy);
+        pool-&gt;busyNum++;
+       &#x2F;&#x2F; pthread_mutex_unlock(&amp;pool-&gt;mutexBusy);
 
-        pthread_mutex_unlock(&pool->mutexPool);
+        pthread_mutex_unlock(&amp;pool-&gt;mutexPool);
 
         
 
-        //调用任务里的函数
-        task.function(task.arg);        //参数建议传堆内存
-        //(*task.function)(task.arg);   //另一种写法
+        &#x2F;&#x2F;调用任务里的函数
+        task.function(task.arg);        &#x2F;&#x2F;参数建议传堆内存
+        &#x2F;&#x2F;(*task.function)(task.arg);   &#x2F;&#x2F;另一种写法
         delete task.arg;
-        task.arg = nullptr;
+        task.arg &#x3D; nullptr;
 
-        printf("thread %ld  end working...\n",pthread_self());
-        pthread_mutex_lock(&pool->mutexPool);
-        pool->busyNum--;
-        pthread_mutex_unlock(&pool->mutexPool);
+        printf(&quot;thread %ld  end working...\n&quot;,pthread_self());
+        pthread_mutex_lock(&amp;pool-&gt;mutexPool);
+        pool-&gt;busyNum--;
+        pthread_mutex_unlock(&amp;pool-&gt;mutexPool);
 
     &#125;
 
     return NULL;
 &#125;
 
-template <typename T>
-void* ThreadPool<T>::manager(void* arg)&#123;
-    ThreadPool* pool = (ThreadPool*)arg;
-    while(!pool->shutdown)&#123;
-        // 每3s检测一次
+template &lt;typename T&gt;
+void* ThreadPool&lt;T&gt;::manager(void* arg)&#123;
+    ThreadPool* pool &#x3D; (ThreadPool*)arg;
+    while(!pool-&gt;shutdown)&#123;
+        &#x2F;&#x2F; 每3s检测一次
         sleep(3);
 
-        // 取出线程池中日任务的数量和当前线程的数量
-        pthread_mutex_lock(&pool->mutexPool);
-        int queueSize = pool->taskQ->taskNumber();
-        int liveNum = pool->liveNum;
+        &#x2F;&#x2F; 取出线程池中日任务的数量和当前线程的数量
+        pthread_mutex_lock(&amp;pool-&gt;mutexPool);
+        int queueSize &#x3D; pool-&gt;taskQ-&gt;taskNumber();
+        int liveNum &#x3D; pool-&gt;liveNum;
 
-        // 取出忙的线程的数量
-        // pthread_mutex_lock(&pool->mutexBusy);
-        int busyNum = pool->busyNum;
-        // pthread_mutex_unlock(&pool->mutexBusy);
+        &#x2F;&#x2F; 取出忙的线程的数量
+        &#x2F;&#x2F; pthread_mutex_lock(&amp;pool-&gt;mutexBusy);
+        int busyNum &#x3D; pool-&gt;busyNum;
+        &#x2F;&#x2F; pthread_mutex_unlock(&amp;pool-&gt;mutexBusy);
 
-        pthread_mutex_unlock(&pool->mutexPool);
+        pthread_mutex_unlock(&amp;pool-&gt;mutexPool);
         
        
         
-        //添加线程
-        //自定义规则：任务的个数>存活的线程个数 && 存活的线程个数 < 线程的最大个数
-        if(queueSize > liveNum && liveNum < pool->maxNum)&#123;
-            pthread_mutex_lock(&pool->mutexPool);
-            int count = 0;
-            for(int i = 0; i < pool->maxNum && count < NUMBER && pool->liveNum < pool->maxNum; ++i)&#123;
-                if(pool->threadIDs[i] == 0)&#123;
-                    pthread_create(&pool->threadIDs[i],NULL,worker,pool);
+        &#x2F;&#x2F;添加线程
+        &#x2F;&#x2F;自定义规则：任务的个数&gt;存活的线程个数 &amp;&amp; 存活的线程个数 &lt; 线程的最大个数
+        if(queueSize &gt; liveNum &amp;&amp; liveNum &lt; pool-&gt;maxNum)&#123;
+            pthread_mutex_lock(&amp;pool-&gt;mutexPool);
+            int count &#x3D; 0;
+            for(int i &#x3D; 0; i &lt; pool-&gt;maxNum &amp;&amp; count &lt; NUMBER &amp;&amp; pool-&gt;liveNum &lt; pool-&gt;maxNum; ++i)&#123;
+                if(pool-&gt;threadIDs[i] &#x3D;&#x3D; 0)&#123;
+                    pthread_create(&amp;pool-&gt;threadIDs[i],NULL,worker,pool);
                     count++;
-                    pool->liveNum++;
+                    pool-&gt;liveNum++;
                 &#125;
             &#125;
-             pthread_mutex_unlock(&pool->mutexPool);
+             pthread_mutex_unlock(&amp;pool-&gt;mutexPool);
         &#125;
 
-        //销毁线程
-        //自定义规则：忙的线程*2 < 存活的线程数 && 存活的线程 > 最小线程数
-        if(busyNum * 2 < liveNum && liveNum > pool->minNum)&#123;
-            pthread_mutex_lock(&pool->mutexPool);
-            pool->exitNum = NUMBER;
-            pthread_mutex_unlock(&pool->mutexPool);
-            // 让工作的线程自杀
-            for(int i = 0; i < NUMBER; ++i)&#123;
-                // 唤醒工作线程
-                pthread_cond_signal(&pool->notEmpty);
+        &#x2F;&#x2F;销毁线程
+        &#x2F;&#x2F;自定义规则：忙的线程*2 &lt; 存活的线程数 &amp;&amp; 存活的线程 &gt; 最小线程数
+        if(busyNum * 2 &lt; liveNum &amp;&amp; liveNum &gt; pool-&gt;minNum)&#123;
+            pthread_mutex_lock(&amp;pool-&gt;mutexPool);
+            pool-&gt;exitNum &#x3D; NUMBER;
+            pthread_mutex_unlock(&amp;pool-&gt;mutexPool);
+            &#x2F;&#x2F; 让工作的线程自杀
+            for(int i &#x3D; 0; i &lt; NUMBER; ++i)&#123;
+                &#x2F;&#x2F; 唤醒工作线程
+                pthread_cond_signal(&amp;pool-&gt;notEmpty);
             &#125;
         
         &#125;
@@ -1263,29 +1267,30 @@ void* ThreadPool<T>::manager(void* arg)&#123;
     return NULL;
 &#125;
 
-template <typename T>
-// 线程退出
-void ThreadPool<T>::threadExit()
+template &lt;typename T&gt;
+&#x2F;&#x2F; 线程退出
+void ThreadPool&lt;T&gt;::threadExit()
 &#123;
-    pthread_t tid = pthread_self();
-    for (int i = 0; i < maxNum; ++i)
+    pthread_t tid &#x3D; pthread_self();
+    for (int i &#x3D; 0; i &lt; maxNum; ++i)
     &#123;
-        if (threadIDs[i] == tid)
+        if (threadIDs[i] &#x3D;&#x3D; tid)
         &#123;
-            cout << "threadExit() function: thread " 
-                << to_string(pthread_self()) << " exiting..." << endl;
-            threadIDs[i] = 0;
+            cout &lt;&lt; &quot;threadExit() function: thread &quot; 
+                &lt;&lt; to_string(pthread_self()) &lt;&lt; &quot; exiting...&quot; &lt;&lt; endl;
+            threadIDs[i] &#x3D; 0;
             break;
         &#125;
     &#125;
     pthread_exit(NULL);
 &#125;
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="ThreadPool-h"><a href="#ThreadPool-h" class="headerlink" title="ThreadPool.h"></a>ThreadPool.h</h3><pre class="line-numbers language-c++"><code class="language-c++">#pragma once
-#include "TaskQueue.h"
-#include "TaskQueue.cpp"
 
-template <typename T>
+<h3 id="ThreadPool-h"><a href="#ThreadPool-h" class="headerlink" title="ThreadPool.h"></a>ThreadPool.h</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#pragma once
+#include &quot;TaskQueue.h&quot;
+#include &quot;TaskQueue.cpp&quot;
+
+template &lt;typename T&gt;
 class ThreadPool
 &#123;
 
@@ -1293,47 +1298,48 @@ class ThreadPool
 public:
    
     
-    //  创建线程池并初始化
+    &#x2F;&#x2F;  创建线程池并初始化
      ThreadPool(int min, int max);
-    //  销毁线程池
+    &#x2F;&#x2F;  销毁线程池
     ~ThreadPool();
-    //  给线程池添加任务
-    void threadPoolAddTask(Task<T> task);
-    //  获取线程池中工作的线程的个数
+    &#x2F;&#x2F;  给线程池添加任务
+    void threadPoolAddTask(Task&lt;T&gt; task);
+    &#x2F;&#x2F;  获取线程池中工作的线程的个数
     int  getBusyNum();
-    //  获取线程池中活着的线程的个数
+    &#x2F;&#x2F;  获取线程池中活着的线程的个数
     int getAliveNum();
-    //////
+    &#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;
 private:
     static void* worker(void* arg);
 
     static void* manager(void* arg);
 
     void threadExit();
-    //////
+    &#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;
 private:
-    //任务队列
-    TaskQueue<T> *taskQ;
+    &#x2F;&#x2F;任务队列
+    TaskQueue&lt;T&gt; *taskQ;
 
-    //管理者线程
-    pthread_t   managerID;  //管理者线程ID
-    //工作线程
-    pthread_t   *threadIDs; //工作的线程ID
-    int minNum;     //最小线程数量
-    int maxNum;     //最大线程数量
-    int busyNum;    //忙的线程个数
-    int liveNum;    //存活的线程个数
-    int exitNum;    //要销毁的线程个数
-    //互斥锁
-    pthread_mutex_t mutexPool;  //锁整个的线程池
-    //条件变量
-    pthread_cond_t notEmpty;    //任务队列是不是空了
+    &#x2F;&#x2F;管理者线程
+    pthread_t   managerID;  &#x2F;&#x2F;管理者线程ID
+    &#x2F;&#x2F;工作线程
+    pthread_t   *threadIDs; &#x2F;&#x2F;工作的线程ID
+    int minNum;     &#x2F;&#x2F;最小线程数量
+    int maxNum;     &#x2F;&#x2F;最大线程数量
+    int busyNum;    &#x2F;&#x2F;忙的线程个数
+    int liveNum;    &#x2F;&#x2F;存活的线程个数
+    int exitNum;    &#x2F;&#x2F;要销毁的线程个数
+    &#x2F;&#x2F;互斥锁
+    pthread_mutex_t mutexPool;  &#x2F;&#x2F;锁整个的线程池
+    &#x2F;&#x2F;条件变量
+    pthread_cond_t notEmpty;    &#x2F;&#x2F;任务队列是不是空了
 
-    bool shutdown = false;   //是不是要销毁线程池，销毁为1，不销毁为0
-    static const int NUMBER = 2;
+    bool shutdown &#x3D; false;   &#x2F;&#x2F;是不是要销毁线程池，销毁为1，不销毁为0
+    static const int NUMBER &#x3D; 2;
 &#125;;
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 
                 
             </div>
@@ -1838,6 +1844,9 @@ private:
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
 
 <!-- 代码语言 -->
 
@@ -2014,7 +2023,7 @@ private:
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">23.5k</span>
+                        class="white-color">34.3k</span>
             
             
             
