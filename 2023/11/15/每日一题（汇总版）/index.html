@@ -4,8 +4,10 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="vector怎么扩容, Hexo">
-    <meta name="description" content="vector怎么扩容在 C++ 的标准库中，std::vector 是一个动态数组，其扩容是通过重新分配内存来实现的。当 std::vector 的元素数量达到当前分配的内存大小时，系统会为std::vector分配一块更大的内存，并将原来">
+    <meta name="keywords" content="每日一题（汇总版）, Hexo">
+    <meta name="description" content="每日一题1. 虚函数1.1 什么是虚函数虚函数是在基类中声明的，而在派生类中进行重写的函数。通过使用virtual关键字声明一个函数为虚函数，它使得在运行时能够动态地确定调用的是哪个版本的函数。
+class Base &amp;#123;
+publ">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +19,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>vector怎么扩容 | Hexo</title>
+    <title>每日一题（汇总版） | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -441,12 +443,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">vector怎么扩容</h1>
+                    <h1 class="description center-align post-title">每日一题（汇总版）</h1>
                 </div>
             </div>
         </div>
@@ -495,7 +497,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-11-22
+                    2023-11-15
                 </div>
                 
 
@@ -504,14 +506,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    233
+                    5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    18 分
                 </div>
                 
 
@@ -539,13 +541,293 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="vector怎么扩容"><a href="#vector怎么扩容" class="headerlink" title="vector怎么扩容"></a><strong>vector怎么扩容</strong></h2><p>在 C++ 的标准库中，<code>std::vector</code> 是一个动态数组，其扩容是<strong>通过重新分配内存来实现的</strong>。当<code> std::vector</code> 的元素数量达到当前分配的内存大小时，系统会为<code>std::vector</code>分配一块更大的内存，并将原来的元素复制到新的内存中。这个过程中原来的内存会被释放。</p>
+                <h1 id="每日一题"><a href="#每日一题" class="headerlink" title="每日一题"></a>每日一题</h1><h2 id="1-虚函数"><a href="#1-虚函数" class="headerlink" title="1. 虚函数"></a>1. 虚函数</h2><h3 id="1-1-什么是虚函数"><a href="#1-1-什么是虚函数" class="headerlink" title="1.1 什么是虚函数"></a>1.1 什么是虚函数</h3><p>虚函数是在基类中声明的，而在派生类中进行重写的函数。通过使用virtual关键字声明一个函数为虚函数，它使得在运行时能够动态地确定调用的是哪个版本的函数。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class Base &#123;
+public:
+    virtual void show() &#123;
+        std::cout &lt;&lt; &quot;Base class\n&quot;;
+    &#125;
+&#125;;
+
+class Derived : public Base &#123;
+public:
+    void show() override &#123;
+        std::cout &lt;&lt; &quot;Derived class\n&quot;;
+    &#125;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="1-2-虚函数的作用"><a href="#1-2-虚函数的作用" class="headerlink" title="1.2 虚函数的作用"></a>1.2 <strong>虚函数的作用</strong></h3><ul>
+<li>实现多态性（Polymorphism）：允许通过基类指针或引用调用派生类对象的函数，根据实际对象的类型选择相应的函数实现。</li>
+<li>运行时绑定（Runtime Binding）：虚函数通过表格（虚函数表）的方式实现，使得在运行时动态地绑定函数调用。</li>
+</ul>
+<h3 id="1-3-虚函数表（vtable）"><a href="#1-3-虚函数表（vtable）" class="headerlink" title="1.3 虚函数表（vtable）"></a>1.3 <strong>虚函数表（vtable）</strong></h3><p>每个含有虚函数的类都有一个虚函数表，其中<strong>存储了虚函数的地址</strong>。对象的内存布局中包含一个指向虚函数表的指针。派生类的虚函数表包含基类的虚函数表，并在适当的位置添加或替换新的虚函数地址。</p>
+<h3 id="1-4-纯虚函数"><a href="#1-4-纯虚函数" class="headerlink" title="1.4 纯虚函数"></a>1.4 <strong>纯虚函数</strong></h3><p><strong>纯虚函数是一个在基类中声明但没有提供实现的虚函数</strong>，它通过在声明中使用 &#x3D; 0 来标识。类含有纯虚函数的类被称为<strong>抽象类</strong>，不能被实例化。派生类必须实现纯虚函数，否则也会变为抽象类。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class AbstractBase &#123;
+public:
+    virtual void pureVirtualFunction() &#x3D; 0;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="1-5-虚析构函数"><a href="#1-5-虚析构函数" class="headerlink" title="1.5 虚析构函数"></a>1.5 <strong>虚析构函数</strong></h3><p>如果基类的析构函数是虚函数，当通过基类指针删除派生类对象时，会调用派生类的析构函数。这是为了确保正确的对象销毁。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class Base &#123;
+public:
+    virtual ~Base() &#123;
+        std::cout &lt;&lt; &quot;Base destructor\n&quot;;
+    &#125;
+&#125;;
+
+class Derived : public Base &#123;
+public:
+    ~Derived() override &#123;
+        std::cout &lt;&lt; &quot;Derived destructor\n&quot;;
+    &#125;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h2><h3 id="什么是内存对齐"><a href="#什么是内存对齐" class="headerlink" title="什么是内存对齐"></a>什么是内存对齐</h3><p>内存对齐是指在分配内存时，数据存储在<strong>内存中的起始地址</strong>是按照一定的规则对齐的。</p>
+<p>假设现在CPU是按照每4个字节来访问内存，有地址0、和地址1，现在要存1个char变量（假设char变量占1字节）和1个int变量（假设int变量占4字节），那么可以有内存对齐和内存不对齐的存储方式，如下图：</p>
+<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231116194307036.png" alt="image-20231116194307036"></p>
+<p>假如不采用内存对齐的方式存储数据，那么CPU需要访问地址0和地址1，再进行合并，才能得到最终的结果；采用内存对齐的方式进行存储数据的话，则只需访问地址1就可以得到最终的结果。因此，<strong>采用内存对齐的存储方式可以减少CPU的访问运行时间</strong>，缺点是<strong>没有充分利用存储空间</strong>。</p>
+<h3 id="对齐规则"><a href="#对齐规则" class="headerlink" title="对齐规则"></a><strong>对齐规则</strong></h3><p>数据是根据初始化的顺序存储的，先定义的先储存，存储地址需要是<code>sizeof</code>(数据变量)的整数倍。</p>
+<p>例如，假设<code>sizeof(char) = 1，sizeof(int) = 4，sizeof(int) = 4，sizeof(double) = 8</code>。结构的对齐规则是要先确定对齐字节数（<strong>对齐字节数&#x3D;结构体中的变量占用空间最大的那个字节数</strong>，下面的结构体<code>t3、t4</code>就是<code>sizeof(double) = 8</code>），然后再保证存储地址是<code>sizeof</code>(数据变量)的整数倍。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;iostream&gt;
+using namespace std;
+
+struct t1&#123;
+    char a;
+    short c;
+    int x;
+    char b;
+
+&#125;;
+
+struct t2&#123;
+    int x;
+    char b;
+    char c;
+    short a;
+&#125;;
+
+struct t3&#123;
+    short a;
+    double c;
+    int x;
+    char b;
+
+&#125;;
+
+struct t4&#123;
+    char a, b;
+    int x;
+    double c;
+
+&#125;;
+int main()
+&#123;
+    
+    cout &lt;&lt; sizeof(t1) &lt;&lt; endl; &#x2F;&#x2F;12
+    cout &lt;&lt; sizeof(t2) &lt;&lt; endl; &#x2F;&#x2F;8
+    cout &lt;&lt; sizeof(t3) &lt;&lt; endl; &#x2F;&#x2F;24
+    cout &lt;&lt; sizeof(t4) &lt;&lt; endl; &#x2F;&#x2F;16
+    return 0;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231116194937640.png" alt="image-20231116194937640"></p>
+<p>在C&#x2F;C++中，内存对齐是由编译器负责的。编译器会按照平台的要求为数据进行对齐，通常会将数据按照其自身大小对齐到特定字节的倍数。这个特定字节的倍数通常由平台决定，例如，在32位系统中可能是4字节，而在64位系统中可能是8字节。</p>
+<p>C&#x2F;C++中可以使用一些特殊的关键字或编译器指令来控制内存对齐，例如：<code>alignas</code>关键字：C++11引入了<code>alignas</code>关键字，用于指定对齐方式。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">alignas(16) struct MyStruct &#123;
+    &#x2F;&#x2F; 结构体成员
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a><strong>作用</strong></h3><ol>
+<li>提高访问速度：许多计算机体系结构要求数据按照特定的边界地址存储，而不是任意地址。当数据被按照这些边界对齐时，处理器能够更快地访问这些数据，提高数据存取速度。</li>
+<li>硬件要求：一些硬件平台对于特定类型的数据要求按照一定的对齐方式存储，不遵循这个规则可能导致硬件异常或性能下降。</li>
+<li>减少浪费：内存对齐可以减少内存碎片，提高内存利用率。</li>
+</ol>
+<h2 id="strlen-和-sizeof的区别"><a href="#strlen-和-sizeof的区别" class="headerlink" title="strlen 和 sizeof的区别"></a><code>strlen</code> 和 <code>sizeof</code>的区别</h2><p><code>sizeof</code>是C语言中的一个单目运算符，用来计算数据类型所占空间的大小，单位为字节；而<code>strlen</code>是一个函数，用来计算字符串长度。简单来说，就是<code>sizeof</code>不包含<code>\0</code>,而<code>strlen</code>包含<code>\0</code>。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main()
+&#123;
+	char arr1[]&#x3D;&quot;abcd&quot;;&#x2F;&#x2F;d的后面自动补上\0;
+	char arr2[]&#x3D;&#123;&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;&#125;;&#x2F;&#x2F;以单个元素赋值，没有\0的结束符
+	printf(&quot;strlen1&#x3D;%d\n&quot;,strlen(arr1));&#x2F;&#x2F;strlen()计算\0之前的字符长度
+	printf(&quot;strlen2&#x3D;%d\n&quot;,strlen(arr2));&#x2F;&#x2F;该处计算结果应为随机值，因为arr2[]没定义元素个数，就无法知道在哪能遇到\0;
+	printf(&quot;sizeof1&#x3D;%d\n&quot;,sizeof(arr1));&#x2F;&#x2F;计算了包含\0的数据空间大小
+	printf(&quot;sizeof2&#x3D;%d\n&quot;,sizeof(arr2));
+	return 0;
+ &#125; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">strlen1=4
+strlen2=8
+sizeof1=5
+sizeof2=4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Linux中kill-、kill-15、kill-9-的区别"><a href="#Linux中kill-、kill-15、kill-9-的区别" class="headerlink" title="Linux中kill 、kill -15、kill -9 的区别"></a>Linux中<code>kill</code> 、<code>kill -15</code>、<code>kill -9</code> 的区别</h2><p><code>kill（不加 -* 默认kill -15）</code>命令</p>
+<p>系统会发送一个<code>SIGTERM</code>信号给对应的程序。当程序接收到该<code>signal</code>信号后，将会发生以下事情：</p>
+<ul>
+<li>程序立刻停止</li>
+<li>当程序释放相应资源后再停止</li>
+<li>程序可能仍然继续运行</li>
+</ul>
+<p>大部分程序接收到<code>SIGTERM</code>信号后，会先释放自己的资源，然后再停止。但是也有程序可能接收信号后，做一些其他的事情（如果程序正在等待IO，可能就不会立马做出响应），也就是说，**<code>SIGTERM</code>有可能是会被阻塞的**。</p>
+<p><code>kill -9</code>命令</p>
+<p><strong>系统给对应程序发送的信号是<code>SIGKILL</code>，即<code>exit</code>。<code>exit</code>信号不会被系统阻塞，所以<code>kill -9</code>能顺利杀掉进程。</strong></p>
+<ul>
+<li><strong>在使用<code>kill -9</code> 前，应该先使用<code> kill -15</code>，给目标进程一个清理善后工作的机会。如果没有，可能会留下一些不完整的文件或状态，从而影响服务的再次启动。</strong></li>
+</ul>
+<h3 id="kill-9这个信号可以捕获吗"><a href="#kill-9这个信号可以捕获吗" class="headerlink" title="kill -9这个信号可以捕获吗"></a><code>kill -9</code>这个信号可以捕获吗</h3><p><code>kill -9</code>命令用于发送<code>SIGKILL</code>信号给指定的进程，强制终止该进程。<code>SIGKILL</code>是一个无法捕获或阻止的信号，它会立即终止目标进程，不给进程做清理或善后工作的机会。</p>
+<h2 id="Linux中最大socket数量"><a href="#Linux中最大socket数量" class="headerlink" title="Linux中最大socket数量"></a>Linux中最大socket数量</h2><p><strong>linux系统默认<code>ulimit</code>为<code>1024</code>个访问，用户最多可开启的程序数目。一般一个端口的最高连接为2的16次方<code>65535</code>。</strong></p>
+<p>查看全局文件句柄数限制(系统支持的最大值)</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> /proc/sys/fs/file-max<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>查看每个进程文件句柄数限制</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">ulimit</span> <span class="token parameter variable">-n</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如何修改最大连接数量<a target="_blank" rel="noopener" href="https://blog.csdn.net/LINZEYU666/article/details/121548591">870-Linux下解决高并发socket最大连接数限制_socket 连接数_林林林ZEYU的博客-CSDN博客</a></p>
+<h2 id="C-迭代器和指针的区别？"><a href="#C-迭代器和指针的区别？" class="headerlink" title="C++迭代器和指针的区别？"></a>C++迭代器和指针的区别？</h2><ul>
+<li><strong>范围</strong>：指针属于迭代器的一种（指针可以用来遍历容器[数组]），<strong>迭代器使用后就释放了，不能再继续使用，指针能</strong>；<strong>指针能指向函数，迭代器不行，只能指向容器</strong></li>
+<li><strong>功能</strong>：迭代器有着比指针更细的划分并对应能力不同的功能（<strong>重载不同的运算符</strong>）</li>
+<li><strong>行为</strong>：迭代器比指针更统一和良好的用法（<strong>更轻易使用begin()和end()，不用担心越界</strong>）。</li>
+</ul>
+<h3 id="为什么需要迭代器？"><a href="#为什么需要迭代器？" class="headerlink" title="为什么需要迭代器？"></a>为什么需要迭代器？</h3><ul>
+<li><strong>抽象层次：</strong> <strong>迭代器提供了对容器元素的高层次抽象</strong>，允许使用一致的方式遍历不同类型的容器，而不用关心底层实现。</li>
+<li><strong>安全性：</strong> 使用迭代器可以减少指针错误的可能性，因为迭代器受到容器的保护，<strong>不容易越界访问或访问非法内存</strong>。</li>
+<li><strong>容器封装：</strong> 迭代器为容器提供了一种封装，<strong>允许容器实现者更灵活地改变底层数据结构</strong>，而不会对使用容器的代码产生影响。</li>
+</ul>
+<h2 id="sprintf与snprintf区别"><a href="#sprintf与snprintf区别" class="headerlink" title="sprintf与snprintf区别"></a>sprintf与snprintf区别</h2><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int sprintf(char *str, const char &amp;format, ...);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code>sprintf</code>是字符串格式化命令，主要功能是把<strong>格式化的数据写入字符串</strong><code>str</code>中，返回值为写入<code>str</code>的字节数，<strong>结束字符<code>\0</code>不计入内</strong>。其中， <code>str</code>是指要写入的缓冲区，<code>format</code>控制要写入<code>str</code>中数据的格式，例如<code>%s、%d、%x</code>等。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int snprintf(char *str, size_t size, const char *format, ...);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code>snprintf</code>是字符串格式化命令，主要功能是把<strong>格式化的数据写入字符串</strong><code>str</code>中，最多写<code>size</code>个字节，包括自动添加在字符串末尾处的结束字符<code>\0</code>;返回值为写入<code>str</code>的字节数，**包括结束字符<code>\0</code>**。</p>
+<p><strong><code>sprintf</code>函数返回的是实际输出到字符串缓冲中的字符个数,而<code>snprintf</code>函数返回的是应该输出到字符串缓冲的字符个数</strong></p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#define snprintf_nowarn(...) (snprintf(__VA_ARGS__) &lt; 0 ? abort() : (void)0)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>该宏用于调用 <code>snprintf</code> 函数，并检查其返回值是否小于 0。<code>snprintf</code> 函数是一个安全的字符串格式化函数，用于将格式化的数据写入字符串。这里的目的是在调用 <code>snprintf</code> 时，如果返回值小于 0，就调用 <code>abort()</code> 函数，中止程序运行，以防止潜在的错误。</p>
+<h2 id="C语言中”-”和”-”的用法"><a href="#C语言中”-”和”-”的用法" class="headerlink" title="C语言中”#”和”##”的用法"></a>C语言中”#”和”##”的用法</h2><p>#把宏参数变为一个字符串</p>
+<p>##把两个宏参数贴合在一起</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;cstdio></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;climits></span></span>
+using namespace std<span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>     #s</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>  <span class="token keyword">int</span><span class="token punctuation">(</span>a</span><span class="token punctuation">##</span><span class="token expression">e</span><span class="token punctuation">##</span><span class="token expression">b<span class="token punctuation">)</span></span></span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token function">STR</span><span class="token punctuation">(</span>abc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token comment">// 输出字符串"abc"</span>
+   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> <span class="token function">CONS</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 2e3 输出:2000</span>
+   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">abc
+2000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<div class="note success"><p>当宏参数是另一个宏的时候，需要注意的是凡宏定义里有用<code>#</code>或<code>##</code>的地方宏参数是不会再展开。 <strong>只有当前宏生效, 参数里的宏不会生效</strong> ！！！</p>
+</div>
+
+<p class="note note-primary">当宏参数是另一个宏的时候，需要注意的是凡宏定义里有用`#`或`##`的地方宏参数是不会再展开。 只有当前宏生效, 参数里的宏不会生效 ！！！</p>
+
+<p><span class="label label-primary">举例</span></p>
+<pre class="line-numbers language-none"><code class="language-none">#define A          (2)
+#define STR(s)     #s
+#define CONS(a,b)  int(a##e##b)
+printf(&quot;int max: %s\n&quot;,  STR(INT_MAX));    &#x2F;&#x2F; INT_MAX ＃include&lt;climits&gt;
+printf(&quot;%s\n&quot;, CONS(A, A));                &#x2F;&#x2F; compile error --- int(AeA)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>两句<code>printf</code>会被展开为：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"int max: %s\n"</span><span class="token punctuation">,</span><span class="token string">"INT_MAX"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%s\n"</span><span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token punctuation">(</span>AeA<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<div class="note success"><p>分析</p>
+<p>由于<code>A</code>和<code>INT_MAX</code>均是宏，且作为宏<code>CONS</code>和<code>STR</code>的参数，并且宏<code>CONS</code>和<code>STR</code>中均含有#或者##符号，所以<code>A</code>和<code>INT_MAX</code>均不能被解引用。导致不符合预期的情况出现。</p>
+</div>
+
+<p class="note note-primary">解决这个问题的方法很简单。 加多一层中间转换宏。 加这层宏的用意是把所有宏的参数在这层里全部展开,
+那么在转换宏里的那一个宏(_STR)就能得到正确的宏参数。</p>
+
+
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">A</span>           <span class="token expression"><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">_STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>     #s</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>      <span class="token function">_STR</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>          </span><span class="token comment">// 转换宏</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">_CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>  <span class="token keyword">int</span><span class="token punctuation">(</span>a</span><span class="token punctuation">##</span><span class="token expression">e</span><span class="token punctuation">##</span><span class="token expression">b<span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>   <span class="token function">_CONS</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>       </span><span class="token comment">// 转换宏</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;cstdio></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;climits></span></span>
+using namespace std<span class="token punctuation">;</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">A</span>           <span class="token expression"><span class="token number">2</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">_STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>     #s</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>      <span class="token function">_STR</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>          </span><span class="token comment">// 转换宏</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">_CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>  <span class="token keyword">int</span><span class="token punctuation">(</span>a</span><span class="token punctuation">##</span><span class="token expression">e</span><span class="token punctuation">##</span><span class="token expression">b<span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>   <span class="token function">_CONS</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>       </span><span class="token comment">// 转换宏</span></span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token function">STR</span><span class="token punctuation">(</span>INT_MAX<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token comment">// 输出字符串"abc"</span>
+   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> <span class="token function">CONS</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>A<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 2e3 输出:2000</span>
+   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token number">0x7fffffff</span>
+<span class="token number">200</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="vector怎么扩容"><a href="#vector怎么扩容" class="headerlink" title="vector怎么扩容"></a><strong>vector怎么扩容</strong></h2><p>在 C++ 的标准库中，<code>std::vector</code> 是一个动态数组，其扩容是<strong>通过重新分配内存来实现的</strong>。当<code> std::vector</code> 的元素数量达到当前分配的内存大小时，系统会为<code>std::vector</code>分配一块更大的内存，并将原来的元素复制到新的内存中。这个过程中原来的内存会被释放。</p>
 <p><code>std::vector</code> 扩容的基本步骤：</p>
 <ol>
 <li>分配新的内存：当 <code>std::vector</code> 中的元素个数达到当前分配的内存大小时，需要分配一块新的内存。新的内存大小通常是当前内存大小的两倍(Linux端），(Windows是1.5倍），这样做是为了保证<code>std::vector</code>的操作复杂度为平摊 O(1)。</li>
 <li>将元素复制到新内存：将原来的元素逐个复制到新分配的内存中。</li>
 <li>释放旧内存：释放原来的内存空间。</li>
 </ol>
+<h2 id="信号量和互斥锁有什么区别"><a href="#信号量和互斥锁有什么区别" class="headerlink" title="信号量和互斥锁有什么区别"></a><strong>信号量和互斥锁有什么区别</strong></h2><div class="note success"><p>信号量用于线程的同步，互斥锁用于线程的互斥。</p>
+<p>信号量值可以为非负整数，互斥锁值只能为<strong>0&#x2F;1</strong>。</p>
+<p>信号量可以由一个线程释放，另一个线程得到，互斥锁的加锁和解锁必须由<strong>同一线程</strong>分别对应使用。</p>
+<p>信号量用在多线程多任务同步的，一个线程完成了某一个动作就通过信号量告诉别的线程，别的线程再进行某些动作。互斥锁是用在多线程多任务互斥的，一个线程占用了某一个资源，那么别的线程就无法访问，直到这个线程unlock，其他的线程才开始可以利用这个资源。</p>
+</div>
+
+<h2 id="define-和-const-区别"><a href="#define-和-const-区别" class="headerlink" title="define 和 const 区别"></a>define 和 const 区别</h2><p><strong>对于 <code>define </code>来说，</strong> 宏定义实际上是在<strong>预编译阶段</strong>进行处理，<strong>没有类型</strong>，也就没有类型检查，仅仅做的是<strong>遇到宏定义进行字符串的展开</strong>，遇到多少次就展开多少次，而且这个简单的展开过程中，很容易出现边界效应，达不到预期的效果。因为<code>define</code>宏定义仅仅是展开，因此<strong>运行时系统并不为宏定义分配内存</strong>，（但是从汇编的角度来讲，<code>define</code>却以<strong>立即数</strong>的方式<strong>保留了多份数据的拷贝</strong>）。</p>
+<p><strong>对于 <code>const</code> 来说，</strong> <code>const</code> 是在<strong>编译期间</strong>进行处理的，<code>const </code><strong>有类型</strong>，也<strong>有类型检查</strong>，程序运行时系统会为 <code>const</code> 常量分配内存，而且从汇编的角度讲，<code>const</code> 常量在出现的地方保留的是真正数据的内存地址，<strong>只保留了一份数据的拷贝</strong>，省去了不必要的内存空间。而且，有时编译器不会为普通的<code>const</code>常量分配内存，而是直接将<code>const</code>常量添加到符号表中，省去了读取和写入内存的操作，效率更高。</p>
+<h2 id="野-wild-指针与悬空-dangling-指针有什么区别？如何避免？"><a href="#野-wild-指针与悬空-dangling-指针有什么区别？如何避免？" class="headerlink" title="野(wild)指针与悬空(dangling)指针有什么区别？如何避免？"></a>野(wild)指针与悬空(dangling)指针有什么区别？如何避免？</h2><p><strong>野指针</strong>(wild pointer)：就是<strong>没有被初始化过的指针</strong>。用 <code>gcc -Wall</code> 编译, 会出现 <code>used uninitialized</code>警告。</p>
+<p><strong>悬空指针</strong>：是<strong>指针最初指向的内存已经被释放了</strong>的一种指针。</p>
+<p>无论是野指针还是悬空指针，都是<strong>指向无效内存区域(这里的无效指的是”不安全不可控”)的指针</strong>。 访问”不安全可控”(invalid)的内存区域将导致”Undefined Behavior”。</p>
+<p><strong>如何避免使用野指针？</strong></p>
+<p>在平时的编码中，养成在定义指针后且在使用之前完成<strong>初始化</strong>的习惯或者使用智能指针。</p>
+<h2 id="实现多态的方法"><a href="#实现多态的方法" class="headerlink" title="实现多态的方法"></a>实现多态的方法</h2><p>多态其实一般就是指<strong>继承加虚函数实现的多态</strong>，对于重载来说，实际上基于的原理是，编译器为函数生成符号表时的不同规则，重载只是一种语言特性，与多态无关，与面向对象也无关，但这又是 C++中增加的新规则，所以也算属于 C++，所以如果非要说重载算是多态的一种，那就可以说：<strong>多态可以分为静态多态和动态多态。</strong></p>
+<p>静态多态其实就是重载，因为静态多态是指<strong>在编译时期就决定了调用哪个函数</strong>，根据参数列表来决定；</p>
+<p>动态多态是指<strong>通过子类重写父类的虚函数</strong>来实现的，因为是<strong>在运行期间决定调用</strong>的函数，所以称为动态多态，</p>
+<p>一般情况下我们不区分这两个时所说的多态就是指动态多态。</p>
+<p>动态多态的实现与虚函数表，虚函数指针相关。</p>
+<div class="note success"><p>子类是否要重写父类的虚函数？</p>
+<p><strong>子类继承父类时， 父类的纯虚函数必须重写</strong>，否则子类也是一个虚类不可实例化。 定义纯虚函数是为了实现一个接口，起到一个规范的作用，规范继承这个类的程序员必须实现这个函数。</p>
+</div>
+
+<h2 id="new-delete-malloc-free-区别"><a href="#new-delete-malloc-free-区别" class="headerlink" title="new &#x2F; delete malloc &#x2F; free 区别"></a><strong>new &#x2F; delete malloc &#x2F; free 区别</strong></h2><p>都可以用来在<strong>堆上分配和回收空间</strong>。<code>new /delete</code> 是操作符，<code>malloc/free </code>是库函数。</p>
+<div class="note success"><p><strong>执行 new 实际上执行两个过程</strong>：</p>
+<ol>
+<li><p>分配未初始化的内存空间（malloc）；</p>
+</li>
+<li><p>使用对象的构造函数对空间进行初始化；返回空间的首地址。</p>
+</li>
+</ol>
+<p>如果在第一步分配空间中出现问题，则抛出<code>std::bad_alloc</code>异常，或被某个设定的异常处理函数捕获处理；如果在第二步构造对象时出现异常，则自动调用<code>delete</code>释放内存。</p>
+</div>
+
+<div class="note success"><p><strong>执行 delete 实际上也有两个过程</strong>：</p>
+<ol>
+<li>使用析构函数对对象进行析构；</li>
+<li>回收内存空间（free）。</li>
+</ol>
+<p>以上也可以看出<code>new</code>和 <code>malloc</code> 的区别，<code>new </code>得到的是<strong>经过初始化的空间</strong>，而<code>malloc</code>得到的是<strong>未初始化的空间</strong>。所以 <code>new</code> 是 <code>new</code> 一个类型，而 <code>malloc </code>则是<code>malloc</code>一个字节长度的空间。<code>delete </code>和<code> free</code>同理，<code>delete</code>不仅释放空间还析构对象，<code>delete</code> 一个类型，<code>free</code> 一个字节长度的空间。</p>
+</div>
+
+<p><strong>为什么有了 malloc／free ,还需要 new／delete？</strong> </p>
+<p>因为对于非内部数据类型而言，光用 <code>malloc／free </code>无法满足动态对象的要求。对象在创建的同时需要自动执行构造函数，对象在消亡以前要自动执行析构函数。由于 <code>mallo／free </code>是库函数而不是运算符，不在编译器控制权限之内，不能够把执行的构造函数和析构函数的任务强加于 <code>malloc／free</code>，所以有了<code>new／delete</code>操作符。</p>
+<h2 id="内存泄漏的定义，如何检测与避免"><a href="#内存泄漏的定义，如何检测与避免" class="headerlink" title="内存泄漏的定义，如何检测与避免"></a>内存泄漏的定义，如何检测与避免</h2><p><strong>定义</strong>：内存泄漏简单的说就是<strong>申请了一块内存空间，使用完毕后没有释放掉</strong>。 它的一般表现方式是<strong>程序运行时间越长，占用内存越多，最终用尽全部内存，整个系统崩溃</strong>。由程序申请的一块内存，且没有任何一个指针指向它，那么这块内存就泄漏了。</p>
+<p><strong>如何检测内存泄漏</strong></p>
+<ul>
+<li>首先可以通过观察猜测是否可能发生内存泄漏，Linux 中使用<code>swap</code> 命令观察还有多少可用的交换空间，在一两分钟内键入该命令三到四次，看看可用的交换区是否在减少。</li>
+<li>还可以使用 其他一些 <code>/usr/bin/stat</code> 工具如 <code>netstat</code>、<code>vmstat</code> 等。如发现波段有内存被分配且从不释放，一个可能的解释就是有个进程出现了内存泄漏。</li>
+<li>当然也有用于内存调试，内存泄漏检测以及性能分析的软件开发工具 <code>valgrind </code>这样的工具来进行内存泄漏的检测。</li>
+</ul>
 
                 
             </div>
@@ -572,7 +854,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://dybil.top/2023/11/22/vector%E6%80%8E%E4%B9%88%E6%89%A9%E5%AE%B9/">http://dybil.top/2023/11/22/vector%E6%80%8E%E4%B9%88%E6%89%A9%E5%AE%B9/</a>
+                    <a href="http://dybil.top/2023/11/15/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%EF%BC%88%E6%B1%87%E6%80%BB%E7%89%88%EF%BC%89/">http://dybil.top/2023/11/15/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98%EF%BC%88%E6%B1%87%E6%80%BB%E7%89%88%EF%BC%89/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -933,13 +1215,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2023/11/23/%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/">
+                <a href="/2023/11/16/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="信号量和互斥锁有什么区别">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="内存对齐">
                         
-                        <span class="card-title">信号量和互斥锁有什么区别</span>
+                        <span class="card-title">内存对齐</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -950,7 +1232,7 @@
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-23
+                            <i class="far fa-clock fa-fw icon-date"></i>2023-11-16
                         </span>
                         <span class="publish-author">
                             
@@ -982,13 +1264,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2023/11/21/sprintf%E4%B8%8Esnprintf%E5%8C%BA%E5%88%AB/">
+                <a href="/2023/11/15/%E8%99%9A%E5%87%BD%E6%95%B0/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="sprintf与snprintf区别">
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="虚函数">
                         
-                        <span class="card-title">sprintf与snprintf区别</span>
+                        <span class="card-title">虚函数</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -999,7 +1281,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-21
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-15
                             </span>
                         <span class="publish-author">
                             
