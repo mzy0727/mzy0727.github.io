@@ -4,6 +4,81 @@
   
     
     <entry>
+      <title>实现多态的方法</title>
+      <link href="/2023/11/27/%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%80%81%E7%9A%84%E6%96%B9%E6%B3%95/"/>
+      <url>/2023/11/27/%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%80%81%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+      
+        <content type="html"><![CDATA[<h2 id="实现多态的方法"><a href="#实现多态的方法" class="headerlink" title="实现多态的方法"></a>实现多态的方法</h2><p>多态其实一般就是指<strong>继承加虚函数实现的多态</strong>，对于重载来说，实际上基于的原理是，编译器为函数生成符号表时的不同规则，重载只是一种语言特性，与多态无关，与面向对象也无关，但这又是 C++中增加的新规则，所以也算属于 C++，所以如果非要说重载算是多态的一种，那就可以说：<strong>多态可以分为静态多态和动态多态。</strong></p><p>静态多态其实就是重载，因为静态多态是指<strong>在编译时期就决定了调用哪个函数</strong>，根据参数列表来决定；</p><p>动态多态是指<strong>通过子类重写父类的虚函数</strong>来实现的，因为是<strong>在运行期间决定调用</strong>的函数，所以称为动态多态，</p><p>一般情况下我们不区分这两个时所说的多态就是指动态多态。</p><p>动态多态的实现与虚函数表，虚函数指针相关。</p><div class="note success"><p>子类是否要重写父类的虚函数？</p><p><strong>子类继承父类时， 父类的纯虚函数必须重写</strong>，否则子类也是一个虚类不可实例化。 定义纯虚函数是为了实现一个接口，起到一个规范的作用，规范继承这个类的程序员必须实现这个函数。</p></div>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>new和delete与malloc和free的区别</title>
+      <link href="/2023/11/26/new%E5%92%8Cdelete%E4%B8%8Emalloc%E5%92%8Cfree%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/11/26/new%E5%92%8Cdelete%E4%B8%8Emalloc%E5%92%8Cfree%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h2 id="new-delete-malloc-free-区别"><a href="#new-delete-malloc-free-区别" class="headerlink" title="new &#x2F; delete malloc &#x2F; free 区别"></a><strong>new &#x2F; delete malloc &#x2F; free 区别</strong></h2><p>都可以用来在<strong>堆上分配和回收空间</strong>。<code>new /delete</code> 是操作符，<code>malloc/free </code>是库函数。</p><div class="note success"><p><strong>执行 new 实际上执行两个过程</strong>：</p><ol><li><p>分配未初始化的内存空间（malloc）；</p></li><li><p>使用对象的构造函数对空间进行初始化；返回空间的首地址。</p></li></ol><p>如果在第一步分配空间中出现问题，则抛出<code>std::bad_alloc</code>异常，或被某个设定的异常处理函数捕获处理；如果在第二步构造对象时出现异常，则自动调用<code>delete</code>释放内存。</p></div><div class="note success"><p><strong>执行 delete 实际上也有两个过程</strong>：</p><ol><li>使用析构函数对对象进行析构；</li><li>回收内存空间（free）。</li></ol><p>以上也可以看出<code>new</code>和 <code>malloc</code> 的区别，<code>new </code>得到的是<strong>经过初始化的空间</strong>，而<code>malloc</code>得到的是<strong>未初始化的空间</strong>。所以 <code>new</code> 是 <code>new</code> 一个类型，而 <code>malloc </code>则是<code>malloc</code>一个字节长度的空间。<code>delete </code>和<code> free</code>同理，<code>delete</code>不仅释放空间还析构对象，<code>delete</code> 一个类型，<code>free</code> 一个字节长度的空间。</p></div><p><strong>为什么有了 malloc／free ,还需要 new／delete？</strong> </p><p>因为对于非内部数据类型而言，光用 <code>malloc／free </code>无法满足动态对象的要求。对象在创建的同时需要自动执行构造函数，对象在消亡以前要自动执行析构函数。由于 <code>mallo／free </code>是库函数而不是运算符，不在编译器控制权限之内，不能够把执行的构造函数和析构函数的任务强加于 <code>malloc／free</code>，所以有了<code>new／delete</code>操作符。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>内存泄漏的定义，如何检测与避免</title>
+      <link href="/2023/11/25/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E7%9A%84%E5%AE%9A%E4%B9%89%EF%BC%8C%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%E4%B8%8E%E9%81%BF%E5%85%8D/"/>
+      <url>/2023/11/25/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E7%9A%84%E5%AE%9A%E4%B9%89%EF%BC%8C%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%E4%B8%8E%E9%81%BF%E5%85%8D/</url>
+      
+        <content type="html"><![CDATA[<h2 id="内存泄漏的定义，如何检测与避免"><a href="#内存泄漏的定义，如何检测与避免" class="headerlink" title="内存泄漏的定义，如何检测与避免"></a>内存泄漏的定义，如何检测与避免</h2><p><strong>定义</strong>：内存泄漏简单的说就是<strong>申请了一块内存空间，使用完毕后没有释放掉</strong>。 它的一般表现方式是<strong>程序运行时间越长，占用内存越多，最终用尽全部内存，整个系统崩溃</strong>。由程序申请的一块内存，且没有任何一个指针指向它，那么这块内存就泄漏了。</p><p><strong>如何检测内存泄漏</strong></p><ul><li>首先可以通过观察猜测是否可能发生内存泄漏，Linux 中使用<code>swap</code> 命令观察还有多少可用的交换空间，在一两分钟内键入该命令三到四次，看看可用的交换区是否在减少。</li><li>还可以使用 其他一些 <code>/usr/bin/stat</code> 工具如 <code>netstat</code>、<code>vmstat</code> 等。如发现波段有内存被分配且从不释放，一个可能的解释就是有个进程出现了内存泄漏。</li><li>当然也有用于内存调试，内存泄漏检测以及性能分析的软件开发工具 <code>valgrind </code>这样的工具来进行内存泄漏的检测。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>野(wild)指针与悬空(dangling)指针有什么区别？如何避免？</title>
       <link href="/2023/11/24/%E9%87%8E-wild-%E6%8C%87%E9%92%88%E4%B8%8E%E6%82%AC%E7%A9%BA-dangling-%E6%8C%87%E9%92%88%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%EF%BC%9F/"/>
       <url>/2023/11/24/%E9%87%8E-wild-%E6%8C%87%E9%92%88%E4%B8%8E%E6%82%AC%E7%A9%BA-dangling-%E6%8C%87%E9%92%88%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%EF%BC%9F/</url>

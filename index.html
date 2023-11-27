@@ -640,18 +640,16 @@ auto b &#x3D; a;&#x2F;&#x2F;自动推断类型，b为 int类型
                 <div class="container">
                     <div class="row">
                         <div class="col s10 offset-s1">
-                            <div class="title center-align">基于epoll的web服务器(C语言版本)</div>
+                            <div class="title center-align">手写线程池</div>
                             <div class="description center-align">
                                 
-                                    记录学习使用epoll实现web服务器
+                                    手写线程池线程池原理线程池的组成主要分为3个部分，这三部分配合工作就可以得到一个完整的线程池：
 
-
-基于epoll的web服务器(C语言版本)1. 初始化监听套接字包括创建监听套接字，设置端口复用，绑定，设置监听等步骤
-1.1 创建监听套接字（socket函数）socket()打开一个网络通讯端
+任务队列，存储需要处理的任务，由工作的线程来处理这些任务通过线程池提供的API函数，将一个待处理的任务添加到任务队列，或者从任务队列中删除已处
                                 
                             </div>
                             <div class="cover-btns">
-                                <a href="/2023/10/28/%E5%9F%BA%E4%BA%8Eepoll%E7%9A%84web%E6%9C%8D%E5%8A%A1%E5%99%A8-C%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC/" class="waves-effect waves-light btn"
+                                <a href="/2023/11/08/%E6%89%8B%E5%86%99%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="waves-effect waves-light btn"
                                    target="_blank">
                                     <i class="icon fa fa-eye fa-fw"></i>阅读更多
                                 </a>
@@ -667,16 +665,18 @@ auto b &#x3D; a;&#x2F;&#x2F;自动推断类型，b为 int类型
                 <div class="container">
                     <div class="row">
                         <div class="col s10 offset-s1">
-                            <div class="title center-align">手写线程池</div>
+                            <div class="title center-align">基于epoll的web服务器(C语言版本)</div>
                             <div class="description center-align">
                                 
-                                    手写线程池线程池原理线程池的组成主要分为3个部分，这三部分配合工作就可以得到一个完整的线程池：
+                                    记录学习使用epoll实现web服务器
 
-任务队列，存储需要处理的任务，由工作的线程来处理这些任务通过线程池提供的API函数，将一个待处理的任务添加到任务队列，或者从任务队列中删除已处
+
+基于epoll的web服务器(C语言版本)1. 初始化监听套接字包括创建监听套接字，设置端口复用，绑定，设置监听等步骤
+1.1 创建监听套接字（socket函数）socket()打开一个网络通讯端
                                 
                             </div>
                             <div class="cover-btns">
-                                <a href="/2023/11/08/%E6%89%8B%E5%86%99%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="waves-effect waves-light btn"
+                                <a href="/2023/10/28/%E5%9F%BA%E4%BA%8Eepoll%E7%9A%84web%E6%9C%8D%E5%8A%A1%E5%99%A8-C%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC/" class="waves-effect waves-light btn"
                                    target="_blank">
                                     <i class="icon fa fa-eye fa-fw"></i>阅读更多
                                 </a>
@@ -785,6 +785,156 @@ auto b &#x3D; a;&#x2F;&#x2F;自动推断类型，b为 int类型
     <!-- 所有文章卡片 -->
     <article id="articles" class="container articles">
         <div class="row article-row">
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2023/11/27/%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%80%81%E7%9A%84%E6%96%B9%E6%B3%95/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="实现多态的方法">
+                            
+                            <span class="card-title">实现多态的方法</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                实现多态的方法多态其实一般就是指继承加虚函数实现的多态，对于重载来说，实际上基于的原理是，编译器为函数生成符号表时的不同规则，重载只是一种语言特性，与多态无关，与面向对象也无关，但这又是 C++中增加的新规则，所以也算属于 C++，所以如果
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-27
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
+                                    每日一题
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/c/">
+                            <span class="chip bg-color">c++</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2023/11/26/new%E5%92%8Cdelete%E4%B8%8Emalloc%E5%92%8Cfree%E7%9A%84%E5%8C%BA%E5%88%AB/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="new和delete与malloc和free的区别">
+                            
+                            <span class="card-title">new和delete与malloc和free的区别</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                new &#x2F; delete malloc &#x2F; free 区别都可以用来在堆上分配和回收空间。new /delete 是操作符，malloc/free 是库函数。
+执行 new 实际上执行两个过程：
+
+分配未初始化的内存空间
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-26
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
+                                    每日一题
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/c/">
+                            <span class="chip bg-color">c++</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
+            
+             <!-- 隐藏某个文章 -->
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2023/11/25/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E7%9A%84%E5%AE%9A%E4%B9%89%EF%BC%8C%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%E4%B8%8E%E9%81%BF%E5%85%8D/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="内存泄漏的定义，如何检测与避免">
+                            
+                            <span class="card-title">内存泄漏的定义，如何检测与避免</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                内存泄漏的定义，如何检测与避免定义：内存泄漏简单的说就是申请了一块内存空间，使用完毕后没有释放掉。 它的一般表现方式是程序运行时间越长，占用内存越多，最终用尽全部内存，整个系统崩溃。由程序申请的一块内存，且没有任何一个指针指向它，那么这块内
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-25
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
+                                    每日一题
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/c/">
+                            <span class="chip bg-color">c++</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+              <!-- 隐藏某个文章 -->
             
              <!-- 隐藏某个文章 -->
             <div class="article col s12 m6 l4" data-aos="zoom-in">
@@ -1153,160 +1303,6 @@ using namespace std;
             </div>
               <!-- 隐藏某个文章 -->
             
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2023/11/20/Linux%E4%B8%AD%E6%9C%80%E5%A4%A7socket%E6%95%B0%E9%87%8F/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Linux中最大socket数量">
-                            
-                            <span class="card-title">Linux中最大socket数量</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                Linux中最大socket数量linux系统默认ulimit为1024个访问，用户最多可开启的程序数目。一般一个端口的最高连接为2的16次方65535。
-查看全局文件句柄数限制(系统支持的最大值)
-cat /proc/sys/fs/fil
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-20
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
-                                    每日一题
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/c/">
-                            <span class="chip bg-color">c++</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2023/11/19/Linux%E4%B8%ADkill%E3%80%81kill-15%E3%80%81kill-9%E7%9A%84%E5%8C%BA%E5%88%AB/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Linux中kill、kill -15、kill -9的区别">
-                            
-                            <span class="card-title">Linux中kill、kill -15、kill -9的区别</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                Linux中kill 、kill -15、kill -9 的区别kill（不加 -* 默认kill -15）命令
-系统会发送一个SIGTERM信号给对应的程序。当程序接收到该signal信号后，将会发生以下事情：
-
-程序立刻停止
-当程序释放
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-19
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
-                                    每日一题
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/c/">
-                            <span class="chip bg-color">c++</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
-             <!-- 隐藏某个文章 -->
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2023/11/18/strlen%E5%92%8Csizeof%E7%9A%84%E5%8C%BA%E5%88%AB/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="strlen和sizeof的区别">
-                            
-                            <span class="card-title">strlen和sizeof的区别</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                strlen 和 sizeof的区别sizeof是C语言中的一个单目运算符，用来计算数据类型所占空间的大小，单位为字节；而strlen是一个函数，用来计算字符串长度。简单来说，就是sizeof不包含\0,而strlen包含\0。
-#incl
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2023-11-18
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-bookmark fa-fw icon-category"></i>
-                                
-                                <a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" class="post-category">
-                                    每日一题
-                                </a>
-                                
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/c/">
-                            <span class="chip bg-color">c++</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-              <!-- 隐藏某个文章 -->
-            
         </div>
     </article>
 
@@ -1410,7 +1406,7 @@ cat /proc/sys/fs/fil
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">34.3k</span>
+                        class="white-color">35.4k</span>
             
             
             
