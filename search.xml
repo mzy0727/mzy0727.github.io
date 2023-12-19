@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>五种I/O模型</title>
+      <link href="/2023/12/19/%E4%BA%94%E7%A7%8DI-O%E6%A8%A1%E5%9E%8B/"/>
+      <url>/2023/12/19/%E4%BA%94%E7%A7%8DI-O%E6%A8%A1%E5%9E%8B/</url>
+      
+        <content type="html"><![CDATA[<h3 id="五种I-O模型"><a href="#五种I-O模型" class="headerlink" title="五种I&#x2F;O模型"></a>五种I&#x2F;O模型</h3><p><strong>阻塞 I&#x2F;O 模型（Blocking I&#x2F;O）：</strong></p><ul><li>在阻塞 I&#x2F;O 模型中，当应用程序发起一个 I&#x2F;O 操作时，它会被阻塞，直到操作完成。</li><li>这意味着应用程序无法执行其他任务，直到 I&#x2F;O 操作完成。</li></ul><p><strong>非阻塞 I&#x2F;O 模型（Non-blocking I&#x2F;O）：</strong></p><ul><li>在非阻塞 I&#x2F;O 模型中，应用程序可以继续执行其他任务而不必等待 I&#x2F;O 操作的完成。</li><li>当一个 I&#x2F;O 操作发起后，应用程序可以立即返回并执行其他任务，然后周期性地检查 I&#x2F;O 操作是否完成。</li></ul><p><strong>多路复用 I&#x2F;O 模型（I&#x2F;O Multiplexing）：</strong></p><ul><li>多路复用 I&#x2F;O 模型使用 <code>select</code>、<code>poll</code> 或 <code>epoll</code> 等机制，允许应用程序监视多个文件描述符，等待其中任何一个变为可读或可写状态。</li><li>当有数据准备好时，应用程序会得到通知，然后可以进行读或写操作。</li></ul><p><strong>信号驱动IO</strong></p><ul><li>linux用套接口进行信号驱动IO，安装一个信号处理函数，进程继续运行并不阻塞，当IO时间就绪，进程收到SIGIO信号。然后处理IO事件。</li></ul><p><strong>阻塞I&#x2F;O，非阻塞I&#x2F;O，信号驱动I&#x2F;O和I&#x2F;O复用都是同步I&#x2F;O。同步I&#x2F;O指内核向应用程序通知的是就绪事件，比如只通知有客户端连接，要求用户代码自行执行I&#x2F;O操作，异步I&#x2F;O是指内核向应用程序通知的是完成事件，比如读取客户端的数据后才通知应用程序，由内核完成I&#x2F;O操作。</strong></p><p><a href="https://lantingshuxu.github.io/%E5%85%B6%E4%BB%96/UNIX%E4%BA%94%E7%A7%8DIO%E6%A8%A1%E5%9E%8B/">UNIX五种IO模型 | 蓝亭书序 (lantingshuxu.github.io)</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>实现多态的方法</title>
       <link href="/2023/11/27/%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%80%81%E7%9A%84%E6%96%B9%E6%B3%95/"/>
       <url>/2023/11/27/%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%80%81%E7%9A%84%E6%96%B9%E6%B3%95/</url>
