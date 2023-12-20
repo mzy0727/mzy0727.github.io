@@ -4,6 +4,56 @@
   
     
     <entry>
+      <title>关键字static的使用</title>
+      <link href="/2023/12/20/%E5%85%B3%E9%94%AE%E5%AD%97static%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+      <url>/2023/12/20/%E5%85%B3%E9%94%AE%E5%AD%97static%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
+      
+        <content type="html"><![CDATA[<h2 id="关键字static的使用"><a href="#关键字static的使用" class="headerlink" title="关键字static的使用"></a>关键字static的使用</h2><ul><li>静态变量：在函数内部声明的静态变量具有静态生存期，即它们在整个程序执行期间都存在，并且只会初始化一次。例如：</li></ul><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void foo() &#123;    static int count &#x3D; 0; &#x2F;&#x2F; 静态局部变量    count++;    cout &lt;&lt; &quot;Count: &quot; &lt;&lt; count &lt;&lt; endl;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><ul><li>静态成员变量：静态成员变量属于类本身而不是类的实例，并且在所有类对象之间共享。例如：</li></ul><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class MyClass &#123;public:    static int sharedVariable; &#x2F;&#x2F; 静态成员变量声明&#125;;int MyClass::sharedVariable &#x3D; 10; &#x2F;&#x2F; 静态成员变量定义int main() &#123;    cout &lt;&lt; MyClass::sharedVariable &lt;&lt; endl; &#x2F;&#x2F; 访问静态成员变量    return 0;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><ul><li>静态成员函数：静态成员函数属于类本身而不是类的实例，可以直接通过类名来调用，而不需要创建对象实例。例如：</li></ul><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class MyClass &#123;public:    static void myStaticFunction() &#123;         cout &lt;&lt; &quot;This is a static member function.&quot; &lt;&lt; endl;    &#125;&#125;;int main() &#123;    MyClass::myStaticFunction(); &#x2F;&#x2F; 调用静态成员函数    return 0;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>指针和引用的区别</title>
+      <link href="/2023/12/20/%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/12/20/%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h2 id="指针和引用的区别"><a href="#指针和引用的区别" class="headerlink" title="指针和引用的区别"></a>指针和引用的区别</h2><p>指针和引用是C++中的两个重要概念，它们都可以用于间接访问对象或变量。下面是它们的区别：</p><ol><li>定义和使用方式：指针使用<code>*</code>来声明和解引用，而引用使用<code>&amp;</code>来声明，不需要解引用。</li><li>空值：指针可以为空（nullptr），表示没有指向任何对象或变量，而引用必须始终引用有效的对象。</li><li>可变性：指针本身可以重新赋值为另一个地址，即改变所指向的对象或变量；而引用一旦初始化后就不能再改变所引用的对象。</li><li>对象关系：指针可以指向多个不同类型的对象，并且可以通过运算符修改所指向对象的值；而引用始终与特定类型的对象相关联，并且无法更改为引用其他类型的对象。</li><li>空间占用：通常情况下，指针需要占据内存空间来存储地址信息；而引用本质上只是原对象的一个别名，并不需要额外的空间。</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 每日一题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> c++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>五种I/O模型</title>
       <link href="/2023/12/19/%E4%BA%94%E7%A7%8DI-O%E6%A8%A1%E5%9E%8B/"/>
       <url>/2023/12/19/%E4%BA%94%E7%A7%8DI-O%E6%A8%A1%E5%9E%8B/</url>
