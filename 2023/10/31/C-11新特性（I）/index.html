@@ -293,32 +293,19 @@
                     
 
                     <h1 id="C-11新特性"><a href="#C-11新特性" class="headerlink" title="C++11新特性"></a>C++11新特性</h1><h3 id="1-auto-自动推导类型"><a href="#1-auto-自动推导类型" class="headerlink" title="1. auto 自动推导类型"></a>1. auto 自动推导类型</h3><p><code>auto</code>可以在声明变量的时候根据变量初始值的类型自动为此变量选择匹配的类型</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int a &#x3D; 10;
-auto b &#x3D; a;&#x2F;&#x2F;自动推断类型，b为 int类型
-auto c &#x3D; 1.9;&#x2F;&#x2F;自动推断类型，c为double类型
-auto d &#x3D; 1.2e12L;&#x2F;&#x2F;自动推断类型，d 是 long double<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">auto</span> b = a;<span class="comment">//自动推断类型，b为 int类型</span></span><br><span class="line"><span class="keyword">auto</span> c = <span class="number">1.9</span>;<span class="comment">//自动推断类型，c为double类型</span></span><br><span class="line"><span class="keyword">auto</span> d = <span class="number">1.2e12</span>L;<span class="comment">//自动推断类型，d 是 long double</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="2-using-定义别名"><a href="#2-using-定义别名" class="headerlink" title="2. using 定义别名"></a>2. using 定义别名</h3><p>之前在 C++中可以通过<code> typedef</code> 重定义一个类型，语法格式如下：</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef 旧的类型名 新的类型名;
-&#x2F;&#x2F; 使用举例
-typedef unsigned int uint_t;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> 旧的类型名 新的类型名;</span><br><span class="line"><span class="comment">// 使用举例</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="type">uint_t</span>;</span><br></pre></td></tr></table></figure>
 
 <p>关键字<code>using</code>作为别名声明的开始，其后紧跟别名和等号，其作用是把等号左侧的名字规定成等号右侧类型的别名。<strong>类型别名和类型的名字等价，只要是类型的名字能出现的地方，就能使用类型别名。使用<code>typedef</code>定义的别名和使用<code>using</code>定义的别名在语义上是等效的。</strong></p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">using 新的类型 &#x3D; 旧的类型;
-&#x2F;&#x2F; 使用举例
-using uint_t &#x3D; int;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> 新的类型 = 旧的类型;</span><br><span class="line"><span class="comment">// 使用举例</span></span><br><span class="line"><span class="keyword">using</span> <span class="type">uint_t</span> = <span class="type">int</span>;</span><br></pre></td></tr></table></figure>
 
 <p>定义函数指针</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 使用typedef定义函数指针
-typedef int(*func_ptr)(int, double);
-
-&#x2F;&#x2F; 使用using定义函数指针
-using func_ptr1 &#x3D; int(*)(int, double);
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用typedef定义函数指针</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span><span class="params">(*func_ptr)</span><span class="params">(<span class="type">int</span>, <span class="type">double</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用using定义函数指针</span></span><br><span class="line"><span class="keyword">using</span> func_ptr1 = <span class="built_in">int</span>(*)(<span class="type">int</span>, <span class="type">double</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>在C++11中，新增了一个特性就是可以通过使用<code>using</code>来为一个模板定义别名，但是<code>typedef</code>不行</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">template &lt;typename T&gt;
-using mymap &#x3D; map&lt;int, T&gt;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">using</span> mymap = map&lt;<span class="type">int</span>, T&gt;;</span><br></pre></td></tr></table></figure>
 
 <p><code>using</code>语法和<code>typedef</code>一样，并不会创建出新的类型，它们只是给某些类型定义了新的别名。<code>using</code>相较于<code>typedef</code>的优势在于<strong>定义函数指针别名时看起来更加直观，并且可以给模板定义别名</strong>。</p>
 <h3 id="3-右值引用"><a href="#3-右值引用" class="headerlink" title="3. &amp;&amp; 右值引用"></a>3. &amp;&amp; 右值引用</h3><ol>
@@ -343,36 +330,15 @@ using mymap &#x3D; map&lt;int, T&gt;;<span aria-hidden="true" class="line-number
 <li>通过右值推导 T&amp;&amp; 或者 auto&amp;&amp; 得到的是一个右值引用类型，其余都是左值引用类型。</li>
 </ol>
 <h3 id="4-nullptr-标识空指针"><a href="#4-nullptr-标识空指针" class="headerlink" title="4. nullptr 标识空指针"></a>4. nullptr 标识空指针</h3><p>在C++中<code>NULL</code>和<code>0</code>是等价的，C++11 标准并没有对 NULL 的宏定义做任何修改，而是另其炉灶，引入了一个新的关键字<code>nullptr</code>。<code>nullptr </code>专用于初始化空类型指针，不同类型的指针变量都可以使用 <code>nullptr </code>来初始化。</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int*    ptr1 &#x3D; nullptr;
-char*   ptr2 &#x3D; nullptr;
-double* ptr3 &#x3D; nullptr;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>*    ptr1 = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="type">char</span>*   ptr2 = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="type">double</span>* ptr3 = <span class="literal">nullptr</span>;</span><br></pre></td></tr></table></figure>
 
 <p><code>NULL</code>底层源码</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#ifndef NULL
-    #ifdef __cplusplus
-        #define NULL 0
-    #else
-        #define NULL ((void *)0)
-    #endif
-#endif
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> NULL</span></span><br><span class="line">    <span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">        <span class="meta">#<span class="keyword">define</span> NULL 0</span></span><br><span class="line">    <span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        <span class="meta">#<span class="keyword">define</span> NULL ((void *)0)</span></span><br><span class="line">    <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>C++ 中，<code>void * </code>类型无法隐式转换为其他类型的指针，此时使用 <code>0 </code>代替 <code>(void *)0)</code>，用于解决空指针的问题。</p>
 <p><strong><code>nullptr</code> 无法隐式转换为整形，但是可以隐式匹配指针类型。在 C++11 标准下，相比 <code>NULL</code> 和<code> 0</code>，使用 <code>nullptr</code> 初始化空指针可以令我们编写的程序更加健壮</strong></p>
 <h3 id="5-decltype-类型推导"><a href="#5-decltype-类型推导" class="headerlink" title="5. decltype 类型推导"></a>5. decltype 类型推导</h3><p><code>decltype</code>类型说明符，它的作用是选择并返回操作数的数据类型，在此过程中，编译器分析表达式并得到它的类型，却不实际计算表达式的值。 </p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int getSize();
-
-int main(void)
-&#123;
-    int tempA &#x3D; 2;
-    
-    &#x2F;*1.dclTempA为int*&#x2F;
-    decltype(tempA) dclTempA;
-    &#x2F;*2.dclTempB为int，对于getSize根本没有定义，但是程序依旧正常，因为decltype只做分析，并不调用getSize，*&#x2F;
-    decltype(getSize()) dclTempB;
-
-    return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">getSize</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> tempA = <span class="number">2</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/*1.dclTempA为int*/</span></span><br><span class="line">    <span class="keyword">decltype</span>(tempA) dclTempA;</span><br><span class="line">    <span class="comment">/*2.dclTempB为int，对于getSize根本没有定义，但是程序依旧正常，因为decltype只做分析，并不调用getSize，*/</span></span><br><span class="line">    <span class="keyword">decltype</span>(<span class="built_in">getSize</span>()) dclTempB;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p> <code>decltype</code>和<code>auto</code>都可以用来推断类型，但是二者有几处明显的差异： </p>
 <ol>
@@ -386,17 +352,7 @@ int main(void)
 </li>
 </ol>
 <h3 id="6-委托构造"><a href="#6-委托构造" class="headerlink" title="6. 委托构造"></a>6. 委托构造</h3><p>C++11 引入了委托构造的概念，这使得构造函数可以在同一个类中一个构造函数调用另一个构造函数，从而达到简化代码的目的</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class Base &#123;
-public:
-    int value1;
-    int value2;
-    Base() &#123;
-        value1 &#x3D; 1;
-    &#125;
-    Base(int value) : Base() &#123;  &#x2F;&#x2F; 委托 Base() 构造函数
-        value2 &#x3D; 2;
-    &#125;
-&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> value1;</span><br><span class="line">    <span class="type">int</span> value2;</span><br><span class="line">    <span class="built_in">Base</span>() &#123;</span><br><span class="line">        value1 = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Base</span>(<span class="type">int</span> value) : <span class="built_in">Base</span>() &#123;  <span class="comment">// 委托 Base() 构造函数</span></span><br><span class="line">        value2 = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 
                 </div>
@@ -674,7 +630,7 @@ public:
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -908,5 +864,5 @@ public:
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

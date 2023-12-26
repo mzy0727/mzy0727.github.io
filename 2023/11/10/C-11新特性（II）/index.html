@@ -266,7 +266,7 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>805 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>797 字</span>
             </span>
         
         
@@ -292,12 +292,10 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h1 id="C-11新特性（II）"><a href="#C-11新特性（II）" class="headerlink" title="C++11新特性（II）"></a>C++11新特性（II）</h1><h2 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a><code>lambda</code>表达式</h2><pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">auto func = [capture] (params) opt -> ret &#123; func_body; &#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+                    <h1 id="C-11新特性（II）"><a href="#C-11新特性（II）" class="headerlink" title="C++11新特性（II）"></a>C++11新特性（II）</h1><h2 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a><code>lambda</code>表达式</h2><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auto func = [capture] (params) opt -&gt; ret &#123; func_body; &#125;;</span><br></pre></td></tr></table></figure>
 
 <p>其中<code>func</code>是可以当作<code>lambda</code>表达式的名字，作为一个函数使用，<code>capture</code>是捕获列表，<code>params</code>是参数表，<code>opt</code>是函数选项(mutable之类)， ret是返回值类型，func_body是函数体。</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">auto func1 &#x3D; [](int a) -&gt; int &#123; return a + 1; &#125;;
-auto func2 &#x3D; [](int a) &#123; return a + 2; &#125;;
-cout &lt;&lt; func1(1) &lt;&lt; &quot; &quot; &lt;&lt; func2(2) &lt;&lt; endl;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> func1 = [](<span class="type">int</span> a) -&gt; <span class="type">int</span> &#123; <span class="keyword">return</span> a + <span class="number">1</span>; &#125;;</span><br><span class="line"><span class="keyword">auto</span> func2 = [](<span class="type">int</span> a) &#123; <span class="keyword">return</span> a + <span class="number">2</span>; &#125;;</span><br><span class="line">cout &lt;&lt; <span class="built_in">func1</span>(<span class="number">1</span>) &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; <span class="built_in">func2</span>(<span class="number">2</span>) &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
 
 <p><code>lambda</code>表达式允许捕获一定范围内的变量：</p>
 <ul>
@@ -312,12 +310,7 @@ cout &lt;&lt; func1(1) &lt;&lt; &quot; &quot; &lt;&lt; func2(2) &lt;&lt; endl;<s
 <p>关于<code>shared_ptr</code>有几点需要注意：</p>
 <p>• 不要用一个裸指针初始化多个<code>shared_ptr</code>，会出现<code>double_free</code>导致程序崩溃</p>
 <p>• 通过<code>shared_from_this()</code>返回<code>this</code>指针，不要把<code>this</code>指针作为<code>shared_ptr</code>返回出来，因为<code>this</code>指针本质就是裸指针，通过<code>this</code>返回可能会导致重复析构，不能把<code>this</code>指针交给智能指针管理。</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class A &#123;
-    shared_ptr&lt;A&gt; GetSelf() &#123;
-        return shared_from_this();
-        &#x2F;&#x2F; return shared_ptr&lt;A&gt;(this); 错误，会导致double free
-    &#125;  
-&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">    <span class="function">shared_ptr&lt;A&gt; <span class="title">GetSelf</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">shared_from_this</span>();</span><br><span class="line">        <span class="comment">// return shared_ptr&lt;A&gt;(this); 错误，会导致double free</span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>尽量使用<code>make_shared</code>，少用<code>new</code>。</li>
@@ -333,10 +326,7 @@ cout &lt;&lt; func1(1) &lt;&lt; &quot; &quot; &lt;&lt; func2(2) &lt;&lt; endl;<s
 <h3 id="unique-ptr"><a href="#unique-ptr" class="headerlink" title="unique_ptr"></a>unique_ptr</h3><p><code>std::unique_ptr</code>是一个独占型的智能指针，它不允许其它智能指针共享其内部指针，也不允许<code>unique_ptr</code>的拷贝和赋值。使用方法和<code>shared_ptr</code>类似，区别是不可以拷贝</p>
 <h2 id="std-array"><a href="#std-array" class="headerlink" title="std::array"></a>std::array</h2><p><code>std::array </code>保存在栈内存中，相比堆内存中的 <code>std::vector</code>，我们能够灵活的访问这里面的元素，从而获得更高的性能。</p>
 <p><code>std::array </code>会在编译时创建一个固定大小的数组，<code>std::array </code>不能够被隐式的转换成指针，使用 <code>std::array</code>只需指定其类型和大小即可：</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">std::array&lt;int, 4&gt; arr&#x3D; &#123;1,2,3,4&#125;;
-
-int len &#x3D; 4;
-std::array&lt;int, len&gt; arr &#x3D; &#123;1,2,3,4&#125;; &#x2F;&#x2F; 非法, 数组大小参数必须是常量表达式<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">std::array&lt;<span class="type">int</span>, 4&gt; arr= &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> len = <span class="number">4</span>;</span><br><span class="line">std::array&lt;<span class="type">int</span>, len&gt; arr = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;; <span class="comment">// 非法, 数组大小参数必须是常量表达式</span></span><br></pre></td></tr></table></figure>
                 </div>
 
                 
@@ -612,7 +602,7 @@ std::array&lt;int, len&gt; arr &#x3D; &#123;1,2,3,4&#125;; &#x2F;&#x2F; 非法, 
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -846,5 +836,5 @@ std::array&lt;int, len&gt; arr &#x3D; &#123;1,2,3,4&#125;; &#x2F;&#x2F; 非法, 
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

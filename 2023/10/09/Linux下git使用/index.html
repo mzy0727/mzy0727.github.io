@@ -297,119 +297,73 @@
 
                     <p>简单介绍git的基本命令</p>
 <span id="more"></span>
-<h1 id="Linux下Git使用"><a href="#Linux下Git使用" class="headerlink" title="Linux下Git使用"></a>Linux下Git使用</h1><h3 id="1-git的安装"><a href="#1-git的安装" class="headerlink" title="1. git的安装"></a>1. git的安装</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> <span class="token function">git</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="Linux下Git使用"><a href="#Linux下Git使用" class="headerlink" title="Linux下Git使用"></a>Linux下Git使用</h1><h3 id="1-git的安装"><a href="#1-git的安装" class="headerlink" title="1. git的安装"></a>1. git的安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git</span><br></pre></td></tr></table></figure>
 
 <p>安装完，使用<code>git --version</code>查看git版本</p>
-<h3 id="2-配置git"><a href="#2-配置git" class="headerlink" title="2. 配置git"></a>2. 配置git</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name "Your Name“	<span class="token comment">##配置用户 </span>
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email email@example.com	<span class="token comment">##配置邮箱</span>
-<span class="token function">git</span> config <span class="token parameter variable">--global</span> <span class="token parameter variable">--list</span>			<span class="token comment">##查看配置信息</span>
-<span class="token comment">## --global 全局配置，所有仓库生效，不加就只对当前用户有效</span>
-<span class="token comment">## --system 系统配置，对所有用户生效</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-配置git"><a href="#2-配置git" class="headerlink" title="2. 配置git"></a>2. 配置git</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;Your Name“	##配置用户 </span><br><span class="line">git config --global user.email email@example.com	##配置邮箱</span><br><span class="line">git config --global --list			##查看配置信息</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># --global 全局配置，所有仓库生效，不加就只对当前用户有效</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># --system 系统配置，对所有用户生效</span></span></span><br></pre></td></tr></table></figure>
 
-<h3 id="3-新建版本库"><a href="#3-新建版本库" class="headerlink" title="3. 新建版本库"></a>3. 新建版本库</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="3-新建版本库"><a href="#3-新建版本库" class="headerlink" title="3. 新建版本库"></a>3. 新建版本库</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
 
 <h3 id="4-工作区域与文件状态"><a href="#4-工作区域与文件状态" class="headerlink" title="4. 工作区域与文件状态"></a>4. 工作区域与文件状态</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230920204530239.png"  alt="image-20230920204530239"></p>
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230920204638439.png"  alt="image-20230920204638439"></p>
-<h3 id="5-添加和提交文件"><a href="#5-添加和提交文件" class="headerlink" title="5. 添加和提交文件"></a>5. 添加和提交文件</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> init		<span class="token comment">##创建仓库</span>
-<span class="token function">git</span> status		<span class="token comment">##查看仓库的状态</span>
-<span class="token function">git</span> <span class="token function">add</span>			<span class="token comment">##添加到暂存库</span>
-<span class="token function">git</span> commit 		<span class="token comment">##提交</span>
-<span class="token function">git</span> <span class="token function">rm</span> <span class="token parameter variable">--cached</span> <span class="token operator">&lt;</span>file<span class="token operator">></span><span class="token punctuation">..</span>.		<span class="token comment">##将文件从暂存区中去除</span>
-<span class="token function">git</span> log			<span class="token comment">##查看提交记录</span>
-<span class="token function">git</span> ls-files	<span class="token comment">##查看暂存区的文件</span>
-<span class="token function">git</span> commit <span class="token parameter variable">-a</span> <span class="token parameter variable">-m</span> <span class="token string">" "</span> <span class="token comment">#实现添加和提交两个步骤</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-添加和提交文件"><a href="#5-添加和提交文件" class="headerlink" title="5. 添加和提交文件"></a>5. 添加和提交文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git init		##创建仓库</span><br><span class="line">git status		##查看仓库的状态</span><br><span class="line">git add			##添加到暂存库</span><br><span class="line">git commit 		##提交</span><br><span class="line">git rm --cached &lt;file&gt;...		##将文件从暂存区中去除</span><br><span class="line">git log			##查看提交记录</span><br><span class="line">git ls-files	##查看暂存区的文件</span><br><span class="line">git commit -a -m &quot; &quot; #实现添加和提交两个步骤</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-回退版本"><a href="#3-回退版本" class="headerlink" title="3. 回退版本"></a>3. 回退版本</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> reset <span class="token parameter variable">--soft</span>
-<span class="token function">git</span> reset <span class="token parameter variable">--hard</span>
-<span class="token function">git</span> reset <span class="token parameter variable">--mixed</span>	<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-回退版本"><a href="#3-回退版本" class="headerlink" title="3. 回退版本"></a>3. 回退版本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git reset --soft</span><br><span class="line">git reset --hard</span><br><span class="line">git reset --mixed	</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921085607903.png"  alt="image-20230921085607903"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> reset HEAD^		<span class="token comment">##默认为mixed,回退一个版本</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD^		##默认为mixed,回退一个版本</span><br></pre></td></tr></table></figure>
 
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">HEAD 表示当前版本
-HEAD^ 上一个版本
-HEAD^^ 上上一个版本
-HEAD^^^ 上上上一个版本
-HEAD~0 表示当前版本
-HEAD~1 上一个版本
-HEAD^2 上上一个版本
-HEAD^3 上上上一个版本
-执行 git reset HEAD 以取消之前 git add 添加，但不希望包含在下一提交快照中的缓存<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HEAD 表示当前版本</span><br><span class="line">HEAD^ 上一个版本</span><br><span class="line">HEAD^^ 上上一个版本</span><br><span class="line">HEAD^^^ 上上上一个版本</span><br><span class="line">HEAD~0 表示当前版本</span><br><span class="line">HEAD~1 上一个版本</span><br><span class="line">HEAD^2 上上一个版本</span><br><span class="line">HEAD^3 上上上一个版本</span><br><span class="line">执行 git reset HEAD 以取消之前 git add 添加，但不希望包含在下一提交快照中的缓存</span><br></pre></td></tr></table></figure>
 
 <p>误操作之后</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> reflog		<span class="token comment">##回溯日志</span>
-<span class="token function">git</span> reset <span class="token parameter variable">--hard</span> 版本号	<span class="token comment">##回退</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git reflog		##回溯日志</span><br><span class="line">git reset --hard 版本号	##回退</span><br></pre></td></tr></table></figure>
 
 <h3 id="6-查看差异"><a href="#6-查看差异" class="headerlink" title="6. 查看差异"></a>6. 查看差异</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921091532989.png"  alt="image-20230921091532989"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> <span class="token function">diff</span>				<span class="token comment">#默认比较工作区和暂存区之间的差异</span>
-<span class="token function">git</span> <span class="token function">diff</span> HEAD			<span class="token comment">#比较工作区和版本库之间的差异</span>
-<span class="token function">git</span> <span class="token function">diff</span> <span class="token parameter variable">--cached</span>		<span class="token comment">#比较暂存区和版本库之间的区别</span>
-<span class="token function">git</span> <span class="token function">diff</span> 版本号	版本号	<span class="token comment">#比较两个版本之间的差异</span>
-<span class="token function">git</span> <span class="token function">diff</span> HEAD~ HEAD		<span class="token comment">#如回退版本</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git diff				#默认比较工作区和暂存区之间的差异</span><br><span class="line">git diff HEAD			#比较工作区和版本库之间的差异</span><br><span class="line">git diff --cached		#比较暂存区和版本库之间的区别</span><br><span class="line">git diff 版本号	版本号	#比较两个版本之间的差异</span><br><span class="line">git diff HEAD~ HEAD		#如回退版本</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921092511736.png"  alt="image-20230921092511736"></p>
 <h3 id="7-删除文件"><a href="#7-删除文件" class="headerlink" title="7. 删除文件"></a>7. 删除文件</h3><p>方法1：先删除本地文件，再提交</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">rm</span> <span class="token parameter variable">-rf</span> <span class="token number">3</span>.txt	<span class="token comment">##删除本地中的文件</span>
-<span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span>		<span class="token comment">##删除暂存区中的文件</span>
-<span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">'deleted 3.txt'</span>	<span class="token comment">##删除工作区文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -rf 3.txt	##删除本地中的文件</span><br><span class="line">git add .		##删除暂存区中的文件</span><br><span class="line">git commit -m &#x27;deleted 3.txt&#x27;	##删除工作区文件</span><br></pre></td></tr></table></figure>
 
 <p>方法2</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> <span class="token function">rm</span> <span class="token number">2</span>.txt	<span class="token comment">##删除本地和暂存区中文件</span>
-<span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">'deleted 2.txt'</span>	<span class="token comment">##删除工作区文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git rm 2.txt	##删除本地和暂存区中文件</span><br><span class="line">git commit -m &#x27;deleted 2.txt&#x27;	##删除工作区文件</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921093523261.png"  alt="image-20230921093523261"></p>
 <h3 id="8-忽略文件"><a href="#8-忽略文件" class="headerlink" title="8. 忽略文件"></a>8. 忽略文件</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921093644360.png"  alt="image-20230921093644360"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> <span class="token string">"*.log"</span> <span class="token operator">></span> .gitignore		<span class="token comment">##表示忽略所有日志文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;*.log&quot; &gt; .gitignore		##表示忽略所有日志文件</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921094538072.png"  alt="image-20230921094538072"></p>
 <h3 id="9-远程仓库github"><a href="#9-远程仓库github" class="headerlink" title="9. 远程仓库github"></a>9. 远程仓库github</h3><p>注册github账号，创建仓库</p>
 <h3 id="10-ssh配置和克隆仓库"><a href="#10-ssh配置和克隆仓库" class="headerlink" title="10. ssh配置和克隆仓库"></a>10. ssh配置和克隆仓库</h3><p>创建ssh密钥</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> ~
-<span class="token builtin class-name">cd</span> .ssh		<span class="token comment">#如果显示文件不存在，就之间执行以下命令</span>
-ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="token parameter variable">-b</span> <span class="token number">4096</span> <span class="token parameter variable">-C</span> <span class="token string">"xxx@email.com"</span>	<span class="token comment">#直接enter,如果是第二次执行，记得更改文件名，不然会覆盖之前的id_rsa文件，且不可逆</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">cd .ssh		#如果显示文件不存在，就之间执行以下命令</span><br><span class="line">ssh-keygen -t rsa -b 4096 -C &quot;xxx@email.com&quot;	#直接enter,如果是第二次执行，记得更改文件名，不然会覆盖之前的id_rsa文件，且不可逆</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921101312117.png"  alt="image-20230921101312117"></p>
 <p>执行之前的命令会生成以下两个文件，有.pub的是公钥文件，没有的是私钥文件，复制公钥文件到github的Settings里的ssh配置</p>
 <p>如果是第一次配置就配置完了，如果是第二次，更改了文件名的，就需要新建一个config文件，内容为</p>
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921101639858.png"  alt="image-20230921101639858"></p>
 <p>意思是：当我们在访问github.com这个网站的时候。使用的是test这个文件里的密钥</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone git@github.com:xxx.git		<span class="token comment">##克隆新建的远程仓库</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:xxx.git		##克隆新建的远程仓库</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921102254407.png"  alt="image-20230921102254407"></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> push	<span class="token comment">##将本地文件推送到远程仓库</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push	##将本地文件推送到远程仓库</span><br></pre></td></tr></table></figure>
 
 <h3 id="11-关联本地仓库和远程仓库"><a href="#11-关联本地仓库和远程仓库" class="headerlink" title="11. 关联本地仓库和远程仓库"></a>11. 关联本地仓库和远程仓库</h3><ol>
 <li>本地无仓库</li>
 </ol>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> <span class="token string">"# fist-repo"</span> <span class="token operator">>></span> README.md
-<span class="token function">git</span> init
-<span class="token function">git</span> <span class="token function">add</span> README.md
-<span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">"first commit"</span>
-<span class="token function">git</span> branch <span class="token parameter variable">-M</span> main
-<span class="token function">git</span> remote <span class="token function">add</span> origin git@github.com:xxx.git
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin main<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;# fist-repo&quot; &gt;&gt; README.md</span><br><span class="line">git init</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m &quot;first commit&quot;</span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin git@github.com:xxx.git</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li>本地已经有仓库</li>
 </ol>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token function">add</span> origin git@github.com:xxx.git		<span class="token comment">##添加一个远程仓库</span>
-<span class="token function">git</span> branch <span class="token parameter variable">-M</span> main									<span class="token comment">##指定分支的名称为main</span>
-<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin main								<span class="token comment">##把本地的main分支与远程的orgin main分支关联</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin git@github.com:xxx.git		##添加一个远程仓库</span><br><span class="line">git branch -M main									##指定分支的名称为main</span><br><span class="line">git push -u origin main								##把本地的main分支与远程的orgin main分支关联</span><br></pre></td></tr></table></figure>
 
 
 
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> remote <span class="token parameter variable">-v</span>		<span class="token comment">##查看本地仓库对应的远程仓库别名</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote -v		##查看本地仓库对应的远程仓库别名</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921103436235.png"  alt="image-20230921103436235"></p>
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921103522078.png"  alt="image-20230921103522078"></p>
-<h3 id="12-分支"><a href="#12-分支" class="headerlink" title="12. 分支"></a>12. 分支</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> branch			<span class="token comment">#查看分支</span>
-<span class="token function">git</span> branch	dev		<span class="token comment">#新建分支dev</span>
-<span class="token function">git</span> checkout dev	<span class="token comment">#切换到分支dev(有风险，有时会用来恢复文件)</span>
-<span class="token function">git</span> switch main		<span class="token comment">#切换到分支main</span>
-<span class="token function">git</span> merge dev		<span class="token comment">#将要被合并的分支(dev)合并到当前分支(main)</span>
-<span class="token function">git</span> log <span class="token parameter variable">--graph</span> <span class="token parameter variable">--oneline</span> <span class="token parameter variable">--decorate</span> <span class="token parameter variable">--all</span>	<span class="token comment">##查看分支情况</span>
-<span class="token function">git</span> branch <span class="token parameter variable">-d</span> dev	<span class="token comment">#删除分支(已经合并)</span>
-<span class="token function">git</span> branch <span class="token parameter variable">-D</span> dev	<span class="token comment">#删除分支(未合并，强行删除)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="12-分支"><a href="#12-分支" class="headerlink" title="12. 分支"></a>12. 分支</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git branch			#查看分支</span><br><span class="line">git branch	dev		#新建分支dev</span><br><span class="line">git checkout dev	#切换到分支dev(有风险，有时会用来恢复文件)</span><br><span class="line">git switch main		#切换到分支main</span><br><span class="line">git merge dev		#将要被合并的分支(dev)合并到当前分支(main)</span><br><span class="line">git log --graph --oneline --decorate --all	##查看分支情况</span><br><span class="line">git branch -d dev	#删除分支(已经合并)</span><br><span class="line">git branch -D dev	#删除分支(未合并，强行删除)</span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921140159925.png"  alt="image-20230921140159925"></p>
 <h3 id="13-回退和rebase"><a href="#13-回退和rebase" class="headerlink" title="13. 回退和rebase"></a>13. 回退和rebase</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20230921140826350.png"  alt="image-20230921140826350"></p>
@@ -706,7 +660,7 @@ ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="tok
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -940,5 +894,5 @@ ssh-keygen <span class="token parameter variable">-t</span> rsa <span class="tok
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

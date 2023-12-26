@@ -266,7 +266,7 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>785 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>776 字</span>
             </span>
         
         
@@ -298,55 +298,12 @@
 <p>假如不采用内存对齐的方式存储数据，那么CPU需要访问地址0和地址1，再进行合并，才能得到最终的结果；采用内存对齐的方式进行存储数据的话，则只需访问地址1就可以得到最终的结果。因此，<strong>采用内存对齐的存储方式可以减少CPU的访问运行时间</strong>，缺点是<strong>没有充分利用存储空间</strong>。</p>
 <h3 id="对齐规则"><a href="#对齐规则" class="headerlink" title="对齐规则"></a><strong>对齐规则</strong></h3><p>数据是根据初始化的顺序存储的，先定义的先储存，存储地址需要是<code>sizeof</code>(数据变量)的整数倍。</p>
 <p>例如，假设<code>sizeof(char) = 1，sizeof(int) = 4，sizeof(int) = 4，sizeof(double) = 8</code>。结构的对齐规则是要先确定对齐字节数（<strong>对齐字节数&#x3D;结构体中的变量占用空间最大的那个字节数</strong>，下面的结构体<code>t3、t4</code>就是<code>sizeof(double) = 8</code>），然后再保证存储地址是<code>sizeof</code>(数据变量)的整数倍。</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;iostream&gt;
-using namespace std;
-
-struct t1&#123;
-    char a;
-    short c;
-    int x;
-    char b;
-
-&#125;;
-
-struct t2&#123;
-    int x;
-    char b;
-    char c;
-    short a;
-&#125;;
-
-struct t3&#123;
-    short a;
-    double c;
-    int x;
-    char b;
-
-&#125;;
-
-struct t4&#123;
-    char a, b;
-    int x;
-    double c;
-
-&#125;;
-int main()
-&#123;
-    
-    cout &lt;&lt; sizeof(t1) &lt;&lt; endl; &#x2F;&#x2F;12
-    cout &lt;&lt; sizeof(t2) &lt;&lt; endl; &#x2F;&#x2F;8
-    cout &lt;&lt; sizeof(t3) &lt;&lt; endl; &#x2F;&#x2F;24
-    cout &lt;&lt; sizeof(t4) &lt;&lt; endl; &#x2F;&#x2F;16
-    return 0;
-&#125;
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">t1</span>&#123;</span><br><span class="line">    <span class="type">char</span> a;</span><br><span class="line">    <span class="type">short</span> c;</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="type">char</span> b;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">t2</span>&#123;</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="type">char</span> b;</span><br><span class="line">    <span class="type">char</span> c;</span><br><span class="line">    <span class="type">short</span> a;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">t3</span>&#123;</span><br><span class="line">    <span class="type">short</span> a;</span><br><span class="line">    <span class="type">double</span> c;</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="type">char</span> b;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">t4</span>&#123;</span><br><span class="line">    <span class="type">char</span> a, b;</span><br><span class="line">    <span class="type">int</span> x;</span><br><span class="line">    <span class="type">double</span> c;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="built_in">sizeof</span>(t1) &lt;&lt; endl; <span class="comment">//12</span></span><br><span class="line">    cout &lt;&lt; <span class="built_in">sizeof</span>(t2) &lt;&lt; endl; <span class="comment">//8</span></span><br><span class="line">    cout &lt;&lt; <span class="built_in">sizeof</span>(t3) &lt;&lt; endl; <span class="comment">//24</span></span><br><span class="line">    cout &lt;&lt; <span class="built_in">sizeof</span>(t4) &lt;&lt; endl; <span class="comment">//16</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231116194937640.png"  alt="image-20231116194937640"></p>
 <p>在C&#x2F;C++中，内存对齐是由编译器负责的。编译器会按照平台的要求为数据进行对齐，通常会将数据按照其自身大小对齐到特定字节的倍数。这个特定字节的倍数通常由平台决定，例如，在32位系统中可能是4字节，而在64位系统中可能是8字节。</p>
 <p>C&#x2F;C++中可以使用一些特殊的关键字或编译器指令来控制内存对齐，例如：<code>alignas</code>关键字：C++11引入了<code>alignas</code>关键字，用于指定对齐方式。</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">alignas(16) struct MyStruct &#123;
-    &#x2F;&#x2F; 结构体成员
-&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alignas</span>(<span class="number">16</span>) <span class="keyword">struct</span> <span class="title class_">MyStruct</span> &#123;</span><br><span class="line">    <span class="comment">// 结构体成员</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a><strong>作用</strong></h3><ol>
 <li>提高访问速度：许多计算机体系结构要求数据按照特定的边界地址存储，而不是任意地址。当数据被按照这些边界对齐时，处理器能够更快地访问这些数据，提高数据存取速度。</li>
@@ -629,7 +586,7 @@ int main()
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -863,5 +820,5 @@ int main()
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

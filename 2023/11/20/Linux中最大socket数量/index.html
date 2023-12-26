@@ -294,10 +294,10 @@
 
                     <h2 id="Linux中最大socket数量"><a href="#Linux中最大socket数量" class="headerlink" title="Linux中最大socket数量"></a>Linux中最大socket数量</h2><p><strong>linux系统默认<code>ulimit</code>为<code>1024</code>个访问，用户最多可开启的程序数目。一般一个端口的最高连接为2的16次方<code>65535</code>。</strong></p>
 <p>查看全局文件句柄数限制(系统支持的最大值)</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> /proc/sys/fs/file-max<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/sys/fs/file-max</span><br></pre></td></tr></table></figure>
 
 <p>查看每个进程文件句柄数限制</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">ulimit</span> <span class="token parameter variable">-n</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -n</span><br></pre></td></tr></table></figure>
 
 <p>如何修改最大连接数量<a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/LINZEYU666/article/details/121548591" >870-Linux下解决高并发socket最大连接数限制_socket 连接数_林林林ZEYU的博客-CSDN博客<i class="fas fa-external-link-alt"></i></a></p>
 
@@ -576,7 +576,7 @@
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -810,5 +810,5 @@
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

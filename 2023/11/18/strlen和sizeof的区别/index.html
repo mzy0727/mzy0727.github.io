@@ -266,7 +266,7 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>242 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>224 字</span>
             </span>
         
         
@@ -293,23 +293,9 @@
                     
 
                     <h2 id="strlen-和-sizeof的区别"><a href="#strlen-和-sizeof的区别" class="headerlink" title="strlen 和 sizeof的区别"></a><code>strlen</code> 和 <code>sizeof</code>的区别</h2><p><code>sizeof</code>是C语言中的一个单目运算符，用来计算数据类型所占空间的大小，单位为字节；而<code>strlen</code>是一个函数，用来计算字符串长度。简单来说，就是<code>sizeof</code>不包含<code>\0</code>,而<code>strlen</code>包含<code>\0</code>。</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-int main()
-&#123;
-	char arr1[]&#x3D;&quot;abcd&quot;;&#x2F;&#x2F;d的后面自动补上\0;
-	char arr2[]&#x3D;&#123;&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;&#125;;&#x2F;&#x2F;以单个元素赋值，没有\0的结束符
-	printf(&quot;strlen1&#x3D;%d\n&quot;,strlen(arr1));&#x2F;&#x2F;strlen()计算\0之前的字符长度
-	printf(&quot;strlen2&#x3D;%d\n&quot;,strlen(arr2));&#x2F;&#x2F;该处计算结果应为随机值，因为arr2[]没定义元素个数，就无法知道在哪能遇到\0;
-	printf(&quot;sizeof1&#x3D;%d\n&quot;,sizeof(arr1));&#x2F;&#x2F;计算了包含\0的数据空间大小
-	printf(&quot;sizeof2&#x3D;%d\n&quot;,sizeof(arr2));
-	return 0;
- &#125; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">char</span> arr1[]=<span class="string">&quot;abcd&quot;</span>;<span class="comment">//d的后面自动补上\0;</span></span><br><span class="line">	<span class="type">char</span> arr2[]=&#123;<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;c&#x27;</span>,<span class="string">&#x27;d&#x27;</span>&#125;;<span class="comment">//以单个元素赋值，没有\0的结束符</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;strlen1=%d\n&quot;</span>,<span class="built_in">strlen</span>(arr1));<span class="comment">//strlen()计算\0之前的字符长度</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;strlen2=%d\n&quot;</span>,<span class="built_in">strlen</span>(arr2));<span class="comment">//该处计算结果应为随机值，因为arr2[]没定义元素个数，就无法知道在哪能遇到\0;</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;sizeof1=%d\n&quot;</span>,<span class="built_in">sizeof</span>(arr1));<span class="comment">//计算了包含\0的数据空间大小</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;sizeof2=%d\n&quot;</span>,<span class="built_in">sizeof</span>(arr2));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125; </span><br></pre></td></tr></table></figure>
 
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">strlen1=4
-strlen2=8
-sizeof1=5
-sizeof2=4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">strlen1=4</span><br><span class="line">strlen2=8</span><br><span class="line">sizeof1=5</span><br><span class="line">sizeof2=4</span><br></pre></td></tr></table></figure>
                 </div>
 
                 
@@ -585,7 +571,7 @@ sizeof2=4<span aria-hidden="true" class="line-numbers-rows"><span></span><span><
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -819,5 +805,5 @@ sizeof2=4<span aria-hidden="true" class="line-numbers-rows"><span></span><span><
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

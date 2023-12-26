@@ -269,7 +269,7 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>1.6k 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>1.5k 字</span>
             </span>
         
         
@@ -315,149 +315,33 @@
 <li>遍历结果集-&gt;获得自己需要的数据</li>
 <li>释放资源</li>
 </ol>
-<h2 id="API介绍"><a href="#API介绍" class="headerlink" title="API介绍"></a>API介绍</h2><h3 id="初始化连接环境"><a href="#初始化连接环境" class="headerlink" title="初始化连接环境"></a>初始化连接环境</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 返回值: 该函数将分配、初始化、并返回新对象
-&#x2F;&#x2F; 通过返回的这个对象去连接MySQL的服务器
-MYSQL *mysql_init(MYSQL *mysql) ;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h2 id="API介绍"><a href="#API介绍" class="headerlink" title="API介绍"></a>API介绍</h2><h3 id="初始化连接环境"><a href="#初始化连接环境" class="headerlink" title="初始化连接环境"></a>初始化连接环境</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回值: 该函数将分配、初始化、并返回新对象</span></span><br><span class="line"><span class="comment">// 通过返回的这个对象去连接MySQL的服务器</span></span><br><span class="line"><span class="function">MYSQL *<span class="title">mysql_init</span><span class="params">(MYSQL *mysql)</span> </span>;</span><br></pre></td></tr></table></figure>
 
-<h3 id="连接mysql服务器"><a href="#连接mysql服务器" class="headerlink" title="连接mysql服务器"></a>连接<code>mysql</code>服务器</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;*
-返回值: 
-    成功: 返回MYSQL*连接句柄, 对于成功的连接，返回值与第1个参数的值相同。返回值指向的内存和第一个参数指针指向的内存一样
-    失败，返回NULL。
-    句柄: 是windows中的一个概念, 句柄可以理解为一个实例(或者对象)
-*&#x2F; 
-MYSQL *mysql_real_connect(
-    MYSQL *mysql,           &#x2F;&#x2F; mysql_init() 函数的返回值
-    const char *host,       &#x2F;&#x2F; mysql服务器的主机地址, 写IP地址即可
-                            &#x2F;&#x2F; localhost, null -&gt; 代表本地连接
-    const char *user,       &#x2F;&#x2F; 连接mysql服务器的用户名, 默认: root 
-    const char *passwd,     &#x2F;&#x2F; 连接mysql服务器用户对应的密码, root用户的密码
-    const char *db,         &#x2F;&#x2F; 要使用的数据库的名字
-    unsigned int port,      &#x2F;&#x2F; 连接的mysql服务器监听的端口
-                            &#x2F;&#x2F; 如果&#x3D;&#x3D;0, 使用mysql的默认端口3306, !&#x3D;0, 使用指定的这个端口
-    const char *unix_socket,&#x2F;&#x2F; 本地套接字, 不使用指定为 NULL
-    unsigned long client_flag); &#x2F;&#x2F; 通常指定为0
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="连接mysql服务器"><a href="#连接mysql服务器" class="headerlink" title="连接mysql服务器"></a>连接<code>mysql</code>服务器</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">返回值: </span></span><br><span class="line"><span class="comment">    成功: 返回MYSQL*连接句柄, 对于成功的连接，返回值与第1个参数的值相同。返回值指向的内存和第一个参数指针指向的内存一样</span></span><br><span class="line"><span class="comment">    失败，返回NULL。</span></span><br><span class="line"><span class="comment">    句柄: 是windows中的一个概念, 句柄可以理解为一个实例(或者对象)</span></span><br><span class="line"><span class="comment">*/</span> </span><br><span class="line"><span class="function">MYSQL *<span class="title">mysql_real_connect</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    MYSQL *mysql,           <span class="comment">// mysql_init() 函数的返回值</span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> <span class="type">char</span> *host,       <span class="comment">// mysql服务器的主机地址, 写IP地址即可</span></span></span></span><br><span class="line"><span class="params"><span class="function">                            <span class="comment">// localhost, null -&gt; 代表本地连接</span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> <span class="type">char</span> *user,       <span class="comment">// 连接mysql服务器的用户名, 默认: root </span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> <span class="type">char</span> *passwd,     <span class="comment">// 连接mysql服务器用户对应的密码, root用户的密码</span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> <span class="type">char</span> *db,         <span class="comment">// 要使用的数据库的名字</span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">unsigned</span> <span class="type">int</span> port,      <span class="comment">// 连接的mysql服务器监听的端口</span></span></span></span><br><span class="line"><span class="params"><span class="function">                            <span class="comment">// 如果==0, 使用mysql的默认端口3306, !=0, 使用指定的这个端口</span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> <span class="type">char</span> *unix_socket,<span class="comment">// 本地套接字, 不使用指定为 NULL</span></span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">unsigned</span> <span class="type">long</span> client_flag)</span></span>; <span class="comment">// 通常指定为0</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="执行sql语句"><a href="#执行sql语句" class="headerlink" title="执行sql语句"></a>执行<code>sql</code>语句</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 执行一个sql语句, 添删查改的sql语句都可以
-int mysql_query(MYSQL *mysql, const char *query);
-参数:
-    - mysql: mysql_real_connect() 的返回值
-    - query: 一个可以执行的sql语句, 结尾的位置不需要加 ;
-返回值: 
-    - 如果查询成功，返回0。如果是查询, 结果集在mysql 对象中
-    - 如果出现错误，返回非0值。 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="执行sql语句"><a href="#执行sql语句" class="headerlink" title="执行sql语句"></a>执行<code>sql</code>语句</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 执行一个sql语句, 添删查改的sql语句都可以</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">mysql_query</span><span class="params">(MYSQL *mysql, <span class="type">const</span> <span class="type">char</span> *query)</span></span>;</span><br><span class="line">参数:</span><br><span class="line">    - mysql: <span class="built_in">mysql_real_connect</span>() 的返回值</span><br><span class="line">    - query: 一个可以执行的sql语句, 结尾的位置不需要加 ;</span><br><span class="line">返回值: </span><br><span class="line">    - 如果查询成功，返回<span class="number">0</span>。如果是查询, 结果集在mysql 对象中</span><br><span class="line">    - 如果出现错误，返回非<span class="number">0</span>值。 </span><br></pre></td></tr></table></figure>
 
-<h3 id="获得结果集"><a href="#获得结果集" class="headerlink" title="获得结果集"></a>获得结果集</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 将结果集从 mysql(参数) 对象中取出
-&#x2F;&#x2F; MYSQL_RES 对应一块内存, 里边保存着这个查询之后得到的结果集
-&#x2F;&#x2F; 如何将行和列的数据从结果集中取出, 需要使用其他函数
-&#x2F;&#x2F; 返回值: 具有多个结果的MYSQL_RES结果集合。如果出现错误，返回NULL。 
-MYSQL_RES *mysql_store_result(MYSQL *mysql);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="获得结果集"><a href="#获得结果集" class="headerlink" title="获得结果集"></a>获得结果集</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将结果集从 mysql(参数) 对象中取出</span></span><br><span class="line"><span class="comment">// MYSQL_RES 对应一块内存, 里边保存着这个查询之后得到的结果集</span></span><br><span class="line"><span class="comment">// 如何将行和列的数据从结果集中取出, 需要使用其他函数</span></span><br><span class="line"><span class="comment">// 返回值: 具有多个结果的MYSQL_RES结果集合。如果出现错误，返回NULL。 </span></span><br><span class="line"><span class="function">MYSQL_RES *<span class="title">mysql_store_result</span><span class="params">(MYSQL *mysql)</span></span>;</span><br></pre></td></tr></table></figure>
 
-<h3 id="得到结果集的列数"><a href="#得到结果集的列数" class="headerlink" title="得到结果集的列数"></a>得到结果集的列数</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 从结果集中列的个数
-&#x2F;&#x2F; 参数: 调用 mysql_store_result() 得到的返回值
-&#x2F;&#x2F; 返回值: 结果集中的列数
-unsigned int mysql_num_fields(MYSQL_RES *result)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="得到结果集的列数"><a href="#得到结果集的列数" class="headerlink" title="得到结果集的列数"></a>得到结果集的列数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从结果集中列的个数</span></span><br><span class="line"><span class="comment">// 参数: 调用 mysql_store_result() 得到的返回值</span></span><br><span class="line"><span class="comment">// 返回值: 结果集中的列数</span></span><br><span class="line"><span class="function"><span class="type">unsigned</span> <span class="type">int</span> <span class="title">mysql_num_fields</span><span class="params">(MYSQL_RES *result)</span></span></span><br></pre></td></tr></table></figure>
 
-<h3 id="获取表头-字段名"><a href="#获取表头-字段名" class="headerlink" title="获取表头 -&gt; 字段名"></a>获取表头 -&gt; 字段名</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 参数: 调用 mysql_store_result() 得到的返回值
-&#x2F;&#x2F; 返回值: MYSQL_FIELD* 指向一个结构体
-&#x2F;&#x2F; 通过查询官方文档, 返回是一个结构体的数组
-&#x2F;&#x2F; 通过这个函数得到结果集中所有列的名字
-MYSQL_FIELD *mysql_fetch_fields(MYSQL_RES *result);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="获取表头-字段名"><a href="#获取表头-字段名" class="headerlink" title="获取表头 -&gt; 字段名"></a>获取表头 -&gt; 字段名</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数: 调用 mysql_store_result() 得到的返回值</span></span><br><span class="line"><span class="comment">// 返回值: MYSQL_FIELD* 指向一个结构体</span></span><br><span class="line"><span class="comment">// 通过查询官方文档, 返回是一个结构体的数组</span></span><br><span class="line"><span class="comment">// 通过这个函数得到结果集中所有列的名字</span></span><br><span class="line"><span class="function">MYSQL_FIELD *<span class="title">mysql_fetch_fields</span><span class="params">(MYSQL_RES *result)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>返回值 <code>MYSQL_FIELD</code> 对应的是一个结构体，在 <code>mysql.h</code> 中定义如下:</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; mysql.h
-&#x2F;&#x2F; 结果集中的每一个列对应一个 MYSQL_FIELD
-typedef struct st_mysql_field &#123;
-  char *name;                 &#x2F;* 列名-&gt; 字段的名字 *&#x2F;
-  char *org_name;             &#x2F;* Original column name, if an alias *&#x2F;
-  char *table;                &#x2F;* Table of column if column was a field *&#x2F;
-  char *org_table;            &#x2F;* Org table name, if table was an alias *&#x2F;
-  char *db;                   &#x2F;* Database for table *&#x2F;
-  char *catalog;              &#x2F;* Catalog for table *&#x2F;
-  char *def;                  &#x2F;* Default value (set by mysql_list_fields) *&#x2F;
-  unsigned long length;       &#x2F;* Width of column (create length) *&#x2F;
-  unsigned long max_length;   &#x2F;* Max width for selected set *&#x2F;
-  unsigned int name_length;
-  unsigned int org_name_length;                                                                                        
-  unsigned int table_length;
-  unsigned int org_table_length;
-  unsigned int db_length;
-  unsigned int catalog_length;
-  unsigned int def_length;
-  unsigned int flags;         &#x2F;* Div flags *&#x2F;
-  unsigned int decimals;      &#x2F;* Number of decimals in field *&#x2F;
-  unsigned int charsetnr;     &#x2F;* Character set *&#x2F;
-  enum enum_field_types type; &#x2F;* Type of field. See mysql_com.h for types *&#x2F;
-  void *extension;
-&#125; MYSQL_FIELD;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mysql.h</span></span><br><span class="line"><span class="comment">// 结果集中的每一个列对应一个 MYSQL_FIELD</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">st_mysql_field</span> &#123;</span><br><span class="line">  <span class="type">char</span> *name;                 <span class="comment">/* 列名-&gt; 字段的名字 */</span></span><br><span class="line">  <span class="type">char</span> *org_name;             <span class="comment">/* Original column name, if an alias */</span></span><br><span class="line">  <span class="type">char</span> *table;                <span class="comment">/* Table of column if column was a field */</span></span><br><span class="line">  <span class="type">char</span> *org_table;            <span class="comment">/* Org table name, if table was an alias */</span></span><br><span class="line">  <span class="type">char</span> *db;                   <span class="comment">/* Database for table */</span></span><br><span class="line">  <span class="type">char</span> *catalog;              <span class="comment">/* Catalog for table */</span></span><br><span class="line">  <span class="type">char</span> *def;                  <span class="comment">/* Default value (set by mysql_list_fields) */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> length;       <span class="comment">/* Width of column (create length) */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> max_length;   <span class="comment">/* Max width for selected set */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> name_length;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> org_name_length;                                                                                        </span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> table_length;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> org_table_length;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> db_length;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> catalog_length;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> def_length;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> flags;         <span class="comment">/* Div flags */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> decimals;      <span class="comment">/* Number of decimals in field */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> charsetnr;     <span class="comment">/* Character set */</span></span><br><span class="line">  <span class="keyword">enum</span> <span class="title class_">enum_field_types</span> type; <span class="comment">/* Type of field. See mysql_com.h for types */</span></span><br><span class="line">  <span class="type">void</span> *extension;</span><br><span class="line">&#125; MYSQL_FIELD;</span><br></pre></td></tr></table></figure>
 
 <p><strong>使用示例</strong></p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 得到存储头信息的数组的地址
-MYSQL_FIELD* fields &#x3D; mysql_fetch_fields(res);
-&#x2F;&#x2F; 得到列数
-int num &#x3D; mysql_num_fields(res);
-&#x2F;&#x2F; 遍历得到每一列的列名
-for(int i&#x3D;0; i&lt;num; ++i)
-&#123;
-    printf(&quot;当前列的名字: %s\n&quot;, fields[i].name);
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 得到存储头信息的数组的地址</span></span><br><span class="line">MYSQL_FIELD* fields = <span class="built_in">mysql_fetch_fields</span>(res);</span><br><span class="line"><span class="comment">// 得到列数</span></span><br><span class="line"><span class="type">int</span> num = <span class="built_in">mysql_num_fields</span>(res);</span><br><span class="line"><span class="comment">// 遍历得到每一列的列名</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;num; ++i)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;当前列的名字: %s\n&quot;</span>, fields[i].name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="得到结果集中字段的长度"><a href="#得到结果集中字段的长度" class="headerlink" title="得到结果集中字段的长度"></a>得到结果集中字段的长度</h3><pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">/* 
-返回结果集内当前行的列的长度:
-    1. 如果打算复制字段值，使用该函数能避免调用strlen()。
-    2. 如果结果集包含二进制数据，必须使用该函数来确定数据的大小，原因在于，对于包含Null字符的任何字段，strlen()将返回错误的结果。
-*/
-unsigned long *mysql_fetch_lengths(MYSQL_RES *result);
-参数: 
-    - result: 通过查询得到的结果集
-返回值:
-    - 无符号长整数的数组表示各列的大小。如果出现错误，返回NULL。
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="得到结果集中字段的长度"><a href="#得到结果集中字段的长度" class="headerlink" title="得到结果集中字段的长度"></a>得到结果集中字段的长度</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/* </span><br><span class="line">返回结果集内当前行的列的长度:</span><br><span class="line">    1. 如果打算复制字段值，使用该函数能避免调用strlen()。</span><br><span class="line">    2. 如果结果集包含二进制数据，必须使用该函数来确定数据的大小，原因在于，对于包含Null字符的任何字段，strlen()将返回错误的结果。</span><br><span class="line">*/</span><br><span class="line">unsigned long *mysql_fetch_lengths(MYSQL_RES *result);</span><br><span class="line">参数: </span><br><span class="line">    - result: 通过查询得到的结果集</span><br><span class="line">返回值:</span><br><span class="line">    - 无符号长整数的数组表示各列的大小。如果出现错误，返回NULL。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="遍历结果集"><a href="#遍历结果集" class="headerlink" title="遍历结果集"></a>遍历结果集</h3><pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">typedef char** MYSQL_ROW;
-// 遍历结果集的下一行 
-// 如果想遍历整个结果集, 需要对该函数进行循环调用
-// 返回值是二级指针, char** 指向一个什么类型的内存呢?
-//    -- 指向一个指针数组, 类型是数组,里边的每个元素都是指针, char* 类型
-//    -- char* []; 数组中的字符串对应的一列数据
+<h3 id="遍历结果集"><a href="#遍历结果集" class="headerlink" title="遍历结果集"></a>遍历结果集</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">typedef char** MYSQL_ROW;</span><br><span class="line">// 遍历结果集的下一行 </span><br><span class="line">// 如果想遍历整个结果集, 需要对该函数进行循环调用</span><br><span class="line">// 返回值是二级指针, char** 指向一个什么类型的内存呢?</span><br><span class="line">//    -- 指向一个指针数组, 类型是数组,里边的每个元素都是指针, char* 类型</span><br><span class="line">//    -- char* []; 数组中的字符串对应的一列数据</span><br><span class="line"></span><br><span class="line">// 需要对 MYSQL_ROW 遍历就可以得到每一列的值</span><br><span class="line">// 如果要遍历整个结果集, 需要循环调用这个函数</span><br><span class="line">MYSQL_ROW mysql_fetch_row(MYSQL_RES *result);</span><br><span class="line">参数: </span><br><span class="line">    - result: 通过查询得到的结果集</span><br><span class="line">返回值: </span><br><span class="line">    - 成功: 得到了当前记录中每个字段的值</span><br><span class="line">    - 失败: NULL, 说明数据已经读完了</span><br></pre></td></tr></table></figure>
 
-// 需要对 MYSQL_ROW 遍历就可以得到每一列的值
-// 如果要遍历整个结果集, 需要循环调用这个函数
-MYSQL_ROW mysql_fetch_row(MYSQL_RES *result);
-参数: 
-    - result: 通过查询得到的结果集
-返回值: 
-    - 成功: 得到了当前记录中每个字段的值
-    - 失败: NULL, 说明数据已经读完了<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="资源回收"><a href="#资源回收" class="headerlink" title="资源回收"></a>资源回收</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放结果集</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">mysql_free_result</span><span class="params">(MYSQL_RES *result)</span></span>;</span><br><span class="line"><span class="comment">// 关闭mysql实例</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">mysql_close</span><span class="params">(MYSQL *mysql)</span></span>;</span><br></pre></td></tr></table></figure>
 
-<h3 id="资源回收"><a href="#资源回收" class="headerlink" title="资源回收"></a>资源回收</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 释放结果集
-void mysql_free_result(MYSQL_RES *result);
-&#x2F;&#x2F; 关闭mysql实例
-void mysql_close(MYSQL *mysql);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="事物操作"><a href="#事物操作" class="headerlink" title="事物操作"></a>事物操作</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mysql中默认会进行事务的提交</span></span><br><span class="line"><span class="comment">// 因为自动提交事务, 会对我们的操作造成影响</span></span><br><span class="line"><span class="comment">// 如果我们操作的步骤比较多, 集合的开始和结束需要用户自己去设置, //需要改为手动方式提交事务</span></span><br><span class="line"><span class="function">my_bool <span class="title">mysql_autocommit</span><span class="params">(MYSQL *mysql, my_bool mode)</span> </span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="comment"><span class="function">参数:</span></span></span><br><span class="line"><span class="comment"><span class="function">    如果模式为“1”，启用autocommit模式；如果模式为“0”，禁止autocommit模式。</span></span></span><br><span class="line"><span class="comment"><span class="function">返回值</span></span></span><br><span class="line"><span class="comment"><span class="function">   如果成功，返回0，如果出现错误，返回非0值。</span></span></span><br><span class="line"><span class="comment"><span class="function"></span></span></span><br><span class="line"><span class="comment"><span class="function"> 事务提交</span></span></span><br><span class="line"><span class="comment"><span class="function"> */</span></span></span><br><span class="line"><span class="function">my_bool <span class="title">mysql_commit</span><span class="params">(MYSQL *mysql)</span></span>;</span><br><span class="line"><span class="comment">//返回值: 成功: 0, 失败: 非0</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">// 数据回滚</span></span><br><span class="line"><span class="function">my_bool <span class="title">mysql_rollback</span><span class="params">(MYSQL *mysql)</span> </span></span><br><span class="line"><span class="function"><span class="comment">//返回值: 成功: 0, 失败: 非0</span></span></span><br></pre></td></tr></table></figure>
 
-<h3 id="事物操作"><a href="#事物操作" class="headerlink" title="事物操作"></a>事物操作</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; mysql中默认会进行事务的提交
-&#x2F;&#x2F; 因为自动提交事务, 会对我们的操作造成影响
-&#x2F;&#x2F; 如果我们操作的步骤比较多, 集合的开始和结束需要用户自己去设置, &#x2F;&#x2F;需要改为手动方式提交事务
-my_bool mysql_autocommit(MYSQL *mysql, my_bool mode) 
-&#x2F;*
-参数:
-    如果模式为“1”，启用autocommit模式；如果模式为“0”，禁止autocommit模式。
-返回值
-   如果成功，返回0，如果出现错误，返回非0值。
-
- 事务提交
- *&#x2F;
-my_bool mysql_commit(MYSQL *mysql);
-&#x2F;&#x2F;返回值: 成功: 0, 失败: 非0
-    
-&#x2F;&#x2F; 数据回滚
-my_bool mysql_rollback(MYSQL *mysql) 
-&#x2F;&#x2F;返回值: 成功: 0, 失败: 非0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="打印错误日志"><a href="#打印错误日志" class="headerlink" title="打印错误日志"></a>打印错误日志</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; 返回错误的描述
-const char *mysql_error(MYSQL *mysql);
-&#x2F;&#x2F; 返回错误的编号
-unsigned int mysql_errno(MYSQL *mysql);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="打印错误日志"><a href="#打印错误日志" class="headerlink" title="打印错误日志"></a>打印错误日志</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 返回错误的描述</span></span><br><span class="line"><span class="function"><span class="type">const</span> <span class="type">char</span> *<span class="title">mysql_error</span><span class="params">(MYSQL *mysql)</span></span>;</span><br><span class="line"><span class="comment">// 返回错误的编号</span></span><br><span class="line"><span class="function"><span class="type">unsigned</span> <span class="type">int</span> <span class="title">mysql_errno</span><span class="params">(MYSQL *mysql)</span></span>;</span><br></pre></td></tr></table></figure>
 
 
                 </div>
@@ -739,7 +623,7 @@ unsigned int mysql_errno(MYSQL *mysql);<span aria-hidden="true" class="line-numb
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -973,5 +857,5 @@ unsigned int mysql_errno(MYSQL *mysql);<span aria-hidden="true" class="line-numb
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

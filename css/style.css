@@ -283,11 +283,11 @@
   }
 }
 :root {
-  --primary-color: #06c;
-  --primary-color-light-1: #0075eb;
-  --primary-color-light-2: #0a85ff;
-  --primary-color-dark-1: #005cb8;
-  --primary-color-dark-2: #0052a3;
+  --primary-color: #0c3;
+  --primary-color-light-1: #00eb3b;
+  --primary-color-light-2: #0aff47;
+  --primary-color-dark-1: #00b82e;
+  --primary-color-dark-2: #00a329;
   --background-color-1: #fff;
   --background-color-1-transparent: rgba(255,255,255,0.6);
   --background-color-2: #f7f7f7;
@@ -303,14 +303,14 @@
   --badge-color: #f0f0f0;
   --badge-background-color: #9393a1;
   --border-color: #b3b3b3;
-  --selection-color: #0075eb;
+  --selection-color: #00eb3b;
   --shadow-color: rgba(0,0,0,0.16);
   --shadow-hover-color: rgba(0,0,0,0.22);
   --scrollbar-color: #686877;
   --scrollbar-background-color: #e6e6e6;
   --toc-scrollbar-color: rgba(80,80,92,0.1);
   --copyright-icon-bg-color: rgba(80,80,92,0.12);
-  --avatar-background-color: #005cb8;
+  --avatar-background-color: #00b82e;
   --header-transparent-background-1: rgba(255,255,255,0.28);
   --header-transparent-background-2: rgba(255,255,255,0.4);
   --pjax-progress-bar-color: linear-gradient(45deg, #f10006, #ef5b00, #e59c01, #19ca05, #00cab5, #0264c8, #c303c3);
@@ -333,11 +333,11 @@
 }
 @media (prefers-color-scheme: light) {
   :root {
-    --primary-color: #06c;
-    --primary-color-light-1: #0075eb;
-    --primary-color-light-2: #0a85ff;
-    --primary-color-dark-1: #005cb8;
-    --primary-color-dark-2: #0052a3;
+    --primary-color: #0c3;
+    --primary-color-light-1: #00eb3b;
+    --primary-color-light-2: #0aff47;
+    --primary-color-dark-1: #00b82e;
+    --primary-color-dark-2: #00a329;
     --background-color-1: #fff;
     --background-color-1-transparent: rgba(255,255,255,0.6);
     --background-color-2: #f7f7f7;
@@ -353,14 +353,14 @@
     --badge-color: #f0f0f0;
     --badge-background-color: #9393a1;
     --border-color: #b3b3b3;
-    --selection-color: #0075eb;
+    --selection-color: #00eb3b;
     --shadow-color: rgba(0,0,0,0.16);
     --shadow-hover-color: rgba(0,0,0,0.22);
     --scrollbar-color: #686877;
     --scrollbar-background-color: #e6e6e6;
     --toc-scrollbar-color: rgba(80,80,92,0.1);
     --copyright-icon-bg-color: rgba(80,80,92,0.12);
-    --avatar-background-color: #005cb8;
+    --avatar-background-color: #00b82e;
     --header-transparent-background-1: rgba(255,255,255,0.28);
     --header-transparent-background-2: rgba(255,255,255,0.4);
     --pjax-progress-bar-color: linear-gradient(45deg, #f10006, #ef5b00, #e59c01, #19ca05, #00cab5, #0264c8, #c303c3);
@@ -384,11 +384,11 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary-color: #06c;
-    --primary-color-light-1: #0075eb;
-    --primary-color-light-2: #0a85ff;
-    --primary-color-dark-1: #005cb8;
-    --primary-color-dark-2: #0052a3;
+    --primary-color: #0c3;
+    --primary-color-light-1: #00eb3b;
+    --primary-color-light-2: #0aff47;
+    --primary-color-dark-1: #00b82e;
+    --primary-color-dark-2: #00a329;
     --background-color-1: #22272e;
     --background-color-1-transparent: rgba(34,39,46,0.6);
     --background-color-2: #292f38;
@@ -404,14 +404,14 @@
     --badge-color: #343c47;
     --badge-background-color: #ced6dc;
     --border-color: #596678;
-    --selection-color: #005ebc;
+    --selection-color: #00bc2f;
     --shadow-color: rgba(120,120,120,0.18);
     --shadow-hover-color: rgba(120,120,120,0.24);
     --scrollbar-color: #505b6c;
     --scrollbar-background-color: #1d2127;
     --toc-scrollbar-color: rgba(173,186,197,0.1);
     --copyright-icon-bg-color: rgba(173,186,197,0.12);
-    --avatar-background-color: #004a93;
+    --avatar-background-color: #009325;
     --header-transparent-background-1: rgba(34,39,46,0.28);
     --header-transparent-background-2: rgba(34,39,46,0.4);
     --pjax-progress-bar-color: linear-gradient(45deg, #ea404a, #ea722f, #e9a71f, #67e559, #18ecec, #1b85f1, #ee1dee);
@@ -434,11 +434,11 @@
   }
 }
 .light-mode {
-  --primary-color: #06c;
-  --primary-color-light-1: #0075eb;
-  --primary-color-light-2: #0a85ff;
-  --primary-color-dark-1: #005cb8;
-  --primary-color-dark-2: #0052a3;
+  --primary-color: #0c3;
+  --primary-color-light-1: #00eb3b;
+  --primary-color-light-2: #0aff47;
+  --primary-color-dark-1: #00b82e;
+  --primary-color-dark-2: #00a329;
   --background-color-1: #fff;
   --background-color-1-transparent: rgba(255,255,255,0.6);
   --background-color-2: #f7f7f7;
@@ -454,14 +454,14 @@
   --badge-color: #f0f0f0;
   --badge-background-color: #9393a1;
   --border-color: #b3b3b3;
-  --selection-color: #0075eb;
+  --selection-color: #00eb3b;
   --shadow-color: rgba(0,0,0,0.16);
   --shadow-hover-color: rgba(0,0,0,0.22);
   --scrollbar-color: #686877;
   --scrollbar-background-color: #e6e6e6;
   --toc-scrollbar-color: rgba(80,80,92,0.1);
   --copyright-icon-bg-color: rgba(80,80,92,0.12);
-  --avatar-background-color: #005cb8;
+  --avatar-background-color: #00b82e;
   --header-transparent-background-1: rgba(255,255,255,0.28);
   --header-transparent-background-2: rgba(255,255,255,0.4);
   --pjax-progress-bar-color: linear-gradient(45deg, #f10006, #ef5b00, #e59c01, #19ca05, #00cab5, #0264c8, #c303c3);
@@ -483,11 +483,11 @@
   --keep-danger-border-color: rgba(244,63,94,0.6);
 }
 .dark-mode {
-  --primary-color: #06c;
-  --primary-color-light-1: #0075eb;
-  --primary-color-light-2: #0a85ff;
-  --primary-color-dark-1: #005cb8;
-  --primary-color-dark-2: #0052a3;
+  --primary-color: #0c3;
+  --primary-color-light-1: #00eb3b;
+  --primary-color-light-2: #0aff47;
+  --primary-color-dark-1: #00b82e;
+  --primary-color-dark-2: #00a329;
   --background-color-1: #22272e;
   --background-color-1-transparent: rgba(34,39,46,0.6);
   --background-color-2: #292f38;
@@ -503,14 +503,14 @@
   --badge-color: #343c47;
   --badge-background-color: #ced6dc;
   --border-color: #596678;
-  --selection-color: #005ebc;
+  --selection-color: #00bc2f;
   --shadow-color: rgba(120,120,120,0.18);
   --shadow-hover-color: rgba(120,120,120,0.24);
   --scrollbar-color: #505b6c;
   --scrollbar-background-color: #1d2127;
   --toc-scrollbar-color: rgba(173,186,197,0.1);
   --copyright-icon-bg-color: rgba(173,186,197,0.12);
-  --avatar-background-color: #004a93;
+  --avatar-background-color: #009325;
   --header-transparent-background-1: rgba(34,39,46,0.28);
   --header-transparent-background-2: rgba(34,39,46,0.4);
   --pjax-progress-bar-color: linear-gradient(45deg, #ea404a, #ea722f, #e9a71f, #67e559, #18ecec, #1b85f1, #ee1dee);
@@ -1064,8 +1064,8 @@ img[lazyload]::after {
   --toolbar-foreground: #50505c;
   --toolbar-background: #f0f0f0;
   --code-foreground: #585865;
-  --code-background: rgba(0,102,204,0.15);
-  --code-border-color: #2994ff;
+  --code-background: rgba(0,204,51,0.15);
+  --code-border-color: #29ff5e;
   --highlight-background: #fafafa;
   --highlight-foreground: #535360;
   --highlight-comment: #8e908c;
@@ -1088,8 +1088,8 @@ img[lazyload]::after {
     --toolbar-foreground: #50505c;
     --toolbar-background: #f0f0f0;
     --code-foreground: #585865;
-    --code-background: rgba(0,102,204,0.15);
-    --code-border-color: #2994ff;
+    --code-background: rgba(0,204,51,0.15);
+    --code-border-color: #29ff5e;
     --highlight-background: #fafafa;
     --highlight-foreground: #535360;
     --highlight-comment: #8e908c;
@@ -1113,8 +1113,8 @@ img[lazyload]::after {
     --toolbar-foreground: #adbac5;
     --toolbar-background: #313842;
     --code-foreground: #b5c1cb;
-    --code-background: rgba(0,102,204,0.15);
-    --code-border-color: #003d7a;
+    --code-background: rgba(0,204,51,0.15);
+    --code-border-color: #007a1f;
     --highlight-background: #1f242a;
     --highlight-foreground: #afbbc6;
     --highlight-comment: #969896;
@@ -1137,8 +1137,8 @@ img[lazyload]::after {
   --toolbar-foreground: #50505c;
   --toolbar-background: #f0f0f0;
   --code-foreground: #585865;
-  --code-background: rgba(0,102,204,0.15);
-  --code-border-color: #2994ff;
+  --code-background: rgba(0,204,51,0.15);
+  --code-border-color: #29ff5e;
   --highlight-background: #fafafa;
   --highlight-foreground: #535360;
   --highlight-comment: #8e908c;
@@ -1160,8 +1160,8 @@ img[lazyload]::after {
   --toolbar-foreground: #adbac5;
   --toolbar-background: #313842;
   --code-foreground: #b5c1cb;
-  --code-background: rgba(0,102,204,0.15);
-  --code-border-color: #003d7a;
+  --code-background: rgba(0,204,51,0.15);
+  --code-border-color: #007a1f;
   --highlight-background: #1f242a;
   --highlight-foreground: #afbbc6;
   --highlight-comment: #969896;
@@ -1499,8 +1499,8 @@ figure.highlight .shrink-line:hover::before {
   --toolbar-foreground: #50505c;
   --toolbar-background: #f0f0f0;
   --code-foreground: #585865;
-  --code-background: rgba(0,102,204,0.15);
-  --code-border-color: #2994ff;
+  --code-background: rgba(0,204,51,0.15);
+  --code-border-color: #29ff5e;
   --highlight-background: #fafafa;
   --highlight-foreground: #535360;
   --highlight-comment: #8e908c;
@@ -1523,8 +1523,8 @@ figure.highlight .shrink-line:hover::before {
     --toolbar-foreground: #50505c;
     --toolbar-background: #f0f0f0;
     --code-foreground: #585865;
-    --code-background: rgba(0,102,204,0.15);
-    --code-border-color: #2994ff;
+    --code-background: rgba(0,204,51,0.15);
+    --code-border-color: #29ff5e;
     --highlight-background: #fafafa;
     --highlight-foreground: #535360;
     --highlight-comment: #8e908c;
@@ -1548,8 +1548,8 @@ figure.highlight .shrink-line:hover::before {
     --toolbar-foreground: #adbac5;
     --toolbar-background: #313842;
     --code-foreground: #b5c1cb;
-    --code-background: rgba(0,102,204,0.15);
-    --code-border-color: #003d7a;
+    --code-background: rgba(0,204,51,0.15);
+    --code-border-color: #007a1f;
     --highlight-background: #1f242a;
     --highlight-foreground: #afbbc6;
     --highlight-comment: #969896;
@@ -1572,8 +1572,8 @@ figure.highlight .shrink-line:hover::before {
   --toolbar-foreground: #50505c;
   --toolbar-background: #f0f0f0;
   --code-foreground: #585865;
-  --code-background: rgba(0,102,204,0.15);
-  --code-border-color: #2994ff;
+  --code-background: rgba(0,204,51,0.15);
+  --code-border-color: #29ff5e;
   --highlight-background: #fafafa;
   --highlight-foreground: #535360;
   --highlight-comment: #8e908c;
@@ -1595,8 +1595,8 @@ figure.highlight .shrink-line:hover::before {
   --toolbar-foreground: #adbac5;
   --toolbar-background: #313842;
   --code-foreground: #b5c1cb;
-  --code-background: rgba(0,102,204,0.15);
-  --code-border-color: #003d7a;
+  --code-background: rgba(0,204,51,0.15);
+  --code-border-color: #007a1f;
   --highlight-background: #1f242a;
   --highlight-foreground: #afbbc6;
   --highlight-comment: #969896;
@@ -2233,6 +2233,61 @@ figure.highlight .shrink-line:hover::before {
   padding-left: 1rem;
   display: none;
 }
+.waline-comment-container #waline-comment {
+  --waline-theme-color: var(--primary-color);
+  --waline-active-color: var(--primary-color-light-1);
+  --waline-color: var(--text-color-3);
+  --waline-bgcolor: var(--background-color-1);
+  --waline-border-color: var(--border-color);
+  --waline-disable-bgcolor: var(--background-color-2);
+  --waline-disable-color: var(--text-color-3);
+  --waline-code-bgcolor: rgba(40,44,52,0.9);
+  --waline-info-bgcolor: var(--background-color-3);
+  --waline-info-color: var(--text-color-3);
+  --waline-border: 1px solid var(--waline-border-color);
+  --waline-dark-grey: var(--text-color-3);
+  --waline-light-grey: var(--text-color-4);
+}
+.waline-comment-container #waline-comment input,
+.waline-comment-container #waline-comment textarea {
+  position: relative;
+  box-sizing: border-box;
+  padding: 0.6rem 1rem;
+  color: var(--text-color-3);
+  background: transparent;
+  border-radius: 0.4rem;
+  outline: none;
+}
+.waline-comment-container #waline-comment input:hover,
+.waline-comment-container #waline-comment textarea:hover {
+  background: var(--background-color-2);
+}
+.waline-comment-container #waline-comment .wl-header {
+  box-sizing: border-box;
+  padding: 0;
+}
+.waline-comment-container #waline-comment button {
+  transition-delay: 0s, 0s, 0s, 0s, 0s, 0s;
+  transition-timing-function: ease, ease, ease, ease, ease, ease;
+  transition-duration: 0.2s, 0.2s, 0.2s, 0.2s, 0.2s, 0.2s;
+  transition-property: color, background, box-shadow, border-color, color, background;
+}
+.waline-comment-container #waline-comment .wl-logout-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+.waline-comment-container #waline-comment .wl-logout-btn svg path {
+  color: var(--background-color-3);
+}
+.waline-comment-container #waline-comment .wl-panel {
+  border-radius: 0.4rem;
+}
+.waline-comment-container #waline-comment .wl-count,
+.waline-comment-container #waline-comment .wl-num,
+.waline-comment-container #waline-comment .wl-preview h4,
+.waline-comment-container #waline-comment .wl-like span {
+  color: var(--text-color-4);
+}
 .comments-container {
   display: inline-block;
   width: 100%;
@@ -2299,6 +2354,44 @@ figure.highlight .shrink-line:hover::before {
   left: 0;
   z-index: 1009;
   width: 100%;
+}
+.progress-bar-container .pjax-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1008;
+  width: 0;
+  height: 2px;
+  background: var(--pjax-progress-bar-color);
+  visibility: hidden;
+  opacity: 0;
+  transition-delay: 0s, 0s, 0s, 0s, 0s, 0s;
+  transition-timing-function: ease, ease, ease, ease, linear;
+  transition-duration: 0.2s, 0.2s, 0.2s, 0.2s, 0.1s, 0.1s;
+  transition-property: color, background, box-shadow, border-color, width, opacity;
+}
+.progress-bar-container .pjax-progress-bar.show {
+  visibility: visible;
+  opacity: 1;
+}
+.progress-bar-container .pjax-progress-icon {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.3rem;
+  z-index: 1008;
+  color: var(--text-color-3);
+  font-size: 1.1rem;
+  visibility: hidden;
+}
+@media (max-width: 800px) {
+  .progress-bar-container .pjax-progress-icon {
+    top: 0.3rem;
+    right: 0.2rem;
+    font-size: 1rem;
+  }
+}
+.progress-bar-container .pjax-progress-icon.show {
+  visibility: visible;
 }
 .progress-bar-container .scroll-progress-bar {
   position: absolute;
@@ -3801,6 +3894,7 @@ figure.highlight .shrink-line:hover::before {
   color: var(--text-color-3);
   text-align: justify;
   word-wrap: break-word;
+  border-bottom: 2px dashed var(--border-color);
 }
 @media (max-width: 800px) {
   .post-page-container .post-content-container .post-content-bottom .post-content {

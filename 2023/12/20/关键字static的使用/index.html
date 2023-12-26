@@ -266,7 +266,7 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>270 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>258 字</span>
             </span>
         
         
@@ -295,41 +295,17 @@
                     <h2 id="关键字static的使用"><a href="#关键字static的使用" class="headerlink" title="关键字static的使用"></a>关键字static的使用</h2><ul>
 <li>静态变量：在函数内部声明的静态变量具有静态生存期，即它们在整个程序执行期间都存在，并且只会初始化一次。例如：</li>
 </ul>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void foo() &#123;
-    static int count &#x3D; 0; &#x2F;&#x2F; 静态局部变量
-    count++;
-    cout &lt;&lt; &quot;Count: &quot; &lt;&lt; count &lt;&lt; endl;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> count = <span class="number">0</span>; <span class="comment">// 静态局部变量</span></span><br><span class="line">    count++;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Count: &quot;</span> &lt;&lt; count &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>静态成员变量：静态成员变量属于类本身而不是类的实例，并且在所有类对象之间共享。例如：</li>
 </ul>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class MyClass &#123;
-public:
-    static int sharedVariable; &#x2F;&#x2F; 静态成员变量声明
-&#125;;
-
-int MyClass::sharedVariable &#x3D; 10; &#x2F;&#x2F; 静态成员变量定义
-
-int main() &#123;
-    cout &lt;&lt; MyClass::sharedVariable &lt;&lt; endl; &#x2F;&#x2F; 访问静态成员变量
-    return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> sharedVariable; <span class="comment">// 静态成员变量声明</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> MyClass::sharedVariable = <span class="number">10</span>; <span class="comment">// 静态成员变量定义</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cout &lt;&lt; MyClass::sharedVariable &lt;&lt; endl; <span class="comment">// 访问静态成员变量</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>静态成员函数：静态成员函数属于类本身而不是类的实例，可以直接通过类名来调用，而不需要创建对象实例。例如：</li>
 </ul>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class MyClass &#123;
-public:
-    static void myStaticFunction() &#123; 
-        cout &lt;&lt; &quot;This is a static member function.&quot; &lt;&lt; endl;
-    &#125;
-&#125;;
-
-int main() &#123;
-    MyClass::myStaticFunction(); &#x2F;&#x2F; 调用静态成员函数
-    return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">myStaticFunction</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;This is a static member function.&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    MyClass::<span class="built_in">myStaticFunction</span>(); <span class="comment">// 调用静态成员函数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
                 </div>
@@ -607,7 +583,7 @@ int main() &#123;
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -841,5 +817,5 @@ int main() &#123;
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>

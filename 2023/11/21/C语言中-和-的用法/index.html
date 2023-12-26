@@ -266,7 +266,7 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>441 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>445 字</span>
             </span>
         
         
@@ -294,36 +294,19 @@
 
                     <h2 id="C语言中”-”和”-”的用法"><a href="#C语言中”-”和”-”的用法" class="headerlink" title="C语言中”#”和”##”的用法"></a>C语言中”#”和”##”的用法</h2><p>#把宏参数变为一个字符串</p>
 <p>##把两个宏参数贴合在一起</p>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;cstdio></span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;climits></span></span>
-using namespace std<span class="token punctuation">;</span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>     #s</span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>  <span class="token keyword">int</span><span class="token punctuation">(</span>a</span><span class="token punctuation">##</span><span class="token expression">e</span><span class="token punctuation">##</span><span class="token expression">b<span class="token punctuation">)</span></span></span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span>
-   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token function">STR</span><span class="token punctuation">(</span>abc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>           <span class="token comment">// 输出字符串"abc"</span>
-   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> <span class="token function">CONS</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 2e3 输出:2000</span>
-   <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;climits&gt;</span></span></span><br><span class="line">using namespace <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STR(s)     #s</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CONS(a,b)  int(a##e##b)</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="built_in">printf</span>(STR(abc));           <span class="comment">// 输出字符串&quot;abc&quot;</span></span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, CONS(<span class="number">2</span>,<span class="number">3</span>));  <span class="comment">// 2e3 输出:2000</span></span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">abc
-2000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">abc</span><br><span class="line">2000</span><br></pre></td></tr></table></figure>
 
 <div class="keep-note success"><p>当宏参数是另一个宏的时候，需要注意的是凡宏定义里有用<code>#</code>或<code>##</code>的地方宏参数是不会再展开。 <strong>只有当前宏生效, 参数里的宏不会生效</strong> ！！！</p>
 </div>
 
 
 <p>举例</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#define A          (2)
-#define STR(s)     #s
-#define CONS(a,b)  int(a##e##b)
-printf(&quot;int max: %s\n&quot;,  STR(INT_MAX));    &#x2F;&#x2F; INT_MAX ＃include&lt;climits&gt;
-printf(&quot;%s\n&quot;, CONS(A, A));                &#x2F;&#x2F; compile error --- int(AeA)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> A          (2)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STR(s)     #s</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CONS(a,b)  int(a##e##b)</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;int max: %s\n&quot;</span>,  <span class="built_in">STR</span>(INT_MAX));    <span class="comment">// INT_MAX ＃include&lt;climits&gt;</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="built_in">CONS</span>(A, A));                <span class="comment">// compile error --- int(AeA)</span></span><br></pre></td></tr></table></figure>
 
 <p>两句<code>printf</code>会被展开为：</p>
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"int max: %s\n"</span><span class="token punctuation">,</span><span class="token string">"INT_MAX"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%s\n"</span><span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token punctuation">(</span>AeA<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;int max: %s\n&quot;</span>,<span class="string">&quot;INT_MAX&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, <span class="type">int</span>(AeA));</span><br></pre></td></tr></table></figure>
 
 <div class="keep-note success"><p>分析</p>
 <p>由于<code>A</code>和<code>INT_MAX</code>均是宏，且作为宏<code>CONS</code>和<code>STR</code>的参数，并且宏<code>CONS</code>和<code>STR</code>中均含有#或者##符号，所以<code>A</code>和<code>INT_MAX</code>均不能被解引用。导致不符合预期的情况出现。</p>
@@ -332,30 +315,11 @@ printf(&quot;%s\n&quot;, CONS(A, A));                &#x2F;&#x2F; compile error 
 <p class="note note-primary">解决这个问题的方法很简单。 加多一层中间转换宏。 加这层宏的用意是把所有宏的参数在这层里全部展开,
 那么在转换宏里的那一个宏(_STR)就能得到正确的宏参数。</p>
 
-<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">A</span>           <span class="token expression"><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span></span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">_STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>     #s</span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">STR</span><span class="token expression"><span class="token punctuation">(</span>s<span class="token punctuation">)</span>      <span class="token function">_STR</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>          </span><span class="token comment">// 转换宏</span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">_CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>  <span class="token keyword">int</span><span class="token punctuation">(</span>a</span><span class="token punctuation">##</span><span class="token expression">e</span><span class="token punctuation">##</span><span class="token expression">b<span class="token punctuation">)</span></span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">CONS</span><span class="token expression"><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>   <span class="token function">_CONS</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span>       </span><span class="token comment">// 转换宏</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> A           (2)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _STR(s)     #s</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STR(s)      _STR(s)          <span class="comment">// 转换宏</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _CONS(a,b)  int(a##e##b)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CONS(a,b)   _CONS(a,b)       <span class="comment">// 转换宏</span></span></span><br></pre></td></tr></table></figure>
 
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include&lt;cstdio&gt;
-#include&lt;climits&gt;
-using namespace std;
-#define A           2
-#define _STR(s)     #s
-#define STR(s)      _STR(s)          &#x2F;&#x2F; 转换宏
-#define _CONS(a,b)  int(a##e##b)
-#define CONS(a,b)   _CONS(a,b)       &#x2F;&#x2F; 转换宏
-int main()
-&#123;
-   printf(STR(INT_MAX));           &#x2F;&#x2F; 输出字符串&quot;abc&quot;
-   printf(&quot;\n&quot;);
-   printf(&quot;%d\n&quot;, CONS(A,A));  &#x2F;&#x2F; 2e3 输出:2000
-   return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> A           2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _STR(s)     #s</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> STR(s)      _STR(s)          <span class="comment">// 转换宏</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _CONS(a,b)  int(a##e##b)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CONS(a,b)   _CONS(a,b)       <span class="comment">// 转换宏</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="built_in">STR</span>(INT_MAX));           <span class="comment">// 输出字符串&quot;abc&quot;</span></span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in">CONS</span>(A,A));  <span class="comment">// 2e3 输出:2000</span></span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">0x7fffffff
-200<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x7fffffff</span><br><span class="line">200</span><br></pre></td></tr></table></figure>
                 </div>
 
                 
@@ -631,7 +595,7 @@ int main()
             
                 <span class="count-box border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">42k</span>
+                    <span class="item-value border-box word">41.7k</span>
                 </span>
             
 
@@ -865,5 +829,5 @@ int main()
 
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</body>
 </html>
