@@ -9,7 +9,7 @@
     
     <title>
         
-            单例模式 |
+            从零实现WebServer之线程同步机制包装类 |
         
         Mzy&#39;s Blog
     </title>
@@ -198,12 +198,19 @@
     <div class="post-page-container border-box">
         <div class="post-content-container border-box">
             
-
-            <div class="post-content-bottom border-box">
-                
-                    <div class="post-title">
-                        单例模式
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        从零实现WebServer之线程同步机制包装类
                     </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
                 
 
                 
@@ -230,13 +237,13 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
-                <span class="pc">2023-11-23 19:47:27</span>
-                <span class="mobile">2023-11-23 19:47</span>
+                <span class="pc">2023-12-28 10:54:24</span>
+                <span class="mobile">2023-12-28 10:54</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="pc" data-updated="Thu Nov 23 2023 19:51:06 GMT+0800">2023-11-23 19:51:06</span>
+                <span class="pc" data-updated="Thu Dec 28 2023 10:59:12 GMT+0800">2023-12-28 10:59:12</span>
             </span>
         
 
@@ -259,7 +266,7 @@
                             <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
                         
                     
                 </ul>
@@ -269,12 +276,12 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>676 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>2.4k 字</span>
             </span>
         
         
             <span class="meta-info-item post-min2read">
-                <i class="icon fas fa-clock"></i>&nbsp;<span>2 分钟</span>
+                <i class="icon fas fa-clock"></i>&nbsp;<span>9 分钟</span>
             </span>
         
         
@@ -295,31 +302,169 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p class="note note-info">最简单也是被问到最多的设计模式之一，保证一个类只创建一个实例，同时提供全局访问的方法。</p>
+                    <h1 id="从零实现WebServer之线程同步机制包装类"><a href="#从零实现WebServer之线程同步机制包装类" class="headerlink" title="从零实现WebServer之线程同步机制包装类"></a>从零实现WebServer之线程同步机制包装类</h1><h2 id="信号量封装类"><a href="#信号量封装类" class="headerlink" title="信号量封装类"></a>信号量封装类</h2><div class="keep-note success"><p><strong>初始化信号量</strong></p>
+<p>int sem_init(sem_t *sem, int pshared, unsigned int value);</p>
+<p>  sem 信号量对象</p>
+<p>  pshared 不为0信号量在进程间共享，否则在当前进程的所有线程共享</p>
+<p>  value 信号量值大小</p>
+<p>  成功返回0，失败返回-1并设置errno</p>
+<p><strong>原子操作V</strong></p>
+<p>int sem_wait(sem_t *sem);</p>
+<p>  信号量不为0则-1，为0则阻塞</p>
+<p>  成功返回0，失败返回-1并设置errno</p>
+<p><strong>原子操作P</strong></p>
+<p>int sem_post(sem_t *sem);</p>
+<p>  信号量+1</p>
+<p>  成功返回0，失败返回-1并设置errno</p>
+<p><strong>销毁信号量</strong></p>
+<p>int sem_destroy(sem_t *sem);</p>
+<p>  成功返回0，失败返回-1并设置errno</p>
+</div>
 
-<h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><p>在使用这个实例对象时才去创建，创建对象时加锁保证有且仅有一个（有线程安全问题）</p>
-<p><strong>实现方式</strong></p>
+
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">semaphore</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// semaphore() 是默认构造函数，用于创建一个初始值为 0 的信号量</span></span><br><span class="line">    <span class="built_in">semaphore</span>()&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;m_sem,<span class="number">0</span>,<span class="number">0</span>) != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// semaphore(int num) 是带参数的构造函数，用于创建一个初始值为 num 的信号量。</span></span><br><span class="line">    <span class="built_in">semaphore</span>(<span class="type">int</span> num)&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">sem_init</span>(&amp;m_sem,<span class="number">0</span>,num) != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 析构函数负责释放信号量占用的资源，调用 sem_destroy 函数</span></span><br><span class="line">    ~<span class="built_in">semaphore</span>()&#123;</span><br><span class="line">        <span class="built_in">sem_destroy</span>(&amp;m_sem);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 内部调用了 sem_wait 函数，该函数会使当前线程阻塞，直到信号量的值大于等于 1，然后将信号量的值减少</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">wait</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sem_wait</span>(&amp;m_sem) == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 内部调用了 sem_post 函数，该函数将信号量的值增加</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">post</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">sem_post</span>(&amp;m_sem)  == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">sem_t</span> m_sem;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码定义了一个名为<code>semaphore</code>的类，它实现了一个信号量（Semaphore）。信号量是一种用于多线程或多进程之间同步的机制，它可以用来控制对共享资源的访问。</p>
 <ol>
-<li><p>静态局部变量</p>
+<li><strong>构造函数 <code>semaphore()</code> 和 <code>semaphore(int num)</code>：</strong><ul>
+<li><code>semaphore()</code> 是默认构造函数，用于创建一个初始值为 0 的信号量。</li>
+<li><code>semaphore(int num)</code> 是带参数的构造函数，用于创建一个初始值为 <code>num</code> 的信号量。</li>
+<li>在两个构造函数中，都调用了 <code>sem_init</code> 函数来初始化信号量。如果初始化失败（<code>sem_init</code> 返回非零值），则抛出 <code>std::exception</code> 异常。</li>
+</ul>
 </li>
-<li><p>互斥锁</p>
+<li><strong>析构函数 <code>~semaphore()</code>：</strong><ul>
+<li>析构函数负责释放信号量占用的资源，调用 <code>sem_destroy</code> 函数。</li>
+</ul>
 </li>
-<li><p>使用C++11新特性call_once</p>
+<li><strong>成员函数 <code>bool wait()</code>：</strong><ul>
+<li><code>wait</code> 函数用于等待信号量的值变为大于等于 1。如果调用成功，它返回 <code>true</code>；否则，返回 <code>false</code>。</li>
+<li>内部调用了 <code>sem_wait</code> 函数，该函数会使当前线程阻塞，直到信号量的值大于等于 1，然后将信号量的值减少。</li>
+<li><code>sem_wait</code> 的作用是使调用线程阻塞，直到信号量的值大于等于 1。当信号量的值大于等于 1 时，<code>sem_wait</code> 将信号量的值减一，并立即返回。如果信号量的值已经是 0，那么 <code>sem_wait</code> 将阻塞调用线程，直到有其他线程调用了 <code>sem_post</code> 增加了信号量的值。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>bool post()</code>：</strong><ul>
+<li><code>post</code> 函数用于增加信号量的值，表示资源可用。如果调用成功，它返回 <code>true</code>；否则，返回 <code>false</code>。</li>
+<li>内部调用了 <code>sem_post</code> 函数，该函数将信号量的值增加。</li>
+</ul>
+</li>
+<li><strong>私有成员 <code>sem_t m_sem</code>：</strong><ul>
+<li><code>m_sem</code> 是一个 <code>sem_t</code> 类型的信号量变量，用于存储信号量的状态信息。</li>
+</ul>
 </li>
 </ol>
-<h3 id="经典的线程安全例子"><a href="#经典的线程安全例子" class="headerlink" title="经典的线程安全例子"></a>经典的线程安全例子</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">single</span>&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">//私有静态指针变量指向唯一实例</span></span><br><span class="line">    <span class="type">static</span> single *p;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//静态锁，是由于静态函数只能访问静态成员</span></span><br><span class="line">    <span class="type">static</span> <span class="type">pthread_mutex_t</span> lock;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//私有化构造函数</span></span><br><span class="line">    <span class="built_in">single</span>()&#123;</span><br><span class="line">        <span class="built_in">pthread_mutex_init</span>(&amp;lock, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">single</span>()&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//公有静态方法获取实例</span></span><br><span class="line">    <span class="function"><span class="type">static</span> single* <span class="title">getinstance</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">pthread_mutex_t</span> single::lock;</span><br><span class="line"></span><br><span class="line">single* single::p = <span class="literal">NULL</span>;</span><br><span class="line"><span class="function">single* <span class="title">single::getinstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == p)&#123;</span><br><span class="line">        <span class="built_in">pthread_mutex_lock</span>(&amp;lock);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">NULL</span> == p)&#123;</span><br><span class="line">            p = <span class="keyword">new</span> single;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">pthread_mutex_unlock</span>(&amp;lock);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个类的目的是提供一个简单的接口，允许线程之间进行同步，通过 <code>wait</code> 和 <code>post</code> 函数来控制对共享资源的访问。使用信号量的一个常见场景是确保在多线程环境中对临界区（critical section）的互斥访问。</p>
+<h2 id="互斥锁封装类"><a href="#互斥锁封装类" class="headerlink" title="互斥锁封装类"></a>互斥锁封装类</h2><div class="keep-note success"><p><strong>初始化互斥锁</strong></p>
+<p>int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);</p>
+<p>  mutex 互斥锁对象</p>
+<p>  attr 互斥锁属性，默认普通锁</p>
+<p>  value信号量值大小</p>
+<p>  成功返回0</p>
+<p><strong>加锁</strong></p>
+<p>int pthread_mutex_lock (pthread_mutex_t *mutex);</p>
+<p>  请求锁线程形成等待序列，解锁后按优先级获得锁</p>
+<p>  成功返回0</p>
+<p><strong>解锁</strong></p>
+<p>int pthread_mutex_unlock (pthread_mutex_t *mutex);</p>
+<p>  成功返回0</p>
+<p><strong>销毁互斥锁</strong></p>
+<p>int pthread_mutex_destroy (pthread_mutex_t *mutex);</p>
+<p>  成功返回0</p>
+</div>
 
-<p><strong><code>为什么要用双检测，只检测一次不行吗？</code></strong></p>
-<p>如果只检测一次，在每次调用获取实例的方法时，都需要加锁，这将严重影响程序性能。双层检测可以有效避免这种情况，仅在第一次创建单例的时候加锁，其他时候都不再符合NULL &#x3D;&#x3D; p的情况，直接返回已创建好的实例。</p>
-<h3 id="局部静态变量之线程安全懒汉模式"><a href="#局部静态变量之线程安全懒汉模式" class="headerlink" title="局部静态变量之线程安全懒汉模式"></a><strong>局部静态变量之线程安全懒汉模式</strong></h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">single</span>&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">single</span>()&#123;&#125;</span><br><span class="line">    ~<span class="built_in">single</span>()&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> single* <span class="title">getinstance</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">single* <span class="title">single::getinstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">static</span> single obj;</span><br><span class="line">    <span class="keyword">return</span> &amp;obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">mutexlocker</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 构造函数负责初始化互斥锁，使用 pthread_mutex_init 函数</span></span><br><span class="line">    <span class="built_in">mutexlocker</span>()&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">pthread_mutex_init</span>(&amp;m_mutex,<span class="literal">NULL</span>) != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ~<span class="built_in">mutexlocker</span>()&#123;</span><br><span class="line">        <span class="built_in">pthread_mutex_destroy</span>(&amp;m_mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">lock</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">pthread_mutex_lock</span>(&amp;m_mutex) == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">unlock</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">pthread_mutex_unlock</span>(&amp;m_mutex) == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// get 函数返回指向互斥锁的指针，允许用户直接操作互斥锁</span></span><br><span class="line">    <span class="function"><span class="type">pthread_mutex_t</span>* <span class="title">get</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> &amp;m_mutex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">pthread_mutex_t</span> m_mutex;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p><strong><code>这种方法不加锁会不会造成线程安全问题？</code></strong></p>
-<p><code>C++0X</code>以后，要求<strong>编译器保证内部静态变量的线程安全性</strong>。</p>
-<h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><p>不管是否使用这个实例对象，只要类被创建出来，实例对象就被创建（无线程安全问题）</p>
-<p>饿汉模式不需要用锁，就可以实现线程安全。原因在于，在程序运行时就定义了对象，并对其初始化。之后，不管哪个线程调用成员函数<code>getinstance()</code>，都只不过是返回一个对象的指针而已。所以是线程安全的，不需要在获取实例的成员函数中加锁。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">single</span>&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">static</span> single* p;</span><br><span class="line">    <span class="built_in">single</span>()&#123;&#125;</span><br><span class="line">    ~<span class="built_in">single</span>()&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> single* <span class="title">getinstance</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line">single* single::p = <span class="keyword">new</span> <span class="built_in">single</span>();</span><br><span class="line"><span class="function">single* <span class="title">single::getinstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//测试方法</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    single *p1 = single::<span class="built_in">getinstance</span>();</span><br><span class="line">    single *p2 = single::<span class="built_in">getinstance</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p1 == p2)</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;same&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码定义了一个名为 <code>mutexlocker</code> 的类，用于实现互斥锁（Mutex）。互斥锁是一种用于多线程之间同步的机制，它确保同时只有一个线程可以访问被保护的资源。</p>
+<ol>
+<li><strong>构造函数 <code>mutexlocker()</code>：</strong><ul>
+<li>构造函数负责初始化互斥锁，使用 <code>pthread_mutex_init</code> 函数。</li>
+<li>如果初始化失败，即 <code>pthread_mutex_init</code> 返回非零值，那么抛出 <code>std::exception</code> 异常。</li>
+</ul>
+</li>
+<li><strong>析构函数 <code>~mutexlocker()</code>：</strong><ul>
+<li>析构函数负责销毁互斥锁，使用 <code>pthread_mutex_destroy</code> 函数。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>bool lock()</code>：</strong><ul>
+<li><code>lock</code> 函数用于获取互斥锁。如果调用成功，它返回 <code>true</code>；否则，返回 <code>false</code>。</li>
+<li>内部调用了 <code>pthread_mutex_lock</code> 函数，该函数会阻塞调用线程，直到成功获取互斥锁。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>bool unlock()</code>：</strong><ul>
+<li><code>unlock</code> 函数用于释放互斥锁。如果调用成功，它返回 <code>true</code>；否则，返回 <code>false</code>。</li>
+<li>内部调用了 <code>pthread_mutex_unlock</code> 函数，该函数会释放互斥锁。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>pthread_mutex_t\* get()</code>：</strong><ul>
+<li><code>get</code> 函数返回指向互斥锁的指针，允许用户直接操作互斥锁。</li>
+</ul>
+</li>
+<li><strong>私有成员 <code>pthread_mutex_t m_mutex</code>：</strong><ul>
+<li><code>m_mutex</code> 是一个 <code>pthread_mutex_t</code> 类型的互斥锁变量，用于存储互斥锁的状态信息。</li>
+</ul>
+</li>
+</ol>
+<p>这个类的目的是提供一个简单的接口，允许线程对临界区进行互斥访问。通过 <code>lock</code> 和 <code>unlock</code> 函数，以及 <code>get</code> 函数，用户可以方便地操作互斥锁，确保在多线程环境中对共享资源的安全访问。在构造函数和析构函数中进行初始化和销毁操作，确保互斥锁的正确使用。</p>
+<h2 id="条件变量封装类"><a href="#条件变量封装类" class="headerlink" title="条件变量封装类"></a>条件变量封装类</h2><div class="keep-note success"><p><strong>初始化条件变量</strong></p>
+<p>int pthread_cond_init(pthread_cond_t *cv, const pthread_condattr_t *cattr);</p>
+<p>  cv 条件变量对象</p>
+<p>  cattr 条件变量属性</p>
+<p>  成功返回0</p>
+<p><strong>等待条件变量成立</strong></p>
+<p>int pthread_cond_wait(pthread_cond_t *cv, pthread_mutex_t *mutex);</p>
+<p>  调用该函数时，线程总处于某个临界区，持有某个互斥锁</p>
+<p>  释放mutex防止死锁，阻塞等待唤醒，然后再获取mutex</p>
+<p>  成功返回0</p>
+<p><strong>计时等待条件变量成立</strong></p>
+<p>int pthread_cond_timedwait(pthread_cond_t *cv, pthread_mutex_t *mutex, struct timespec *abstime);</p>
+<p>  成功返回0，超时返回ETIMEDOUT</p>
+<p><strong>唤醒一个wait的线程</strong></p>
+<p>int pthread_cond_signal(pthread_cond_t *cv);</p>
+<p>  成功返回0</p>
+<p><strong>唤醒所有wait的线程</strong></p>
+<p>int pthread_cond_broadcast(pthread_cond_t *cv);</p>
+<p>  成功返回0</p>
+</div>
 
-<p>饿汉模式存在隐藏的问题，在于非静态对象（函数外的static对象）在不同编译单元中的<strong>初始化顺序是未定义</strong>的。如果在<strong>初始化完成之前调用 <code>getInstance() </code>方法会返回一个未定义的实例</strong>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">condvar</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">condvar</span>()&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">pthread_cond_init</span>(&amp;m_cond,<span class="literal">NULL</span>) != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ~<span class="built_in">condvar</span>()&#123;</span><br><span class="line">        <span class="built_in">pthread_cond_destroy</span>(&amp;m_cond);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// wait 函数用于将调用线程放入条件变量的请求队列，并解锁与给定互斥锁关联的临界区。</span></span><br><span class="line">    <span class="comment">// 线程将被阻塞，直到其他某个线程调用 signal 或 broadcast 来唤醒它</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">wait</span><span class="params">(<span class="type">pthread_mutex_t</span> *m_mutex)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">pthread_cond_wait</span>(&amp;m_cond,m_mutex) == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// timewait 函数类似于 wait，但是可以设置超时时间，如果超过指定时间条件还未满足，线程将被唤醒</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">timewait</span><span class="params">(<span class="type">pthread_mutex_t</span> * m_mutex, <span class="keyword">struct</span> timespec t)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">pthread_cond_timedwait</span>(&amp;m_cond,&amp;m_mutex,&amp;t) == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// signal 函数用于唤醒等待在条件变量上的一个线程。如果有多个线程在等待，只有其中一个会被唤醒</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">signal</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">pthread_cond_signal</span>(&amp;m_cond) == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// broadcast 函数用于唤醒所有等待在条件变量上的线程</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">broadcast</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">pthread_cond_broadcast</span>(&amp;m_cond) == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">pthread_cond_t</span> m_cond;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码定义了一个名为 <code>condvar</code> 的类，用于实现条件变量（Condition Variable）。条件变量是一种线程同步的机制，它允许线程在某个条件成立之前等待，并在条件成立时被唤醒。</p>
+<ol>
+<li><strong>构造函数 <code>condvar()</code>：</strong><ul>
+<li>构造函数负责初始化条件变量，使用 <code>pthread_cond_init</code> 函数。</li>
+<li>如果初始化失败，即 <code>pthread_cond_init</code> 返回非零值，那么抛出 <code>std::exception</code> 异常。</li>
+</ul>
+</li>
+<li><strong>析构函数 <code>~condvar()</code>：</strong><ul>
+<li>析构函数负责销毁条件变量，使用 <code>pthread_cond_destroy</code> 函数。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>bool wait(pthread_mutex_t \*m_mutex)</code>：</strong><ul>
+<li><code>wait</code> 函数用于将调用线程放入条件变量的请求队列，并解锁与给定互斥锁关联的临界区。线程将被阻塞，直到其他某个线程调用 <code>signal</code> 或 <code>broadcast</code> 来唤醒它。</li>
+<li>返回值为 <code>true</code> 表示成功，<code>false</code> 表示出错。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>bool timewait(pthread_mutex_t \*m_mutex, struct timespec t)</code>：</strong><ul>
+<li><code>timewait</code> 函数类似于 <code>wait</code>，但是可以设置超时时间，如果超过指定时间条件还未满足，线程将被唤醒。</li>
+<li>返回值为 <code>true</code> 表示成功，<code>false</code> 表示出错。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>bool signal()</code>：</strong><ul>
+<li><code>signal</code> 函数用于唤醒等待在条件变量上的一个线程。如果有多个线程在等待，只有其中一个会被唤醒。</li>
+<li>返回值为 <code>true</code> 表示成功，<code>false</code> 表示出错。</li>
+</ul>
+</li>
+<li><strong>成员函数 <code>bool broadcast()</code>：</strong><ul>
+<li><code>broadcast</code> 函数用于唤醒所有等待在条件变量上的线程。</li>
+<li>返回值为 <code>true</code> 表示成功，<code>false</code> 表示出错。</li>
+</ul>
+</li>
+<li><strong>私有成员 <code>pthread_cond_t m_cond</code>：</strong><ul>
+<li><code>m_cond</code> 是一个 <code>pthread_cond_t</code> 类型的条件变量变量，用于存储条件变量的状态信息。</li>
+</ul>
+</li>
+</ol>
+<p>这个类的目的是提供一个简单的接口，允许线程等待某个条件的发生，并在条件满足时被唤醒。通过 <code>wait</code>、<code>timewait</code>、<code>signal</code> 和 <code>broadcast</code> 函数，以及构造函数和析构函数的初始化和销毁操作，用户可以方便地使用条件变量来实现线程之间的同步。</p>
 
                 </div>
 
@@ -329,11 +474,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                单例模式
+                从零实现WebServer之线程同步机制包装类
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                2023/11/23/单例模式/
+                2023/12/28/从零实现WebServer之线程同步机制包装类/
             </div>
         </div>
 
@@ -349,7 +494,7 @@
                 <div class="type">
                     发布于
                 </div>
-                <div class="content">2023-11-23 19:47</div>
+                <div class="content">2023-12-28 10:54</div>
             </div>
 
 
@@ -387,7 +532,7 @@
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
                                     </li>
                                 
                             </ul>
@@ -426,31 +571,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2023/11/24/define%E5%92%8Cconst%E5%8C%BA%E5%88%AB/"
-                                   title="define和const区别"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">define和const区别</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2023/11/23/%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/"
-                                   title="信号量和互斥锁有什么区别"
+                                   href="/2023/12/21/http%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E9%95%BF%E8%BF%9E%E6%8E%A5/"
+                                   title="http怎么实现长连接"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">信号量和互斥锁有什么区别</span>
+                                        <span class="post-nav-title-item text-ellipsis">http怎么实现长连接</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -553,7 +682,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%87%92%E6%B1%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">懒汉模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E4%BE%8B%E5%AD%90"><span class="nav-number">1.1.1.</span> <span class="nav-text">经典的线程安全例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%87%92%E6%B1%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">局部静态变量之线程安全懒汉模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A5%BF%E6%B1%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">饿汉模式</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之线程同步机制包装类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%B0%81%E8%A3%85%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">信号量封装类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E9%94%81%E5%B0%81%E8%A3%85%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">互斥锁封装类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F%E5%B0%81%E8%A3%85%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">条件变量封装类</span></a></li></ol></li></ol>
     </div>
 </div>
 
@@ -743,7 +872,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%87%92%E6%B1%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">懒汉模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E4%BE%8B%E5%AD%90"><span class="nav-number">1.1.1.</span> <span class="nav-text">经典的线程安全例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%87%92%E6%B1%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">局部静态变量之线程安全懒汉模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A5%BF%E6%B1%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">饿汉模式</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之线程同步机制包装类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%B0%81%E8%A3%85%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">信号量封装类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E9%94%81%E5%B0%81%E8%A3%85%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">互斥锁封装类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F%E5%B0%81%E8%A3%85%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">条件变量封装类</span></a></li></ol></li></ol>
     </div>
 </div>
 
