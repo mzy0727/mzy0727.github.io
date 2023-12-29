@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="mzy的成长历程">
+    <meta name="author" content="Mzy">
+    
+    <title>
+        
+            从零实现WebServer之数据库连接池类 |
+        
+        Mzy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/author.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/brands.min.css">
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"dybil.top","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#00CC33","title":"Mzy's Blog","author":"Mzy","avatar":"/images/author.svg","logo":"/images/author.svg","favicon":"/images/author.svg"},"menu":{"Archives":"/archives","Tags":"/tags","Categories":"/categories","Links":"/links","About":"/about","Photos":"/photos"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"social_contact":{"enable":true,"links":{"github":"https://dybil.top","weixin":"https://dybil.top","qq":"https://dybil.top","weibo":"https://dybil.top","zhihu":"https://dybil.top","twitter":"https://dybil.top","facebook":"https://dybil.top","email":"https://dybil.top"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"category":true,"tag":true,"announcement":null},"post":{"author_badge":{"enable":true,"level_badge":true,"custom_badge":["炼气","筑基","结丹","元婴","化神"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":true,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"waline","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":"https://waline-test-liart.vercel.app","reaction":true,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":true,"provider":"jsdelivr"},"pjax":{"enable":true},"footer":{"since":2022,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","version":"4.0.5"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/author.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Mzy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class=""
+                           href="/"
+                        >首页</a>
+                    </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >归档</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >标签</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >分类</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >友链</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >关于</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/photos"
+                            >相册</a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item flex-center">
+                <a class=""
+                   href="/"
+                >首页</a>
+            </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories"
+                    >分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links"
+                    >友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/photos"
+                    >相册</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        从零实现WebServer之数据库连接池类
+                    </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/author.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Mzy</span>
+                                
+                                    <span class="author-badge">Lv4</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2023-12-29 15:19:10</span>
+                <span class="mobile">2023-12-29 15:19</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Fri Dec 29 2023 15:20:01 GMT+0800">2023-12-29 15:20:01</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>6.1k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>25 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h1 id="从零实现WebServer之数据库连接池类"><a href="#从零实现WebServer之数据库连接池类" class="headerlink" title="从零实现WebServer之数据库连接池类"></a>从零实现WebServer之数据库连接池类</h1><h2 id="数据库连接池类"><a href="#数据库连接池类" class="headerlink" title="数据库连接池类"></a>数据库连接池类</h2><h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0.svg"  alt="数据库连接池"></p>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20231229150130892.png"  alt="数据库连接池和RAII流程图"></p>
+<h3 id="获取实例-get-instance"><a href="#获取实例-get-instance" class="headerlink" title="获取实例 get_instance"></a>获取实例 get_instance</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 单例模式</span></span><br><span class="line"><span class="function"><span class="type">static</span> connection_pool* <span class="title">get_instance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">static</span> connection_pool connPool;</span><br><span class="line">    <span class="keyword">return</span> &amp;connPool;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个典型的单例模式实现，通过在静态成员函数 <code>get_instance</code> 中创建 <code>static</code> 局部变量 <code>connPool</code>，确保了在程序的生命周期内只有一个实例被创建。这种方式被称为懒汉式单例模式，因为实例在第一次调用 <code>get_instance</code> 时被创建。 在 C++11 及以上标准中，对于静态局部变量的初始化是线程安全的，因此这种实现在多线程环境下是安全的。在早期的 C++ 标准中，可能需要考虑额外的线程安全性措施。当程序结束时，<code>connPool</code> 对象将在全局静态存储区自动销毁，确保了释放资源。</p>
+<h3 id="构造函数-connection-pool"><a href="#构造函数-connection-pool" class="headerlink" title="构造函数 connection_pool"></a>构造函数 connection_pool</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">connection_pool::<span class="built_in">connection_pool</span>()&#123;</span><br><span class="line">    m_cur_conn = <span class="number">0</span>;</span><br><span class="line">    m_free_conn = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在构造函数 <code>connection_pool::connection_pool()</code> 中，初始化了 <code>m_cur_conn</code> 和 <code>m_free_conn</code> 两个成员变量。这样的初始化是很常见的，通常用于确保在对象创建时，这些成员变量处于一个已知的初始状态。</p>
+<ul>
+<li><code>m_cur_conn</code> 用于记录当前已经使用的数据库连接数。</li>
+<li><code>m_free_conn</code> 用于记录当前空闲的数据库连接数。</li>
+</ul>
+<p>通过将它们初始化为零，确保了在对象创建时，这两个计数器的初始值为零。接下来，在程序运行时，通过 <code>get_connection</code> 获取连接时，<code>m_cur_conn</code> 会递增，而在 <code>release_connection</code> 释放连接时，<code>m_cur_conn</code> 会递减，同时 <code>m_free_conn</code> 也会相应地增加或减少。这样的设计方案有助于在连接池中管理数据库连接的数量，以及追踪当前连接的使用情况。</p>
+<h3 id="析构函数-connection-pool"><a href="#析构函数-connection-pool" class="headerlink" title="析构函数 ~connection_pool"></a>析构函数 ~connection_pool</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">connection_pool::~<span class="built_in">connection_pool</span>()&#123;</span><br><span class="line">    list&lt;MYSQL*&gt;::iterator iter;</span><br><span class="line">    <span class="keyword">for</span>(iter = conn_list.<span class="built_in">begin</span>(); iter != conn_list.<span class="built_in">end</span>(); ++iter)&#123;</span><br><span class="line">        MYSQL * conn = *iter;</span><br><span class="line">        <span class="built_in">mysql_close</span>(conn);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>connection_pool</code> 类的析构函数 <code>connection_pool::~connection_pool()</code> 中，对连接池中的 <code>MySQL</code> 连接进行了关闭。</p>
+<p>具体地说，它遍历了 <code>conn_list</code> 列表，关闭了每个 MySQL 连接。这是一个良好的实践，因为在对象销毁时，应该释放所有的资源，包括打开的数据库连接。通过在析构函数中完成这个工作，确保了在对象生命周期结束时，相关资源能够被正确释放，从而避免了潜在的资源泄漏问题。</p>
+<p>需要注意的是，<code>MySQL </code>连接的关闭不仅仅是释放连接对象本身，还包括释放底层的资源，确保在数据库连接不再需要时，相关资源能够被正确释放。</p>
+<h3 id="初始化连接池-init"><a href="#初始化连接池-init" class="headerlink" title="初始化连接池 init"></a>初始化连接池 init</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化连接池</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">connection_pool::init</span><span class="params">(string url, string user, string password, string database_name, <span class="type">int</span> port, <span class="type">int</span> max_conn, <span class="type">int</span> close_log)</span></span>&#123;</span><br><span class="line">    m_url = url;</span><br><span class="line">    m_port = port;</span><br><span class="line">    m_user = user;</span><br><span class="line">    m_password = password;</span><br><span class="line">    m_database_name = database_name;</span><br><span class="line">    m_close_log = close_log;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造连接</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; max_conn; ++i)&#123;</span><br><span class="line">        <span class="comment">// 初始化一个mysql连接的实例对象，MYSQL* mysql_init(MYSQL *mysql);</span></span><br><span class="line">        MYSQL *conn = <span class="literal">nullptr</span>;</span><br><span class="line">        conn = <span class="built_in">mysql_init</span>(conn);</span><br><span class="line">        <span class="keyword">if</span>(conn == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;MySQL init Error&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 与数据库引擎建立连接</span></span><br><span class="line">        conn = <span class="built_in">mysql_real_connect</span>(conn,url.<span class="built_in">c_str</span>(),user.<span class="built_in">c_str</span>(),password.<span class="built_in">c_str</span>(),database_name.<span class="built_in">c_str</span>(),port,<span class="literal">nullptr</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span>(conn == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;MySQL real connect Error&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 添加到连接链表</span></span><br><span class="line">        conn_list.<span class="built_in">push_back</span>(conn);</span><br><span class="line">        ++m_free_conn;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建信号量</span></span><br><span class="line">    reserve = <span class="built_in">semaphore</span>(m_free_conn);</span><br><span class="line">    m_max_conn = m_free_conn;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>connection_pool</code> 类的初始化函数 <code>connection_pool::init</code> 中，进行了数据库连接池的初始化工作。下面是对该函数的一些主要步骤的解释：</p>
+<ol>
+<li><p><strong>初始化成员变量：</strong> 将函数参数中传递的各种连接信息（如主机地址、用户名、密码等）赋值给类的成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">m_url = url;</span><br><span class="line">m_port = port;</span><br><span class="line">m_user = user;</span><br><span class="line">m_password = password;</span><br><span class="line">m_database_name = database_name;</span><br><span class="line">m_close_log = close_log;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>构造连接：</strong> 使用 <code>mysql_init</code> 函数初始化一个 <code>MySQL</code> 连接的实例对象。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MYSQL *conn = <span class="literal">nullptr</span>;</span><br><span class="line">conn = <span class="built_in">mysql_init</span>(conn);</span><br></pre></td></tr></table></figure>
+
+<p>如果初始化失败，记录错误日志并退出程序。</p>
+</li>
+<li><p><strong>建立与数据库引擎的连接：</strong> 使用 <code>mysql_real_connect</code> 函数与数据库引擎建立连接。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conn = <span class="built_in">mysql_real_connect</span>(conn, url.<span class="built_in">c_str</span>(), user.<span class="built_in">c_str</span>(), password.<span class="built_in">c_str</span>(), database_name.<span class="built_in">c_str</span>(), port, <span class="literal">nullptr</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>如果连接失败，记录错误日志并退出程序。</p>
+</li>
+<li><p><strong>添加到连接链表：</strong> 将成功建立连接的 <code>MySQL</code> 对象添加到连接链表中，并增加空闲连接数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conn_list.<span class="built_in">push_back</span>(conn);</span><br><span class="line">++m_free_conn;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>创建信号量：</strong> 使用 <code>semaphore</code> 类创建一个信号量对象 <code>reserve</code>，初始值为空闲连接数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reserve = <span class="built_in">semaphore</span>(m_free_conn);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>设置最大连接数：</strong> 将当前的空闲连接数作为最大连接数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_max_conn = m_free_conn;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>该函数的目标是初始化数据库连接池，包括创建连接、建立与数据库引擎的连接、管理连接链表和信号量等。这是一个典型的连接池初始化流程。</p>
+<h3 id="获取可用连接-get-connection"><a href="#获取可用连接-get-connection" class="headerlink" title="获取可用连接 get_connection"></a>获取可用连接 get_connection</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 有请求时，从数据库连接池返回一个可用连接</span></span><br><span class="line"><span class="function">MYSQL* <span class="title">connection_pool::get_connection</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 无空闲连接</span></span><br><span class="line">    <span class="keyword">if</span>(conn_list.<span class="built_in">size</span>() == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    MYSQL *conn = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="comment">// 等待空闲连接</span></span><br><span class="line">    reserve.<span class="built_in">wait</span>();</span><br><span class="line">    <span class="comment">// 加互斥锁</span></span><br><span class="line">    lock.<span class="built_in">lock</span>();</span><br><span class="line">    <span class="comment">// 取连接池第一个连接</span></span><br><span class="line">    conn = conn_list.<span class="built_in">front</span>();</span><br><span class="line">    conn_list.<span class="built_in">pop_front</span>();</span><br><span class="line"></span><br><span class="line">    --m_free_conn;</span><br><span class="line">    ++m_cur_conn;</span><br><span class="line">    lock.<span class="built_in">unlock</span>();</span><br><span class="line">    <span class="keyword">return</span> conn;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>connection_pool::get_connection</code> 函数用于在有请求时从数据库连接池返回一个可用连接。下面是对该函数的主要步骤解释：</p>
+<ol>
+<li><p><strong>检查连接池是否有空闲连接：</strong> 如果连接池中没有空闲连接（<code>conn_list.size() == 0</code>），则返回 <code>nullptr</code> 表示没有可用连接。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(conn_list.<span class="built_in">size</span>() == <span class="number">0</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>等待空闲连接：</strong> 调用信号量的 <code>wait</code> 函数等待有可用连接为止。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reserve.<span class="built_in">wait</span>();</span><br></pre></td></tr></table></figure>
+
+<p>这里使用了信号量 <code>reserve</code> 来表示有多少个可用连接。如果 <code>reserve</code> 的值为零，表示没有可用连接，该函数将会被阻塞。</p>
+</li>
+<li><p><strong>获取连接：</strong> 在获取连接之前，使用互斥锁保护临界区，以确保线程安全。从连接链表的头部获取一个连接，并从链表中移除。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lock.<span class="built_in">lock</span>();</span><br><span class="line">conn = conn_list.<span class="built_in">front</span>();</span><br><span class="line">conn_list.<span class="built_in">pop_front</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>更新连接计数：</strong> 减少空闲连接数，增加当前已使用连接数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--m_free_conn;</span><br><span class="line">++m_cur_conn;</span><br><span class="line">lock.<span class="built_in">unlock</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>返回连接：</strong> 返回获取到的连接。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> conn;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<div class="keep-note success"><p>该函数在有请求时从连接池中获取一个可用连接，确保线程安全地管理连接池状态。</p>
+<p>在 <code>connection_pool::init</code> 函数中，初始化的过程是在单线程环境下进行的，因此不需要加锁。在初始化过程中，不会有其他线程同时尝试修改连接池的状态，因此不存在竞争条件。</p>
+<p>而在 <code>connection_pool::get_connection</code> 函数中，涉及到获取连接、更新连接池状态等操作，这些操作在多线程环境下可能会被多个线程同时调用。所有需要使用互斥锁进行保护。</p>
+</div>
+
+<h3 id="释放连接-release-connection"><a href="#释放连接-release-connection" class="headerlink" title="释放连接 release_connection"></a>释放连接 release_connection</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放当前使用的连接，成功返回true</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">connection_pool::release_connection</span><span class="params">(MYSQL *conn)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(conn == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    lock.<span class="built_in">lock</span>();</span><br><span class="line">    conn_list.<span class="built_in">push_back</span>(conn);</span><br><span class="line">    ++m_free_conn;</span><br><span class="line">    --m_cur_conn;</span><br><span class="line">    lock.<span class="built_in">unlock</span>();</span><br><span class="line"></span><br><span class="line">    reserve.<span class="built_in">post</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>connection_pool::release_connection</code> 函数中，通过互斥锁 <code>lock</code> 对连接池的状态进行了修改，确保在多线程环境下对连接池的操作是互斥的。这是因为在释放连接的过程中，会涉及到对连接池中的连接列表、空闲连接数、当前使用连接数等状态的修改，而这些修改是不可分割的操作。</p>
+<p>以下是函数中的主要操作：</p>
+<ol>
+<li><strong>加锁：</strong> 使用互斥锁 <code>lock.lock()</code>，将当前线程锁住，防止其他线程同时修改连接池状态。</li>
+<li><strong>连接释放：</strong> 将当前使用的连接 <code>conn</code> 放回连接池的连接列表 <code>conn_list</code> 中，同时更新空闲连接数 <code>m_free_conn</code> 和当前使用连接数 <code>m_cur_conn</code>。</li>
+<li><strong>解锁：</strong> 使用互斥锁 <code>lock.unlock()</code>，释放锁，允许其他线程访问连接池。</li>
+<li><strong>信号量增加：</strong> 调用 <code>reserve.post()</code>，将信号量的计数增加，表示有一个空闲连接可用。</li>
+</ol>
+<p>这样设计确保了在多线程环境下对连接池状态的修改是线程安全的。如果不使用互斥锁进行保护，可能会导致多个线程同时修改连接池状态而出现问题。</p>
+<h3 id="当前空闲连接数-get-freeconn"><a href="#当前空闲连接数-get-freeconn" class="headerlink" title="当前空闲连接数 get_freeconn"></a>当前空闲连接数 get_freeconn</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当前空闲连接数</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">connection_pool::get_freeconn</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>-&gt;m_free_conn;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="资源获取即初始化"><a href="#资源获取即初始化" class="headerlink" title="资源获取即初始化"></a>资源获取即初始化</h2><div class="keep-note success"><p><code>connectionRAII</code> 类是一个简单的资源获取即初始化（RAII）类。在构造函数中获取资源（数据库连接），在析构函数中释放这些资源。这个类的主要目的是通过构造函数获得资源（数据库连接），并在对象销毁时通过析构函数释放这些资源。使用这个类可以确保在任何情况下都能正确地释放数据库连接，<strong>避免资源泄漏</strong>。这是 C++ 中一种常见的资源管理方式，称为 RAII 设计模式。</p>
+</div>
+
+<h3 id="获取连接-connectionRAII"><a href="#获取连接-connectionRAII" class="headerlink" title="获取连接 connectionRAII"></a>获取连接 connectionRAII</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从连接池获取一个数据库连接</span></span><br><span class="line">connectionRAII::<span class="built_in">connectionRAII</span>(MYSQL **conn, connection_pool *connPool)&#123;</span><br><span class="line">    *conn = connPool-&gt;<span class="built_in">get_connection</span>();</span><br><span class="line">    connRAII = *conn;</span><br><span class="line">    poolRAII = connPool;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>connectionRAII</code> 类的构造函数是一个资源获取即初始化的操作，通过该构造函数可以获取一个数据库连接并初始化 <code>connRAII</code> 和 <code>poolRAII</code> 成员变量。</p>
+<p>具体步骤如下：</p>
+<ol>
+<li><strong>获取连接：</strong> 调用 <code>connPool-&gt;get_connection()</code> 从数据库连接池中获取一个连接，并将连接指针赋值给 <code>*conn</code>，这是通过传入的参数来返回连接的。</li>
+<li><strong>初始化成员变量：</strong> 将获取的连接赋值给 <code>connRAII</code>，表示当前对象拥有该数据库连接。</li>
+<li><strong>保存连接池指针：</strong> 将传入的 <code>connPool</code> 赋值给 <code>poolRAII</code>，表示当前对象持有该连接所属的连接池的指针。</li>
+</ol>
+<p>这样，在 <code>connectionRAII</code> 对象构造时，就完成了数据库连接的获取，并且通过 <code>connRAII</code> 持有了这个连接，同时也保存了连接所属的连接池的指针。这符合资源获取即初始化的 RAII 设计思想。</p>
+<h3 id="释放连接-connectionRAII"><a href="#释放连接-connectionRAII" class="headerlink" title="释放连接 ~connectionRAII"></a>释放连接 ~connectionRAII</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放持有的数据库连接</span></span><br><span class="line">connectionRAII::~<span class="built_in">connectionRAII</span>()&#123;</span><br><span class="line">    poolRAII-&gt;<span class="built_in">release_connection</span>(connRAII);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>connectionRAII</code> 类的析构函数实现了资源的释放操作。在析构函数中，它调用了 <code>poolRAII-&gt;release_connection(connRAII)</code> 来释放持有的数据库连接。</p>
+<p><strong>释放连接：</strong> 调用 <code>poolRAII-&gt;release_connection(connRAII)</code>，将持有的数据库连接 <code>connRAII</code> 释放回连接池。这个操作会使连接池的空闲连接数量增加，同时当前对象持有的连接数量减少。</p>
+<p>通过这样的设计，当 <code>connectionRAII</code> 对象生命周期结束时（例如，超出了其作用域），它会自动释放持有的数据库连接，确保连接得到有效的回收和重用。这符合 RAII 设计模式，简化了资源管理的代码。</p>
+<p>以下部分参考：<a class="link"   target="_blank" rel="noopener" href="https://www.blog.foryouos.cn/computer-science/cpp/course-3/cpp%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%B1%A0/" >C++多线程连接池MySQL (foryouos.cn)<i class="fas fa-external-link-alt"></i></a></p>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/0"  alt="连接池URML"></p>
+<h2 id="C-封装-MySQL-API"><a href="#C-封装-MySQL-API" class="headerlink" title="C++ 封装 MySQL API"></a>C++ 封装 MySQL API</h2><h3 id="构造函数-MySqlConnect-MySqlConnect-："><a href="#构造函数-MySqlConnect-MySqlConnect-：" class="headerlink" title="构造函数 (MySqlConnect::MySqlConnect)："></a>构造函数 (<code>MySqlConnect::MySqlConnect</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MySqlConnect::<span class="built_in">MySqlConnect</span>() &#123;</span><br><span class="line">    m_conn = <span class="built_in">mysql_init</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="built_in">mysql_set_character_set</span>(m_conn, <span class="string">&quot;utf8&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 初始化<code>m_conn</code>，即MySQL连接对象。</li>
+<li>详解：<ul>
+<li>使用<code>mysql_init</code>初始化MySQL连接对象。</li>
+<li>通过<code>mysql_set_character_set</code>设置字符集为”utf8”，以支持UTF-8编码。</li>
+</ul>
+</li>
+</ul>
+<h3 id="析构函数-MySqlConnect-MySqlConnect-："><a href="#析构函数-MySqlConnect-MySqlConnect-：" class="headerlink" title="析构函数 (MySqlConnect::~MySqlConnect)："></a>析构函数 (<code>MySqlConnect::~MySqlConnect</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MySqlConnect::~<span class="built_in">MySqlConnect</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_conn != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        <span class="built_in">mysql_close</span>(m_conn);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">freeResult</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 关闭MySQL连接，释放相关资源。</li>
+<li>详解：<ul>
+<li>使用<code>mysql_close</code>关闭MySQL连接。</li>
+<li>调用<code>freeResult</code>释放执行查询时产生的结果集。</li>
+</ul>
+</li>
+</ul>
+<h3 id="释放结果集-MySqlConnect-freeResult-："><a href="#释放结果集-MySqlConnect-freeResult-：" class="headerlink" title="释放结果集 (MySqlConnect::freeResult)："></a>释放结果集 (<code>MySqlConnect::freeResult</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">MySqlConnect::freeResult</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_result) &#123;</span><br><span class="line">        <span class="built_in">mysql_free_result</span>(m_result);</span><br><span class="line">        m_result = <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 释放结果集占用的内存。</li>
+<li>详解：<ul>
+<li>使用<code>mysql_free_result</code>释放结果集占用的内存。</li>
+<li>将<code>m_result</code>置为<code>nullptr</code>，确保不再指向已释放的内存。</li>
+</ul>
+</li>
+</ul>
+<h3 id="连接数据库-MySqlConnect-connect-："><a href="#连接数据库-MySqlConnect-connect-：" class="headerlink" title="连接数据库 (MySqlConnect::connect)："></a>连接数据库 (<code>MySqlConnect::connect</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::connect</span><span class="params">(string user, string passwd, string dbName, string ip, <span class="type">unsigned</span> <span class="type">short</span> port)</span> </span>&#123;</span><br><span class="line">    MYSQL* ptr = <span class="built_in">mysql_real_connect</span>(m_conn, ip.<span class="built_in">c_str</span>(), user.<span class="built_in">c_str</span>(), passwd.<span class="built_in">c_str</span>(), dbName.<span class="built_in">c_str</span>(), port, <span class="literal">nullptr</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> ptr != <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 连接到MySQL数据库。</li>
+<li>详解：<ul>
+<li>使用<code>mysql_real_connect</code>进行实际的数据库连接。</li>
+<li>返回连接是否成功的布尔值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="执行更新操作-MySqlConnect-update-："><a href="#执行更新操作-MySqlConnect-update-：" class="headerlink" title="执行更新操作 (MySqlConnect::update)："></a>执行更新操作 (<code>MySqlConnect::update</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::update</span><span class="params">(string sql)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">mysql_query</span>(m_conn, sql.<span class="built_in">c_str</span>())) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 执行更新操作（插入、更新、删除等）的SQL语句。</li>
+<li>详解：<ul>
+<li>使用<code>mysql_query</code>执行SQL语句。</li>
+<li>返回执行是否成功的布尔值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="执行查询操作-MySqlConnect-query-："><a href="#执行查询操作-MySqlConnect-query-：" class="headerlink" title="执行查询操作 (MySqlConnect::query)："></a>执行查询操作 (<code>MySqlConnect::query</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::query</span><span class="params">(string sql)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">freeResult</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">mysql_query</span>(m_conn, sql.<span class="built_in">c_str</span>())) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    m_result = <span class="built_in">mysql_store_result</span>(m_conn);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 执行查询操作的SQL语句。</li>
+<li>详解：<ul>
+<li>在执行查询之前通过<code>freeResult</code>释放之前的结果集。</li>
+<li>使用<code>mysql_query</code>执行SQL语句。</li>
+<li>使用<code>mysql_store_result</code>将查询结果存储在<code>m_result</code>中。</li>
+<li>返回执行是否成功的布尔值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="遍历查询结果-MySqlConnect-next-："><a href="#遍历查询结果-MySqlConnect-next-：" class="headerlink" title="遍历查询结果 (MySqlConnect::next)："></a>遍历查询结果 (<code>MySqlConnect::next</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_result != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        m_row = <span class="built_in">mysql_fetch_row</span>(m_result);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 移动到结果集中的下一行。</li>
+<li>详解：<ul>
+<li>使用<code>mysql_fetch_row</code>获取结果集中的下一行数据。</li>
+<li>返回是否成功移动到下一行的布尔值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="获取结果集中的字段值-MySqlConnect-value-："><a href="#获取结果集中的字段值-MySqlConnect-value-：" class="headerlink" title="获取结果集中的字段值 (MySqlConnect::value)："></a>获取结果集中的字段值 (<code>MySqlConnect::value</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">string <span class="title">MySqlConnect::value</span><span class="params">(<span class="type">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> row_num = <span class="built_in">mysql_num_fields</span>(m_result);</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= row_num || index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">string</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">char</span>* val = m_row[index];</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length = <span class="built_in">mysql_fetch_lengths</span>(m_result)[index];</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">string</span>(val, length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 获取当前行中指定列的值。</li>
+<li>详解：<ul>
+<li>使用<code>mysql_num_fields</code>获取结果集中的列数。</li>
+<li>如果指定的列索引超出范围，返回空字符串。</li>
+<li>使用<code>mysql_fetch_lengths</code>获取列的长度。</li>
+<li>返回当前行中指定列的字符串值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="事务操作-MySqlConnect-transaction-MySqlConnect-commit-MySqlConnect-rollback-："><a href="#事务操作-MySqlConnect-transaction-MySqlConnect-commit-MySqlConnect-rollback-：" class="headerlink" title="事务操作 (MySqlConnect::transaction, MySqlConnect::commit, MySqlConnect::rollback)："></a>事务操作 (<code>MySqlConnect::transaction</code>, <code>MySqlConnect::commit</code>, <code>MySqlConnect::rollback</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::transaction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">mysql_autocommit</span>(m_conn, <span class="literal">false</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::commit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">mysql_commit</span>(m_conn);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::rollback</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">mysql_rollback</span>(m_conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 执行事务操作（开启事务、提交、回滚）。</li>
+<li>详解：<ul>
+<li><code>transaction</code>方法用于开启事务，关闭自动提交。</li>
+<li><code>commit</code>方法用于提交事务。</li>
+<li><code>rollback</code>方法用于回滚事务。</li>
+<li>返回执行是否成功的布尔值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="MySQLConnect-h"><a href="#MySQLConnect-h" class="headerlink" title="MySQLConnect.h"></a>MySQLConnect.h</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> MYSQLCONNECT_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MYSQLCONNECT_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mysql.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MySqlConnect</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="comment">// 什么时候调用释放结果集</span></span><br><span class="line">	<span class="comment">//1, 析构函数 2，可能会对数据库进行多次查询，每次查询一次都会得到结果集，查询是清空掉上次的结果集</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">freeResult</span><span class="params">()</span></span>; <span class="comment">// 释放结果集</span></span><br><span class="line">	MYSQL* m_conn = <span class="literal">nullptr</span>; <span class="comment">// 保存 MySQL 初始化的私有成员</span></span><br><span class="line">	MYSQL_RES* m_result = <span class="literal">nullptr</span>; <span class="comment">// 报错结果集</span></span><br><span class="line">	MYSQL_ROW m_row = <span class="literal">nullptr</span>; <span class="comment">// 保存着当前字段的所有列的数值</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">// 初始化数据库连接</span></span><br><span class="line">	<span class="built_in">MySqlConnect</span>();</span><br><span class="line">	<span class="comment">// 释放数据库连接</span></span><br><span class="line">	~<span class="built_in">MySqlConnect</span>();</span><br><span class="line">	<span class="comment">// 连接数据库，使用默认端口可省略端口书写</span></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">connect</span><span class="params">(string user, string passwd,string dbName,string ip,<span class="type">unsigned</span> <span class="type">short</span> port = <span class="number">3306</span> )</span></span>;</span><br><span class="line">	<span class="comment">// 更新数据库 (插入，更新，删除)，传递字符串</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">update</span><span class="params">(string sql)</span></span>;</span><br><span class="line">	<span class="comment">// 查询数据库，单词 query: 查询</span></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">query</span><span class="params">(string sql)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 遍历查询得到的结果集，每调一次，从结果集中取出一条数据</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">next</span><span class="params">()</span></span>; </span><br><span class="line">	<span class="comment">// 得到结果集中的字段值，取记录里面字段方法</span></span><br><span class="line">	<span class="function">string <span class="title">value</span><span class="params">(<span class="type">int</span> index)</span></span>; </span><br><span class="line">	<span class="comment">// 事务操作，关闭自动提交</span></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">transaction</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 提交事务</span></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">commit</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 事务回滚；</span></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">rollback</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// !MYSQLCONNECT_H</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MySQLConnect-cpp"><a href="#MySQLConnect-cpp" class="headerlink" title="MySQLConnect.cpp"></a>MySQLConnect.cpp</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;MySQLConnect.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MySqlConnect::freeResult</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (m_result)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">mysql_free_result</span>(m_result);</span><br><span class="line">		m_result = <span class="literal">nullptr</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MySqlConnect::<span class="built_in">MySqlConnect</span>()</span><br><span class="line">&#123;</span><br><span class="line">	m_conn = <span class="built_in">mysql_init</span>(<span class="literal">nullptr</span>);</span><br><span class="line">	<span class="built_in">mysql_set_character_set</span>(m_conn, <span class="string">&quot;utf8&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MySqlConnect::~<span class="built_in">MySqlConnect</span>()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (m_conn != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">mysql_close</span>(m_conn);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">freeResult</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::connect</span><span class="params">(string user, string passwd, string dbName, string ip, <span class="type">unsigned</span> <span class="type">short</span> port)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//ip 传入为 string，使用.str 将 ip 转为 char * 类型</span></span><br><span class="line">	MYSQL* ptr = <span class="built_in">mysql_real_connect</span>(m_conn, ip.<span class="built_in">c_str</span>(), user.<span class="built_in">c_str</span>(), passwd.<span class="built_in">c_str</span>(), dbName.<span class="built_in">c_str</span>(), port, <span class="literal">nullptr</span>, <span class="number">0</span>);</span><br><span class="line">	<span class="comment">// 连接成功返回 true</span></span><br><span class="line">	<span class="comment">// 如果连接成功返回 TRUE，失败返回 FALSE</span></span><br><span class="line">	<span class="keyword">return</span> ptr!=<span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::update</span><span class="params">(string sql)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//query 执行成功返回 0</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">mysql_query</span>(m_conn, sql.<span class="built_in">c_str</span>()))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span></span></span><br><span class="line"><span class="function"><span class="title">MySqlConnect::query</span><span class="params">(string sql)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">freeResult</span>();</span><br><span class="line">	<span class="comment">//query 执行成功返回 0</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">mysql_query</span>(m_conn, sql.<span class="built_in">c_str</span>()))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;;</span><br><span class="line">	m_result = <span class="built_in">mysql_store_result</span>(m_conn);</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::next</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// 如果结果集为空则没有必要遍历</span></span><br><span class="line">	<span class="keyword">if</span> (m_result != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 保存着当前字段的所有列的数值</span></span><br><span class="line">		m_row = <span class="built_in">mysql_fetch_row</span>(m_result);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">string <span class="title">MySqlConnect::value</span><span class="params">(<span class="type">int</span> index)</span></span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">	<span class="comment">// 表示列的数量</span></span><br><span class="line">	<span class="type">int</span> row_num = <span class="built_in">mysql_num_fields</span>(m_result); <span class="comment">// 函数得到结果集中的列数</span></span><br><span class="line">	<span class="comment">// 如果查询的的 index 列大于总列，或小于 0，是错误的</span></span><br><span class="line">	<span class="keyword">if</span> (index &gt;= row_num || index &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">string</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">char</span>* val = m_row[index]; <span class="comment">// 若为二进制数据，中间是有 &quot;\0&quot; 的</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> length = <span class="built_in">mysql_fetch_lengths</span>(m_result)[index];</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">string</span>(val,length); <span class="comment">// 传入 length 就不会以 &quot;\0&quot; 为结束符，而是通过长度把对应的字符转换为 string 类型</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::transaction</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">mysql_autocommit</span>(m_conn,<span class="literal">false</span>); <span class="comment">// 函数返回值本身就是 bool 类型</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::commit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">mysql_commit</span>(m_conn);<span class="comment">// 提交</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">MySqlConnect::rollback</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">mysql_rollback</span>(m_conn);<span class="comment">//bool 类型，函数成功返回 TRUE，失败返回 FALSE</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据库连接池：包含封装MySQL-API"><a href="#数据库连接池：包含封装MySQL-API" class="headerlink" title="数据库连接池：包含封装MySQL API"></a>数据库连接池：包含封装MySQL API</h2><h3 id="构造函数-ConnectionPool-ConnectionPool-："><a href="#构造函数-ConnectionPool-ConnectionPool-：" class="headerlink" title="构造函数 (ConnectionPool::ConnectionPool)："></a>构造函数 (<code>ConnectionPool::ConnectionPool</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ConnectionPool::<span class="built_in">ConnectionPool</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">parseJsonFile</span>()) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;数据库连接失败&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; m_minSize; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (m_connectionQ.<span class="built_in">size</span>() &lt; m_maxSize) &#123;</span><br><span class="line">            MySqlConnect* conn = <span class="keyword">new</span> MySqlConnect;</span><br><span class="line">            conn-&gt;<span class="built_in">connect</span>(m_user, m_passwd, m_dbName, m_ip, m_port);</span><br><span class="line">            m_connectionQ.<span class="built_in">push</span>(conn);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;当前连接数量已超过允许的最大连接数&quot;</span> &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">thread <span class="title">producer</span><span class="params">(&amp;ConnectionPool::produceConnection, <span class="keyword">this</span>)</span></span>;</span><br><span class="line">    <span class="function">thread <span class="title">recycler</span><span class="params">(&amp;ConnectionPool::recycleConnection, <span class="keyword">this</span>)</span></span>;</span><br><span class="line">    producer.<span class="built_in">detach</span>();</span><br><span class="line">    recycler.<span class="built_in">detach</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 构造函数，初始化连接池。</li>
+<li>详解：<ul>
+<li>调用<code>parseJsonFile</code>加载配置信息。</li>
+<li>初始化连接池中的连接，保证达到最小连接数。</li>
+<li>创建两个线程，一个用于生成新连接(<code>produceConnection</code>)，一个用于回收连接(<code>recycleConnection</code>)。</li>
+<li>将生成连接线程和回收连接线程分离。</li>
+</ul>
+</li>
+</ul>
+<h3 id="析构函数-ConnectionPool-ConnectionPool-："><a href="#析构函数-ConnectionPool-ConnectionPool-：" class="headerlink" title="析构函数 (ConnectionPool::~ConnectionPool)："></a>析构函数 (<code>ConnectionPool::~ConnectionPool</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ConnectionPool::~<span class="built_in">ConnectionPool</span>() &#123;</span><br><span class="line">    <span class="keyword">while</span> (!m_connectionQ.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        MySqlConnect* conn = m_connectionQ.<span class="built_in">front</span>();</span><br><span class="line">        m_connectionQ.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">delete</span> conn;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 析构函数，释放连接池中的连接。</li>
+<li>详解：<ul>
+<li>循环弹出连接队列中的连接，并释放内存。</li>
+</ul>
+</li>
+</ul>
+<h3 id="解析JSON文件-ConnectionPool-parseJsonFile-："><a href="#解析JSON文件-ConnectionPool-parseJsonFile-：" class="headerlink" title="解析JSON文件 (ConnectionPool::parseJsonFile)："></a>解析JSON文件 (<code>ConnectionPool::parseJsonFile</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">ConnectionPool::parseJsonFile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="function">ifstream <span class="title">ifs</span><span class="params">(<span class="string">&quot;dbconf.json&quot;</span>)</span></span>;</span><br><span class="line">        Reader rd;</span><br><span class="line">        Value root;</span><br><span class="line">        rd.<span class="built_in">parse</span>(ifs, root);</span><br><span class="line">        <span class="keyword">if</span> (root.<span class="built_in">isObject</span>()) &#123;</span><br><span class="line">            m_ip = root[<span class="string">&quot;ip&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_port = root[<span class="string">&quot;port&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_user = root[<span class="string">&quot;userName&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_passwd = root[<span class="string">&quot;password&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_dbName = root[<span class="string">&quot;dbName&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_minSize = root[<span class="string">&quot;minSize&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_maxSize = root[<span class="string">&quot;maxSize&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_maxIdleTime = root[<span class="string">&quot;maxIdleTime&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_timeout = root[<span class="string">&quot;timeout&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span>(<span class="string">&quot;读取连接数据库json失败！&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125; <span class="built_in">catch</span> (exception&amp; e) &#123;</span><br><span class="line">        cout &lt;&lt; e.<span class="built_in">what</span>() &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 解析JSON配置文件。</li>
+<li>详解：<ul>
+<li>打开<code>dbconf.json</code>文件，使用<code>Reader</code>解析JSON。</li>
+<li>从JSON中提取数据库连接的相关信息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="生产连接-ConnectionPool-produceConnection-："><a href="#生产连接-ConnectionPool-produceConnection-：" class="headerlink" title="生产连接 (ConnectionPool::produceConnection)："></a>生产连接 (<code>ConnectionPool::produceConnection</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::produceConnection</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="function">unique_lock&lt;mutex&gt; <span class="title">locker</span><span class="params">(m_mutexQ)</span></span>;</span><br><span class="line">        <span class="keyword">while</span> (m_connectionQ.<span class="built_in">size</span>() &gt;= m_minSize) &#123;</span><br><span class="line">            m_cond.<span class="built_in">wait</span>(locker);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">addConnection</span>();</span><br><span class="line">        m_cond.<span class="built_in">notify_all</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 生成新的数据库连接。</li>
+<li>详解：<ul>
+<li>在连接池连接数不足时，生成新的数据库连接。</li>
+<li>使用<code>addConnection</code>添加连接到连接池。</li>
+<li>唤醒等待的消费者。</li>
+</ul>
+</li>
+</ul>
+<h3 id="回收连接-ConnectionPool-recycleConnection-："><a href="#回收连接-ConnectionPool-recycleConnection-：" class="headerlink" title="回收连接 (ConnectionPool::recycleConnection)："></a>回收连接 (<code>ConnectionPool::recycleConnection</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::recycleConnection</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">500</span>));</span><br><span class="line">        <span class="function">lock_guard&lt;mutex&gt; <span class="title">locker</span><span class="params">(m_mutexQ)</span></span>;</span><br><span class="line">        <span class="keyword">while</span> (m_connectionQ.<span class="built_in">size</span>() &gt; m_minSize) &#123;</span><br><span class="line">            MySqlConnect* conn = m_connectionQ.<span class="built_in">front</span>();</span><br><span class="line">            <span class="keyword">if</span> (conn-&gt;<span class="built_in">getAliveTime</span>() &gt;= m_maxIdleTime) &#123;</span><br><span class="line">                m_connectionQ.<span class="built_in">pop</span>();</span><br><span class="line">                <span class="keyword">delete</span> conn;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 回收空闲连接。</li>
+<li>详解：<ul>
+<li>每隔一定时间检查连接池中的连接，将超过最大空闲时间的连接释放。</li>
+<li>通过<code>sleep_for</code>休息一段时间。</li>
+</ul>
+</li>
+</ul>
+<h3 id="添加连接-ConnectionPool-addConnection-："><a href="#添加连接-ConnectionPool-addConnection-：" class="headerlink" title="添加连接 (ConnectionPool::addConnection)："></a>添加连接 (<code>ConnectionPool::addConnection</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::addConnection</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    MySqlConnect* conn = <span class="keyword">new</span> MySqlConnect;</span><br><span class="line">    conn-&gt;<span class="built_in">connect</span>(m_user, m_passwd, m_dbName, m_ip, m_port);</span><br><span class="line">    conn-&gt;<span class="built_in">refreshAliveTime</span>();</span><br><span class="line">    m_connectionQ.<span class="built_in">push</span>(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 添加新连接到连接池。</li>
+<li>详解：<ul>
+<li>创建新的<code>MySqlConnect</code>对象，连接数据库。</li>
+<li>刷新连接的起始空闲时间。</li>
+<li>将连接添加到连接池队列中。</li>
+</ul>
+</li>
+</ul>
+<h3 id="获取连接-ConnectionPool-getConnection-："><a href="#获取连接-ConnectionPool-getConnection-：" class="headerlink" title="获取连接 (ConnectionPool::getConnection)："></a>获取连接 (<code>ConnectionPool::getConnection</code>)：</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">shared_ptr&lt;MySqlConnect&gt; <span class="title">ConnectionPool::getConnection</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">unique_lock&lt;mutex&gt; <span class="title">locker</span><span class="params">(m_mutexQ)</span></span>;</span><br><span class="line">    <span class="keyword">while</span> (m_connectionQ.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cv_status::timeout == m_cond.<span class="built_in">wait_for</span>(locker, chrono::<span class="built_in">milliseconds</span>(m_timeout))) &#123;</span><br><span class="line">            <span class="keyword">if</span> (m_connectionQ.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">shared_ptr&lt;MySqlConnect&gt; <span class="title">connptr</span><span class="params">(m_connectionQ.front(), [<span class="keyword">this</span>](MySqlConnect* conn) &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">        lock_guard&lt;mutex&gt; locker(m_mutexQ);</span></span></span><br><span class="line"><span class="params"><span class="function">        conn-&gt;refreshAliveTime();</span></span></span><br><span class="line"><span class="params"><span class="function">        m_connectionQ.push(conn);</span></span></span><br><span class="line"><span class="params"><span class="function">    &#125;)</span></span>;</span><br><span class="line">    m_connectionQ.<span class="built_in">pop</span>();</span><br><span class="line">    m_cond.<span class="built_in">notify_all</span>();</span><br><span class="line">    <span class="keyword">return</span> connptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>功能：</strong> 获取数据库连接。</li>
+<li>详解：<ul>
+<li>使用<code>unique_lock</code>上锁，保证线程安全。</li>
+<li>当连接池为空时，等待可用连接或超时。</li>
+<li>获取连接并返回其<code>shared_ptr</code>，使用lambda表达式在连接释放时刷新连接的起始空闲时间。</li>
+<li>唤醒等待的生产者线程。</li>
+</ul>
+</li>
+</ul>
+<h3 id="ConnectionPool-h"><a href="#ConnectionPool-h" class="headerlink" title="ConnectionPool.h"></a>ConnectionPool.h</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="comment">// 连接池头文件</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> CONNECTIONPOOL_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CONNECTIONPOOL_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;MySQLConnect.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span> <span class="comment">//C++ 独占的互斥锁</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;condition_variable&gt;</span> <span class="comment">// 引用 C++ 条件变量</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="comment">// 连接池</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ConnectionPool</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">// 静态实例，通过静态方法获得唯一的单例对象</span></span><br><span class="line">	<span class="function"><span class="type">static</span> ConnectionPool* <span class="title">getConnectPool</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 删除掉构造函数</span></span><br><span class="line">	<span class="built_in">ConnectionPool</span>(<span class="type">const</span> ConnectionPool&amp; obj) = <span class="keyword">delete</span>;</span><br><span class="line">	<span class="comment">// 移动赋值函数重载，删除掉，防止对象的复制</span></span><br><span class="line">	ConnectionPool&amp; <span class="keyword">operator</span> =(<span class="type">const</span> ConnectionPool&amp; obj)= <span class="keyword">delete</span>;</span><br><span class="line">	<span class="comment">// 获取连接时返回一个可用的连接，返回共享的智能指针</span></span><br><span class="line">	<span class="function">shared_ptr&lt;MySqlConnect&gt; <span class="title">getConnection</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 析构函数</span></span><br><span class="line">	~<span class="built_in">ConnectionPool</span>();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="built_in">ConnectionPool</span>();</span><br><span class="line">	<span class="comment">// 解析 JSON 文件的函数</span></span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">paraseJsonFile</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 用来生产数据库连接</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">produceConnection</span><span class="params">()</span></span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 用来销毁数据库连接 回收数据库连接</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">recycleConnection</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 添加连接</span></span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">addConnection</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 数据库相关信息</span></span><br><span class="line">	<span class="comment">// 通过加载配置文件 Json，访问用户指定的数据库</span></span><br><span class="line">	<span class="comment">// 数据库 ip</span></span><br><span class="line">	string m_ip; </span><br><span class="line">	<span class="comment">// 数据库用户</span></span><br><span class="line">	string m_user;</span><br><span class="line">	<span class="comment">// 数据库密码</span></span><br><span class="line">	string m_passwd;</span><br><span class="line">	<span class="comment">// 数据库名称</span></span><br><span class="line">	string m_dbName;</span><br><span class="line">	<span class="comment">// 数据库访问端口</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> m_port;</span><br><span class="line">	<span class="comment">// 设置连接上限</span></span><br><span class="line">	<span class="type">int</span> m_minSize;</span><br><span class="line">	<span class="comment">// 设置连接的上限</span></span><br><span class="line">	<span class="type">int</span> m_maxSize;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 设置线程等待最大时长，单位毫秒</span></span><br><span class="line">	<span class="comment">// 超时时长</span></span><br><span class="line">	<span class="type">int</span> m_timeout; </span><br><span class="line">	<span class="comment">// 最大空闲时长单位毫秒</span></span><br><span class="line">	<span class="type">int</span> m_maxIdleTime;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 存储若干数据库连接队列</span></span><br><span class="line">	queue&lt;MySqlConnect*&gt; m_connectionQ;</span><br><span class="line">	<span class="comment">// 设置互斥锁</span></span><br><span class="line">	mutex m_mutexQ;</span><br><span class="line">	<span class="comment">// 设置条件变量</span></span><br><span class="line">	condition_variable m_cond;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// !CONNECTIONPOOL_H</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="ConnectionPool-cpp"><a href="#ConnectionPool-cpp" class="headerlink" title="ConnectionPool.cpp"></a>ConnectionPool.cpp</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;ConnectionPool.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;json/json.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mysql.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span> <span class="comment">// 加载多线程</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> Json;</span><br><span class="line"><span class="comment">// 静态函数</span></span><br><span class="line"><span class="function">ConnectionPool* <span class="title">ConnectionPool::getConnectPool</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> ConnectionPool pool; <span class="comment">// 静态局部对象，不管后面调用多少次，得到的都是同一块内存地址</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &amp;pool;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 打开数据库信息文件，并判断是否读取到相关信息</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">ConnectionPool::paraseJsonFile</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function">ifstream <span class="title">ifs</span><span class="params">(<span class="string">&quot;dbconf.json&quot;</span>)</span></span>;</span><br><span class="line">        Reader rd;</span><br><span class="line">        Value root;</span><br><span class="line">        rd.<span class="built_in">parse</span>(ifs, root);</span><br><span class="line">        <span class="keyword">if</span> (root.<span class="built_in">isObject</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            m_ip = root[<span class="string">&quot;ip&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_port = root[<span class="string">&quot;port&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_user = root[<span class="string">&quot;userName&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_passwd = root[<span class="string">&quot;password&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_dbName = root[<span class="string">&quot;dbName&quot;</span>].<span class="built_in">asString</span>();</span><br><span class="line">            m_minSize = root[<span class="string">&quot;minSize&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_maxSize = root[<span class="string">&quot;maxSize&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_maxIdleTime = root[<span class="string">&quot;maxIdlTime&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            m_timeout = root[<span class="string">&quot;timeout&quot;</span>].<span class="built_in">asInt</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span>(<span class="string">&quot;读取连接数据库json失败！&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">catch</span> (exception&amp; e)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; e.<span class="built_in">what</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 子线程对应的任务函数，生成新的可用连接</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::produceConnection</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 判断当前连接池是否够用</span></span><br><span class="line">        <span class="comment">//uniuqe 模版类，mutex 互斥锁类型 locker 对象管理</span></span><br><span class="line">        <span class="function">unique_lock&lt;mutex&gt; <span class="title">locker</span><span class="params">(m_mutexQ)</span></span>;</span><br><span class="line">        <span class="keyword">while</span> (m_connectionQ.<span class="built_in">size</span>() &gt;= m_minSize)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 阻塞条件变量</span></span><br><span class="line">            m_cond.<span class="built_in">wait</span>(locker);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 生产一个数据库连接</span></span><br><span class="line">        <span class="built_in">addConnection</span>();</span><br><span class="line">        <span class="comment">// 调用对应的唤醒函数，唤醒的所有消费者</span></span><br><span class="line">        m_cond.<span class="built_in">notify_all</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当空闲的链接数量过多</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::recycleConnection</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 休息一段时间，每隔一秒种，进行一次检测</span></span><br><span class="line">        this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(<span class="number">500</span>));</span><br><span class="line">        <span class="comment">// 进行加锁</span></span><br><span class="line">        lock_guard&lt;mutex&gt;<span class="built_in">locker</span>(m_mutexQ);</span><br><span class="line">        <span class="comment">// 当大于最小连接数</span></span><br><span class="line">        <span class="keyword">while</span> (m_connectionQ.<span class="built_in">size</span>() &gt; m_minSize)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 先进后出</span></span><br><span class="line">            MySqlConnect* conn = m_connectionQ.<span class="built_in">front</span>(); <span class="comment">// 取出队头元素</span></span><br><span class="line">            <span class="comment">// 判断队头元素存活时长是不是大于指定的最长存活时长</span></span><br><span class="line">            <span class="keyword">if</span> (conn-&gt;<span class="built_in">getAliveTime</span>() &gt;= m_maxIdleTime)</span><br><span class="line">            &#123;</span><br><span class="line">                m_connectionQ.<span class="built_in">pop</span>(); <span class="comment">// 将队头的链接销毁</span></span><br><span class="line">                <span class="keyword">delete</span> conn;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">ConnectionPool::addConnection</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    MySqlConnect* conn = <span class="keyword">new</span> MySqlConnect;</span><br><span class="line">    conn-&gt;<span class="built_in">connect</span>(m_user, m_passwd, m_dbName, m_ip, m_port);</span><br><span class="line">    <span class="comment">// 数据库连接之后就开始记录时间错</span></span><br><span class="line">    conn-&gt;<span class="built_in">refreshAliveTime</span>();</span><br><span class="line">    m_connectionQ.<span class="built_in">push</span>(conn);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">shared_ptr&lt;MySqlConnect&gt; <span class="title">ConnectionPool::getConnection</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 封装互斥锁，保证线程安全</span></span><br><span class="line">    <span class="function">unique_lock&lt;mutex&gt; <span class="title">locker</span><span class="params">(m_mutexQ)</span></span>;</span><br><span class="line">    <span class="comment">// 检查是否有可用的连接，如果没有阻塞一会</span></span><br><span class="line">    <span class="keyword">while</span> (m_connectionQ.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (cv_status::timeout == m_cond.<span class="built_in">wait_for</span>(locker, chrono::<span class="built_in">milliseconds</span>(m_timeout)))</span><br><span class="line"> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (m_connectionQ.<span class="built_in">empty</span>())</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">shared_ptr&lt;MySqlConnect&gt; <span class="title">connptr</span><span class="params">(m_connectionQ.front(), [<span class="keyword">this</span>](MySqlConnect* conn) </span></span></span><br><span class="line"><span class="params"><span class="function">        &#123;</span></span></span><br><span class="line"><span class="params"><span class="function">            <span class="comment">// 加锁</span></span></span></span><br><span class="line"><span class="params"><span class="function">            lock_guard&lt;mutex&gt; locker(m_mutexQ);</span></span></span><br><span class="line"><span class="params"><span class="function">           <span class="comment">// 刷新起始空闲时间</span></span></span></span><br><span class="line"><span class="params"><span class="function">            conn-&gt;refreshAliveTime();   </span></span></span><br><span class="line"><span class="params"><span class="function">            m_connectionQ.push(conn);</span></span></span><br><span class="line"><span class="params"><span class="function">        &#125;)</span></span>;</span><br><span class="line">    m_connectionQ.<span class="built_in">pop</span>();</span><br><span class="line"></span><br><span class="line">    m_cond.<span class="built_in">notify_all</span>();<span class="comment">// 唤醒生产者</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> connptr;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 线程池析构函数</span></span><br><span class="line">ConnectionPool::~<span class="built_in">ConnectionPool</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (m_connectionQ.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        MySqlConnect* conn = m_connectionQ.<span class="built_in">front</span>();</span><br><span class="line">        m_connectionQ.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">delete</span> conn;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 构造函数的实现</span></span><br><span class="line">ConnectionPool::<span class="built_in">ConnectionPool</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 加载配置文件</span></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">paraseJsonFile</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;数据库连接失败&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 初始化配置连接数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; m_minSize; ++i)  <span class="comment">// 连接数</span></span><br><span class="line">    &#123; </span><br><span class="line">        <span class="comment">// 如果队列总数小于最大数量</span></span><br><span class="line">        <span class="keyword">if</span> (m_connectionQ.<span class="built_in">size</span>() &lt; m_maxSize)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 实例化对象</span></span><br><span class="line">            MySqlConnect* conn = <span class="keyword">new</span> MySqlConnect;</span><br><span class="line">            <span class="comment">// 链接数据库</span></span><br><span class="line">            conn-&gt;<span class="built_in">connect</span>(m_user, m_passwd, m_dbName, m_ip, m_port);</span><br><span class="line"></span><br><span class="line">            m_connectionQ.<span class="built_in">push</span>(conn);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 当连接总数大于允许连接的最大数量</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;当前连接数量以超过允许连接的总数&quot;</span> &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 当前实例对象 this 指针，单例模式，</span></span><br><span class="line">    <span class="function">thread <span class="title">producer</span><span class="params">(&amp;ConnectionPool::produceConnection,<span class="keyword">this</span>)</span></span>; <span class="comment">// 生成线程池的连接</span></span><br><span class="line">    <span class="function">thread <span class="title">recycler</span><span class="params">(&amp;ConnectionPool::recycleConnection,<span class="keyword">this</span>)</span></span>; <span class="comment">// 有没有需要销毁的连接</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    将 producer 线程与当前线程分离，使得它们可以独立执行，</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="comment">// 主线程和子线程分离</span></span><br><span class="line">    producer.<span class="built_in">detach</span>();</span><br><span class="line">    recycler.<span class="built_in">detach</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                从零实现WebServer之数据库连接池类
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2023/12/29/从零实现WebServer之数据库连接池类/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Mzy</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2023-12-29 15:19</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2023/12/29/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E6%97%A5%E5%BF%97%E7%B1%BB/"
+                                   title="从零实现WebServer之日志类"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">从零实现WebServer之日志类</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <div id="waline-comment"></div>
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+        >
+          window.KeepCommentPlugin.walineOptions = JSON.parse('{}'.replace(/&#34;/g, '"'))
+
+          window.KeepCommentPlugin.initWaline = () => {
+            if (window?.Waline) {
+              window.KeepCommentPlugin.walineOptions.el = '#waline-comment'
+              window.KeepCommentPlugin.walineOptions.comment = '.post-comments-count'
+              window.KeepCommentPlugin.walineOptions.serverURL = 'https://waline-test-liart.vercel.app'
+              window.KeepCommentPlugin.walineOptions.lang = 'zh-CN' || 'zh-CN'
+              window.KeepCommentPlugin.walineOptions.reaction = 'true' === 'true'
+              window.Waline.init(window.KeepCommentPlugin.walineOptions)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initWaline()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initWaline()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之数据库连接池类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">数据库连接池类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.1.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%AE%9E%E4%BE%8B-get-instance"><span class="nav-number">1.1.2.</span> <span class="nav-text">获取实例 get_instance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-connection-pool"><span class="nav-number">1.1.3.</span> <span class="nav-text">构造函数 connection_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-connection-pool"><span class="nav-number">1.1.4.</span> <span class="nav-text">析构函数 ~connection_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%9E%E6%8E%A5%E6%B1%A0-init"><span class="nav-number">1.1.5.</span> <span class="nav-text">初始化连接池 init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%8F%AF%E7%94%A8%E8%BF%9E%E6%8E%A5-get-connection"><span class="nav-number">1.1.6.</span> <span class="nav-text">获取可用连接 get_connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E8%BF%9E%E6%8E%A5-release-connection"><span class="nav-number">1.1.7.</span> <span class="nav-text">释放连接 release_connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E7%A9%BA%E9%97%B2%E8%BF%9E%E6%8E%A5%E6%95%B0-get-freeconn"><span class="nav-number">1.1.8.</span> <span class="nav-text">当前空闲连接数 get_freeconn</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%8E%B7%E5%8F%96%E5%8D%B3%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">资源获取即初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5-connectionRAII"><span class="nav-number">1.2.1.</span> <span class="nav-text">获取连接 connectionRAII</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E8%BF%9E%E6%8E%A5-connectionRAII"><span class="nav-number">1.2.2.</span> <span class="nav-text">释放连接 ~connectionRAII</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E5%B0%81%E8%A3%85-MySQL-API"><span class="nav-number">1.3.</span> <span class="nav-text">C++ 封装 MySQL API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-MySqlConnect-MySqlConnect-%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数 (MySqlConnect::MySqlConnect)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-MySqlConnect-MySqlConnect-%EF%BC%9A"><span class="nav-number">1.3.2.</span> <span class="nav-text">析构函数 (MySqlConnect::~MySqlConnect)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E7%BB%93%E6%9E%9C%E9%9B%86-MySqlConnect-freeResult-%EF%BC%9A"><span class="nav-number">1.3.3.</span> <span class="nav-text">释放结果集 (MySqlConnect::freeResult)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93-MySqlConnect-connect-%EF%BC%9A"><span class="nav-number">1.3.4.</span> <span class="nav-text">连接数据库 (MySqlConnect::connect)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C-MySqlConnect-update-%EF%BC%9A"><span class="nav-number">1.3.5.</span> <span class="nav-text">执行更新操作 (MySqlConnect::update)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C-MySqlConnect-query-%EF%BC%9A"><span class="nav-number">1.3.6.</span> <span class="nav-text">执行查询操作 (MySqlConnect::query)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C-MySqlConnect-next-%EF%BC%9A"><span class="nav-number">1.3.7.</span> <span class="nav-text">遍历查询结果 (MySqlConnect::next)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E7%BB%93%E6%9E%9C%E9%9B%86%E4%B8%AD%E7%9A%84%E5%AD%97%E6%AE%B5%E5%80%BC-MySqlConnect-value-%EF%BC%9A"><span class="nav-number">1.3.8.</span> <span class="nav-text">获取结果集中的字段值 (MySqlConnect::value)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C-MySqlConnect-transaction-MySqlConnect-commit-MySqlConnect-rollback-%EF%BC%9A"><span class="nav-number">1.3.9.</span> <span class="nav-text">事务操作 (MySqlConnect::transaction, MySqlConnect::commit, MySqlConnect::rollback)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQLConnect-h"><span class="nav-number">1.3.10.</span> <span class="nav-text">MySQLConnect.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQLConnect-cpp"><span class="nav-number">1.3.11.</span> <span class="nav-text">MySQLConnect.cpp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%EF%BC%9A%E5%8C%85%E5%90%AB%E5%B0%81%E8%A3%85MySQL-API"><span class="nav-number">1.4.</span> <span class="nav-text">数据库连接池：包含封装MySQL API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-ConnectionPool-ConnectionPool-%EF%BC%9A"><span class="nav-number">1.4.1.</span> <span class="nav-text">构造函数 (ConnectionPool::ConnectionPool)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-ConnectionPool-ConnectionPool-%EF%BC%9A"><span class="nav-number">1.4.2.</span> <span class="nav-text">析构函数 (ConnectionPool::~ConnectionPool)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90JSON%E6%96%87%E4%BB%B6-ConnectionPool-parseJsonFile-%EF%BC%9A"><span class="nav-number">1.4.3.</span> <span class="nav-text">解析JSON文件 (ConnectionPool::parseJsonFile)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E8%BF%9E%E6%8E%A5-ConnectionPool-produceConnection-%EF%BC%9A"><span class="nav-number">1.4.4.</span> <span class="nav-text">生产连接 (ConnectionPool::produceConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%94%B6%E8%BF%9E%E6%8E%A5-ConnectionPool-recycleConnection-%EF%BC%9A"><span class="nav-number">1.4.5.</span> <span class="nav-text">回收连接 (ConnectionPool::recycleConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%BF%9E%E6%8E%A5-ConnectionPool-addConnection-%EF%BC%9A"><span class="nav-number">1.4.6.</span> <span class="nav-text">添加连接 (ConnectionPool::addConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5-ConnectionPool-getConnection-%EF%BC%9A"><span class="nav-number">1.4.7.</span> <span class="nav-text">获取连接 (ConnectionPool::getConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConnectionPool-h"><span class="nav-number">1.4.8.</span> <span class="nav-text">ConnectionPool.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConnectionPool-cpp"><span class="nav-number">1.4.9.</span> <span class="nav-text">ConnectionPool.cpp</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2022</span>&nbsp;-&nbsp;2023
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Mzy</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+                
+                <div class="deploy-info info-item default">
+                    
+                        本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/deploy-provider/github.png"></span> 提供部署服务
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">54.7k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之数据库连接池类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">数据库连接池类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.1.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%AE%9E%E4%BE%8B-get-instance"><span class="nav-number">1.1.2.</span> <span class="nav-text">获取实例 get_instance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-connection-pool"><span class="nav-number">1.1.3.</span> <span class="nav-text">构造函数 connection_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-connection-pool"><span class="nav-number">1.1.4.</span> <span class="nav-text">析构函数 ~connection_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%9E%E6%8E%A5%E6%B1%A0-init"><span class="nav-number">1.1.5.</span> <span class="nav-text">初始化连接池 init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%8F%AF%E7%94%A8%E8%BF%9E%E6%8E%A5-get-connection"><span class="nav-number">1.1.6.</span> <span class="nav-text">获取可用连接 get_connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E8%BF%9E%E6%8E%A5-release-connection"><span class="nav-number">1.1.7.</span> <span class="nav-text">释放连接 release_connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E7%A9%BA%E9%97%B2%E8%BF%9E%E6%8E%A5%E6%95%B0-get-freeconn"><span class="nav-number">1.1.8.</span> <span class="nav-text">当前空闲连接数 get_freeconn</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%8E%B7%E5%8F%96%E5%8D%B3%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">资源获取即初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5-connectionRAII"><span class="nav-number">1.2.1.</span> <span class="nav-text">获取连接 connectionRAII</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E8%BF%9E%E6%8E%A5-connectionRAII"><span class="nav-number">1.2.2.</span> <span class="nav-text">释放连接 ~connectionRAII</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E5%B0%81%E8%A3%85-MySQL-API"><span class="nav-number">1.3.</span> <span class="nav-text">C++ 封装 MySQL API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-MySqlConnect-MySqlConnect-%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数 (MySqlConnect::MySqlConnect)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-MySqlConnect-MySqlConnect-%EF%BC%9A"><span class="nav-number">1.3.2.</span> <span class="nav-text">析构函数 (MySqlConnect::~MySqlConnect)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8A%E6%94%BE%E7%BB%93%E6%9E%9C%E9%9B%86-MySqlConnect-freeResult-%EF%BC%9A"><span class="nav-number">1.3.3.</span> <span class="nav-text">释放结果集 (MySqlConnect::freeResult)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93-MySqlConnect-connect-%EF%BC%9A"><span class="nav-number">1.3.4.</span> <span class="nav-text">连接数据库 (MySqlConnect::connect)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C-MySqlConnect-update-%EF%BC%9A"><span class="nav-number">1.3.5.</span> <span class="nav-text">执行更新操作 (MySqlConnect::update)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C-MySqlConnect-query-%EF%BC%9A"><span class="nav-number">1.3.6.</span> <span class="nav-text">执行查询操作 (MySqlConnect::query)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C-MySqlConnect-next-%EF%BC%9A"><span class="nav-number">1.3.7.</span> <span class="nav-text">遍历查询结果 (MySqlConnect::next)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E7%BB%93%E6%9E%9C%E9%9B%86%E4%B8%AD%E7%9A%84%E5%AD%97%E6%AE%B5%E5%80%BC-MySqlConnect-value-%EF%BC%9A"><span class="nav-number">1.3.8.</span> <span class="nav-text">获取结果集中的字段值 (MySqlConnect::value)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C-MySqlConnect-transaction-MySqlConnect-commit-MySqlConnect-rollback-%EF%BC%9A"><span class="nav-number">1.3.9.</span> <span class="nav-text">事务操作 (MySqlConnect::transaction, MySqlConnect::commit, MySqlConnect::rollback)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQLConnect-h"><span class="nav-number">1.3.10.</span> <span class="nav-text">MySQLConnect.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQLConnect-cpp"><span class="nav-number">1.3.11.</span> <span class="nav-text">MySQLConnect.cpp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%EF%BC%9A%E5%8C%85%E5%90%AB%E5%B0%81%E8%A3%85MySQL-API"><span class="nav-number">1.4.</span> <span class="nav-text">数据库连接池：包含封装MySQL API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-ConnectionPool-ConnectionPool-%EF%BC%9A"><span class="nav-number">1.4.1.</span> <span class="nav-text">构造函数 (ConnectionPool::ConnectionPool)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-ConnectionPool-ConnectionPool-%EF%BC%9A"><span class="nav-number">1.4.2.</span> <span class="nav-text">析构函数 (ConnectionPool::~ConnectionPool)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90JSON%E6%96%87%E4%BB%B6-ConnectionPool-parseJsonFile-%EF%BC%9A"><span class="nav-number">1.4.3.</span> <span class="nav-text">解析JSON文件 (ConnectionPool::parseJsonFile)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E8%BF%9E%E6%8E%A5-ConnectionPool-produceConnection-%EF%BC%9A"><span class="nav-number">1.4.4.</span> <span class="nav-text">生产连接 (ConnectionPool::produceConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%94%B6%E8%BF%9E%E6%8E%A5-ConnectionPool-recycleConnection-%EF%BC%9A"><span class="nav-number">1.4.5.</span> <span class="nav-text">回收连接 (ConnectionPool::recycleConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%BF%9E%E6%8E%A5-ConnectionPool-addConnection-%EF%BC%9A"><span class="nav-number">1.4.6.</span> <span class="nav-text">添加连接 (ConnectionPool::addConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%BF%9E%E6%8E%A5-ConnectionPool-getConnection-%EF%BC%9A"><span class="nav-number">1.4.7.</span> <span class="nav-text">获取连接 (ConnectionPool::getConnection)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConnectionPool-h"><span class="nav-number">1.4.8.</span> <span class="nav-text">ConnectionPool.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConnectionPool-cpp"><span class="nav-number">1.4.9.</span> <span class="nav-text">ConnectionPool.cpp</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/toggle-theme.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/code-block.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/anime.min.js"></script>
+
+<!-- local-search -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/local-search.js"></script>
+
+
+<!-- lazyload -->
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/post-helper.js"></script>
+
+        <!-- toc -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/toc.js"></script>
+        
+
+        <!-- copyright-info -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/copyright-info.js"></script>
+        
+
+        <!-- share -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/share.js"></script>
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+
+    <!-- photos-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
