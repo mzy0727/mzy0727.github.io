@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="mzy的成长历程">
+    <meta name="author" content="Mzy">
+    
+    <title>
+        
+            从零实现WebServer之日志类 |
+        
+        Mzy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/author.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/brands.min.css">
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"dybil.top","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#00CC33","title":"Mzy's Blog","author":"Mzy","avatar":"/images/author.svg","logo":"/images/author.svg","favicon":"/images/author.svg"},"menu":{"Archives":"/archives","Tags":"/tags","Categories":"/categories","Links":"/links","About":"/about","Photos":"/photos"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"social_contact":{"enable":true,"links":{"github":"https://dybil.top","weixin":"https://dybil.top","qq":"https://dybil.top","weibo":"https://dybil.top","zhihu":"https://dybil.top","twitter":"https://dybil.top","facebook":"https://dybil.top","email":"https://dybil.top"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"category":true,"tag":true,"announcement":null},"post":{"author_badge":{"enable":true,"level_badge":true,"custom_badge":["炼气","筑基","结丹","元婴","化神"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":true,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"waline","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":"https://waline-test-liart.vercel.app","reaction":true,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":true,"provider":"jsdelivr"},"pjax":{"enable":true},"footer":{"since":2022,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","version":"4.0.5"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/author.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Mzy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class=""
+                           href="/"
+                        >首页</a>
+                    </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >归档</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >标签</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >分类</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >友链</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >关于</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/photos"
+                            >相册</a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item flex-center">
+                <a class=""
+                   href="/"
+                >首页</a>
+            </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories"
+                    >分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links"
+                    >友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/photos"
+                    >相册</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        从零实现WebServer之日志类
+                    </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/author.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Mzy</span>
+                                
+                                    <span class="author-badge">Lv4</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2023-12-29 10:37:47</span>
+                <span class="mobile">2023-12-29 10:37</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Fri Dec 29 2023 10:38:23 GMT+0800">2023-12-29 10:38:23</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>4.5k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>19 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h1 id="从零实现WebServer之日志类"><a href="#从零实现WebServer之日志类" class="headerlink" title="从零实现WebServer之日志类"></a>从零实现WebServer之日志类</h1><h2 id="阻塞队列模板类"><a href="#阻塞队列模板类" class="headerlink" title="阻塞队列模板类"></a>阻塞队列模板类</h2><div class="keep-note success"><p>构造函数，初始化队列的最大容量，默认为1000<br>block_queue(int max_size &#x3D; 1000);<br>析构函数，清空队列<br>~block_queue();<br>清空队列<br>void clear();<br>判断队列是否已满<br>bool full();<br>判断队列是否为空<br>bool empty();<br>返回队首元素<br>bool front(T &amp;item);<br>返回队尾元素<br>bool back(T &amp;item);<br>获取队列当前元素个数<br>int get_size();<br>获取队列的最大容量<br>int get_max_size();<br>向队尾添加元素<br>bool push_back(const T &amp;item);<br>从队头弹出元素<br>bool pop(T &amp;item);<br>增加超时处理的pop函数<br>bool pop(T &amp;item, int ms_timeout);</p>
+</div>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> BLOCK_QUEUE_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BLOCK_QUEUE_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;deque&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../locker/locker.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 阻塞队列模板类</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">block_queue</span>&#123;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// block_queue类的构造函数用于初始化实例</span></span><br><span class="line">    <span class="built_in">block_queue</span>(<span class="type">int</span> max_size = <span class="number">1000</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(max_size &lt;= <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        m_max_size = max_size;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">block_queue</span>()&#123;</span><br><span class="line">        <span class="built_in">clear</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// clear 函数通过互斥锁确保了对队列的操作是线程安全的</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">clear</span><span class="params">()</span></span>&#123;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();     <span class="comment">// 加锁，确保在多线程环境中对队列的操作是互斥的</span></span><br><span class="line">        m_deque.<span class="built_in">clear</span>();    <span class="comment">// 清空队列，移除所有元素</span></span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();   <span class="comment">// 解锁，释放互斥锁，允许其他线程对队列进行操作</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">full</span><span class="params">()</span></span>&#123;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        <span class="keyword">if</span>(m_deque.<span class="built_in">size</span>() &gt;= m_max_size)&#123;</span><br><span class="line">            m_mutex.<span class="built_in">unlock</span>();   <span class="comment">// 如果队列已满，解锁互斥锁</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">empty</span><span class="params">()</span></span>&#123;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        <span class="keyword">if</span>(m_deque.<span class="built_in">empty</span>())</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">front</span><span class="params">(T &amp;item)</span></span>&#123;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        <span class="keyword">if</span>(m_deque.<span class="built_in">empty</span>())&#123;</span><br><span class="line">            m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        item = m_deque.<span class="built_in">front</span>();</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">back</span><span class="params">(T &amp;item)</span></span>&#123;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        <span class="keyword">if</span>(m_deque.<span class="built_in">empty</span>())&#123;</span><br><span class="line">            m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        item = m_deque.<span class="built_in">back</span>();</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">get_size</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="type">int</span> temp = <span class="number">0</span>;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        temp = m_deque.<span class="built_in">size</span>();</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">get_max_size</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="type">int</span> temp = <span class="number">0</span>;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        temp = m_max_size;</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">push_back</span><span class="params">(<span class="type">const</span> T &amp;item)</span></span>&#123;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();     <span class="comment">// 加锁，确保在多线程环境中对队列的操作是互斥的</span></span><br><span class="line">        <span class="keyword">if</span>(m_deque.<span class="built_in">size</span>() &gt;= m_max_size)&#123;   <span class="comment">// 判断队列大小是否达到最大允许大小</span></span><br><span class="line">            m_cond.<span class="built_in">broadcast</span>();     <span class="comment">// 唤醒所有在条件变量上等待的线程</span></span><br><span class="line">            m_mutex.<span class="built_in">unlock</span>();   <span class="comment">// 解锁互斥锁</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;       <span class="comment">// 返回false，表示队列已满，无法添加元素</span></span><br><span class="line">        &#125;</span><br><span class="line">        m_deque.<span class="built_in">push_back</span>(item);    <span class="comment">// 向队列尾部添加元素</span></span><br><span class="line">        m_cond.<span class="built_in">broadcast</span>(); <span class="comment">// 唤醒所有在条件变量上等待的线程</span></span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();   <span class="comment">// 解锁互斥锁</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">pop</span><span class="params">(T &amp;item)</span></span>&#123;</span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        <span class="keyword">while</span>(m_deque.<span class="built_in">empty</span>())&#123;     <span class="comment">// 使用循环等待，直到队列非空</span></span><br><span class="line">            <span class="keyword">if</span>(!m_cond.<span class="built_in">wait</span>(m_mutex.<span class="built_in">get</span>()))&#123;    <span class="comment">// 如果条件变量等待失败</span></span><br><span class="line">                m_mutex.<span class="built_in">unlock</span>();   <span class="comment">// 解锁互斥锁</span></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        item = m_deque.<span class="built_in">front</span>();</span><br><span class="line">        m_deque.<span class="built_in">pop_front</span>();</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 增加超时处理</span></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">pop</span><span class="params">(T &amp;item, <span class="type">int</span> ms_timeout)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">struct</span> <span class="title class_">timespec</span> t = &#123;<span class="number">0</span>, <span class="number">0</span>&#125;;  <span class="comment">// s and ns</span></span><br><span class="line">        <span class="keyword">struct</span> <span class="title class_">timeval</span> now = &#123;<span class="number">0</span>, <span class="number">0</span>&#125;; <span class="comment">// s and ms</span></span><br><span class="line">        <span class="built_in">gettimeofday</span>(&amp;now, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">        m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">        <span class="keyword">if</span> (m_size &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            t.tv_sec = now.tv_sec + ms_timeout / <span class="number">1000</span>;</span><br><span class="line">            t.tv_nsec = (ms_timeout % <span class="number">1000</span>) * <span class="number">1000</span>;     <span class="comment">//使用超时参数 ms_timeout 计算出等待的超时时间</span></span><br><span class="line">            <span class="keyword">if</span> (!m_cond.<span class="built_in">timewait</span>(m_mutex.<span class="built_in">get</span>(), t)) &#123;   <span class="comment">// 等待超时处理</span></span><br><span class="line">                m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        item = m_deque.<span class="built_in">front</span>();</span><br><span class="line">        m_deque.<span class="built_in">pop_front</span>();</span><br><span class="line">        m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    mutexlocker m_mutex;    <span class="comment">// 互斥锁</span></span><br><span class="line">    condvar m_cond;         <span class="comment">// 条件变量，用于在队列为空或队列已满时进行等待和唤醒</span></span><br><span class="line"></span><br><span class="line">    deque&lt;T&gt; m_deque;</span><br><span class="line">    <span class="type">int</span> m_max_size;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这个<code>block_queue</code>类是一个线程安全的阻塞队列实现，使用了互斥锁和条件变量来保证在多线程环境中的操作的互斥性和同步性。这个<code>block_queue</code>类适用于需要在多线程环境中进行数据共享的场景，提供了一种安全且高效的队列实现。</p>
+<ol>
+<li><strong>线程安全性</strong>：通过使用<code>mutexlocker</code>和<code>condvar</code>实现了互斥锁和条件变量，确保多个线程对队列的并发操作是安全的。</li>
+<li><strong>阻塞操作</strong>：在队列为空时，<code>pop</code>操作将会等待直到队列中有元素可供取出；在队列已满时，<code>push_back</code>操作将会等待直到队列中有空位可供插入。</li>
+<li><strong>容量控制</strong>：通过<code>full()</code>和<code>empty()</code>方法提供了对队列是否已满或为空的判断。</li>
+<li><strong>超时处理</strong>：<code>pop</code>操作提供了带有超时参数的版本，允许用户设定最长等待时间，避免无限等待。</li>
+<li><strong>使用deque实现</strong>：底层使用了<code>std::deque</code>作为队列容器，相比于<code>std::queue</code>，<code>std::deque</code>允许从队列的前端和后端高效地进行元素的添加和删除。</li>
+<li><strong>清空队列</strong>：提供了<code>clear</code>方法，用于清空队列并释放资源。</li>
+<li><strong>异常处理</strong>：在构造函数中，如果指定的最大容量小于等于0，程序将终止，以防止非法输入。</li>
+</ol>
+<h2 id="日志类"><a href="#日志类" class="headerlink" title="日志类"></a>日志类</h2><h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/io.svg"  alt="io模块"></p>
+<h3 id="获取实例-get-instance"><a href="#获取实例-get-instance" class="headerlink" title="获取实例 get_instance"></a>获取实例 get_instance</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 公有静态方法，用于获取唯一的实例</span></span><br><span class="line"><span class="function"><span class="type">static</span> Log* <span class="title">get_instance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 静态局部变量，确保只在第一次调用该函数时创建一个实例</span></span><br><span class="line">    <span class="type">static</span> Log instance;</span><br><span class="line">    <span class="comment">// 返回指向实例的指针</span></span><br><span class="line">    <span class="keyword">return</span> &amp;instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>get_instance</code> 是一个公有的静态成员函数，用于获取类的唯一实例。</li>
+<li><code>static Log instance;</code> 是一个静态局部变量，确保在程序的整个生命周期内只有一个实例。这是C++11引入的线程安全的局部静态变量。</li>
+<li><code>return &amp;instance;</code> 返回指向唯一实例的指针。</li>
+</ol>
+<h3 id="构造函数-Log"><a href="#构造函数-Log" class="headerlink" title="构造函数 Log"></a>构造函数 Log</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Log</span>();</span><br><span class="line">    ~<span class="built_in">Log</span>();</span><br><span class="line">    <span class="comment">// 防止复制构造和赋值操作，确保单例的唯一性</span></span><br><span class="line">    <span class="built_in">Log</span>(<span class="type">const</span> Log&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    Log&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Log&amp;) = <span class="keyword">delete</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个典型的单例模式实现，通过将构造函数和析构函数声明为私有的，以及禁用拷贝构造函数和赋值操作符，确保了类的单例性。这样，只能通过 <code>get_instance</code> 函数获取唯一的实例，而不能直接复制或赋值。</p>
+<ol>
+<li>构造函数和析构函数是私有的，防止外部直接实例化或销毁对象。</li>
+<li>拷贝构造函数和赋值操作符被删除，防止复制对象。</li>
+<li><code>get_instance</code> 函数提供了获取类唯一实例的途径，同时在需要时进行实例化。</li>
+</ol>
+<h3 id="异步写-async-write-log"><a href="#异步写-async-write-log" class="headerlink" title="异步写 async_write_log"></a>异步写 async_write_log</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 异步写</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">async_write_log</span><span class="params">()</span></span>&#123;</span><br><span class="line">        string single_log;</span><br><span class="line">        <span class="comment">// 从阻塞队列取出一个日志</span></span><br><span class="line">        <span class="keyword">while</span>(m_log_duque-&gt;<span class="built_in">pop</span>(single_log))&#123;</span><br><span class="line">            m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">            <span class="comment">// 写入后文件指针后移</span></span><br><span class="line">            <span class="built_in">fputs</span>(single_log.<span class="built_in">c_str</span>(),m_fp);</span><br><span class="line">            m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>async_write_log</code> 函数通过阻塞队列 <code>m_log_duque</code> 获取一个日志条目 <code>single_log</code>。</li>
+<li>通过互斥锁 <code>m_mutex</code> 对文件指针 <code>m_fp</code> 进行保护，确保在多线程环境下对文件的写入操作是互斥的。</li>
+<li>使用 <code>fputs(single_log.c_str(), m_fp);</code> 将日志写入文件。这里假设 <code>single_log</code> 中已经包含了完整的日志内容，因为它是从阻塞队列中取出的。</li>
+<li>写入完成后解锁互斥锁，允许其他线程进行文件写入。</li>
+</ol>
+<p>需要注意的是，这个函数的执行是在一个独立的线程中进行的，通过异步写入的方式，避免了在主线程中直接写文件可能导致的性能问题。这种异步的方式允许主线程继续执行其他任务，而不必等待文件写入完成。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程工作函数，静态函数防止this指针</span></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span>* <span class="title">flush_log_thread</span><span class="params">(<span class="type">void</span> *args)</span></span>&#123;</span><br><span class="line">    Log::<span class="built_in">get_instance</span>()-&gt;<span class="built_in">async_write_log</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>flush_log_thread</code> 是一个静态成员函数，它被设计为一个线程的入口函数，用于执行异步写日志的操作。</li>
+<li>静态函数中调用了 <code>Log::get_instance()-&gt;async_write_log();</code>，这样就通过单例模式获取了 <code>Log</code> 类的唯一实例，然后调用了 <code>async_write_log</code> 函数，实现了异步写日志的逻辑。</li>
+<li>函数返回 <code>nullptr</code>，这是符合线程入口函数的标准，即线程执行完毕后返回的是 <code>nullptr</code>。</li>
+</ol>
+<p>这段代码的目的是启动一个线程，用于在后台执行异步写日志的操作，从而不阻塞主线程的执行。在 <code>Log</code> 类的构造函数中，可以看到这个线程是在初始化时被创建的。该线程的生命周期和 <code>Log</code> 类的生命周期是一致的。当 <code>Log</code> 类的实例被销毁时，这个线程也应该被正确地终止。</p>
+<h3 id="宏定义-snprintf-nowarn"><a href="#宏定义-snprintf-nowarn" class="headerlink" title="宏定义 snprintf_nowarn"></a>宏定义 snprintf_nowarn</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 检查snprintf返回值，防止warning</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> snprintf_nowarn(...) (snprintf(__VA_ARGS__) &lt; 0 ? abort() : (void)0)</span></span><br><span class="line"><span class="comment">// 可变参数宏__VA_ARGS__，当可变参数个数为0时，##__VA_ARGS__把前面多余的“，”去掉</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOG_DEBUG(format, ...) <span class="keyword">if</span>(m_close_log == 0) &#123;Log::get_instance()-&gt;write_log(0, format, ##__VA_ARGS__); Log::get_instance()-&gt;flush();&#125;</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOG_INFO(format, ...) <span class="keyword">if</span>(m_close_log == 0) &#123;Log::get_instance()-&gt;write_log(1, format, ##__VA_ARGS__); Log::get_instance()-&gt;flush();&#125;</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOG_WARN(format, ...) <span class="keyword">if</span>(m_close_log == 0) &#123;Log::get_instance()-&gt;write_log(2, format, ##__VA_ARGS__); Log::get_instance()-&gt;flush();&#125;</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOG_ERROR(format, ...) <span class="keyword">if</span>(m_close_log == 0) &#123;Log::get_instance()-&gt;write_log(3, format, ##__VA_ARGS__); Log::get_instance()-&gt;flush();&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这段代码定义了一组宏，用于在日志中输出不同级别的日志信息。下面是对每个宏的解释：</p>
+<ol>
+<li><code>snprintf_nowarn</code>: 这是一个宏，用于检查 <code>snprintf</code> 的返回值，防止编译器产生警告。如果 <code>snprintf</code> 返回值小于 0，就调用 <code>abort</code> 终止程序，否则不进行任何操作。</li>
+<li><code>LOG_DEBUG(format, ...)</code>: 这是一个宏，用于输出调试级别的日志信息。如果 <code>m_close_log</code> 不为 0（即日志未关闭），则调用 <code>Log::get_instance()-&gt;write_log(0, format, ##__VA_ARGS__)</code> 写入调试日志，然后调用 <code>Log::get_instance()-&gt;flush()</code> 刷新日志。</li>
+<li><code>LOG_INFO(format, ...)</code>: 类似于 <code>LOG_DEBUG</code>，用于输出信息级别的日志。</li>
+<li><code>LOG_WARN(format, ...)</code>: 类似于 <code>LOG_DEBUG</code>，用于输出警告级别的日志。</li>
+<li><code>LOG_ERROR(format, ...)</code>: 类似于 <code>LOG_DEBUG</code>，用于输出错误级别的日志。</li>
+</ol>
+<p>这些宏的使用方式类似于普通的日志输出函数，但通过宏的方式可以方便地控制是否输出日志（通过 <code>m_close_log</code> 变量的值判断）。这样的设计可以在日志关闭时，避免不必要的字符串拼接和日志输出操作，提高程序性能。</p>
+<h3 id="初始化日志-init"><a href="#初始化日志-init" class="headerlink" title="初始化日志 init"></a>初始化日志 init</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化日志，异步需要设置阻塞队列的长度，同步不需要</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Log::init</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *file_name, <span class="type">int</span> log_buf_size, <span class="type">int</span> split_lines, <span class="type">int</span> max_queue_size)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 如果设置了max_queue_size,则设置为异步</span></span><br><span class="line">    <span class="keyword">if</span>(max_queue_size &gt;= <span class="number">1</span>)&#123;</span><br><span class="line">        m_is_async = <span class="literal">true</span>;</span><br><span class="line">        m_log_duque = <span class="keyword">new</span> <span class="built_in">block_queue</span>&lt;string&gt;(max_queue_size);</span><br><span class="line">        <span class="comment">//创建线程异步写</span></span><br><span class="line">        <span class="type">pthread_t</span> tid;</span><br><span class="line">        <span class="built_in">pthread_create</span>(&amp;tid,<span class="literal">nullptr</span>,flush_log_thread,<span class="literal">nullptr</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化日志</span></span><br><span class="line">    m_log_buf_size = log_buf_size;</span><br><span class="line">    m_buf = <span class="keyword">new</span> <span class="type">char</span>[m_log_buf_size];</span><br><span class="line">    <span class="built_in">memset</span>(m_buf,<span class="number">0</span>,m_log_buf_size);</span><br><span class="line">    m_split_lines = split_lines;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取当前时间</span></span><br><span class="line">    <span class="type">time_t</span> t = <span class="built_in">time</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">tm</span> *sys_tm = <span class="built_in">localtime</span>(&amp;t);</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">tm</span> my_tm = *sys_tm;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找字符从右边开始第一次出现的位置，截断文件名</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *p = <span class="built_in">strrchr</span>(file_name,<span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">    <span class="type">char</span> log_full_name[<span class="number">256</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造日志文件名</span></span><br><span class="line">    <span class="keyword">if</span>(p == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="comment">// 将可变参数格式化到字符串中</span></span><br><span class="line">        <span class="comment">// 没有/则直接到当前路径下</span></span><br><span class="line">        <span class="built_in">snprintf_nowarn</span>(log_full_name,<span class="number">255</span>,<span class="string">&quot;%d_%02d_%02d_%s&quot;</span>,my_tm.tm_year + <span class="number">1900</span>,my_tm.tm_mon+<span class="number">1</span>,my_tm.tm_mday,file_name);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">strcpy</span>(log_name,p+<span class="number">1</span>);   <span class="comment">// 日志文件名</span></span><br><span class="line">        <span class="built_in">strncpy</span>(dir_name,file_name,p-file_name+<span class="number">1</span>);  <span class="comment">// 日志路径</span></span><br><span class="line">        <span class="built_in">snprintf_nowarn</span>(log_full_name,<span class="number">255</span>,<span class="string">&quot;%s%d_%02d_%02d_%s&quot;</span>,dir_name,my_tm.tm_year + <span class="number">1900</span>,my_tm.tm_mon+<span class="number">1</span>,my_tm.tm_mday,log_name);</span><br><span class="line">    &#125;</span><br><span class="line">    m_today = my_tm.tm_mday;</span><br><span class="line">    <span class="comment">// 追加写</span></span><br><span class="line">    m_fp = <span class="built_in">fopen</span>(log_full_name,<span class="string">&quot;a&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(m_fp == <span class="literal">nullptr</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段 C++ 代码定义了日志类 <code>Log</code> 中的初始化函数 <code>init</code>。此函数用于初始化日志记录，包括设置日志文件名、缓冲区大小、拆分行数等参数。如果设置了异步模式，还会创建一个线程用于异步写日志。</p>
+<ol>
+<li><strong>判断是否启用异步模式：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (max_queue_size &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">    m_is_async = <span class="literal">true</span>;</span><br><span class="line">    m_log_duque = <span class="keyword">new</span> <span class="built_in">block_queue</span>&lt;string&gt;(max_queue_size);</span><br><span class="line">    <span class="comment">// 创建线程异步写</span></span><br><span class="line">    <span class="type">pthread_t</span> tid;</span><br><span class="line">    <span class="built_in">pthread_create</span>(&amp;tid, <span class="literal">nullptr</span>, flush_log_thread, <span class="literal">nullptr</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果设置了 <code>max_queue_size</code> 大于等于 1，表示启用异步模式。在异步模式下，创建了一个 <code>block_queue&lt;string&gt;</code> 类型的阻塞队列，并通过线程 <code>pthread_create</code> 创建了一个用于异步写日志的线程。</p>
+<ol start="2">
+<li><strong>初始化日志参数：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">m_log_buf_size = log_buf_size;</span><br><span class="line">m_buf = <span class="keyword">new</span> <span class="type">char</span>[m_log_buf_size];</span><br><span class="line"><span class="built_in">memset</span>(m_buf, <span class="number">0</span>, m_log_buf_size);</span><br><span class="line">m_split_lines = split_lines;</span><br></pre></td></tr></table></figure>
+
+<p>初始化日志缓冲区大小、拆分行数等参数。</p>
+<ol start="3">
+<li><strong>获取当前时间并构造日志文件名：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">time_t</span> t = <span class="built_in">time</span>(<span class="literal">nullptr</span>);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">tm</span> *sys_tm = <span class="built_in">localtime</span>(&amp;t);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">tm</span> my_tm = *sys_tm;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *p = <span class="built_in">strrchr</span>(file_name, <span class="string">&#x27;/&#x27;</span>);</span><br><span class="line"><span class="type">char</span> log_full_name[<span class="number">256</span>] = &#123;<span class="number">0</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>获取当前时间，并通过 <code>localtime</code> 函数转换为本地时间。根据文件名中是否包含路径分隔符 <code>/</code>，构造日志文件名 <code>log_full_name</code>。</p>
+<ol start="4">
+<li><strong>设置日志文件名和路径：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (p == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    <span class="built_in">snprintf_nowarn</span>(log_full_name, <span class="number">255</span>, <span class="string">&quot;%d_%02d_%02d_%s&quot;</span>, my_tm.tm_year + <span class="number">1900</span>, my_tm.tm_mon + <span class="number">1</span>, my_tm.tm_mday, file_name);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">strcpy</span>(log_name, p + <span class="number">1</span>);   <span class="comment">// 日志文件名</span></span><br><span class="line">    <span class="built_in">strncpy</span>(dir_name, file_name, p - file_name + <span class="number">1</span>);  <span class="comment">// 日志路径</span></span><br><span class="line">    <span class="built_in">snprintf_nowarn</span>(log_full_name, <span class="number">255</span>, <span class="string">&quot;%s%d_%02d_%02d_%s&quot;</span>, dir_name, my_tm.tm_year + <span class="number">1900</span>, my_tm.tm_mon + <span class="number">1</span>, my_tm.tm_mday, log_name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据文件名中是否包含路径分隔符 <code>/</code>，设置日志文件名和路径。如果没有路径分隔符，则直接在当前路径下创建日志文件。如果文件名中包含路径分隔符，首先使用 <code>strcpy</code> 将文件名部分（不包含 <code>/</code>）拷贝到 <code>log_name</code> 中。接着，使用 <code>strncpy</code> 将路径部分拷贝到 <code>dir_name</code> 中，注意这里复制的长度为 <code>p - file_name + 1</code>，确保包含路径分隔符。最后，使用 <code>snprintf_nowarn</code> 将路径和文件名组合成完整的日志文件名。</p>
+<ol start="5">
+<li><strong>打开日志文件：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">m_fp = <span class="built_in">fopen</span>(log_full_name, <span class="string">&quot;a&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (m_fp == <span class="literal">nullptr</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>fopen</code> 打开日志文件，以追加写入的方式打开。如果打开失败，则返回 <code>false</code>。</p>
+<h3 id="写日志-write-log"><a href="#写日志-write-log" class="headerlink" title="写日志 write_log"></a>写日志 write_log</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 写日志</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Log::write_log</span><span class="params">(<span class="type">int</span> level, <span class="type">const</span> <span class="type">char</span> *format,...)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 秒、微妙</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">timeval</span> now = &#123;<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="built_in">gettimeofday</span>(&amp;now,<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="comment">// 获取时间结构体</span></span><br><span class="line">    <span class="type">time_t</span> t = now.tv_sec;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">tm</span> *sys_tm = <span class="built_in">localtime</span>(&amp;t);</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">tm</span> my_tm = *sys_tm;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 临界区加锁</span></span><br><span class="line">    m_mutex.<span class="built_in">lock</span>();</span><br><span class="line"></span><br><span class="line">    m_count++;</span><br><span class="line">    <span class="comment">// 新的一天或者日志达到最大行数，需要更换日志文件</span></span><br><span class="line">    <span class="keyword">if</span>(m_today != my_tm.tm_mday || m_count % m_split_lines == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="comment">// 刷新文件缓冲并关闭文件</span></span><br><span class="line">        <span class="built_in">fflush</span>(m_fp);</span><br><span class="line">        <span class="built_in">fclose</span>(m_fp);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 新日志路径</span></span><br><span class="line">        <span class="type">char</span> new_log[<span class="number">256</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="type">char</span> tail[<span class="number">16</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">snprintf_nowarn</span>(tail,<span class="number">16</span>,<span class="string">&quot;%d_%02d_%02d_&quot;</span>,my_tm.tm_year + <span class="number">1900</span>,my_tm.tm_mon+<span class="number">1</span>,my_tm.tm_mday);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 天数变化</span></span><br><span class="line">        <span class="keyword">if</span>(m_today != my_tm.tm_mday)&#123;</span><br><span class="line">            <span class="built_in">snprintf_nowarn</span>(new_log,<span class="number">255</span>,<span class="string">&quot;%s%s%s&quot;</span>,dir_name,tail,log_name);</span><br><span class="line">            m_today = my_tm.tm_mday;</span><br><span class="line">            m_count = <span class="number">0</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;  <span class="comment">// 日志达到最大行数</span></span><br><span class="line">            <span class="built_in">snprintf_nowarn</span>(new_log,<span class="number">255</span>,<span class="string">&quot;%s%s%s.%lld&quot;</span>,dir_name,tail,log_name,m_count / m_split_lines);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 打开新日志</span></span><br><span class="line">        m_fp = <span class="built_in">fopen</span>(new_log,<span class="string">&quot;a&quot;</span>);       </span><br><span class="line">    &#125;</span><br><span class="line">    m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 日志级别</span></span><br><span class="line">    <span class="type">char</span> s[<span class="number">16</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">switch</span>(level)&#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>: </span><br><span class="line">            <span class="built_in">strcpy</span>(s,<span class="string">&quot;[debug]:&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            <span class="built_in">strcpy</span>(s,<span class="string">&quot;[info]:&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            <span class="built_in">strcpy</span>(s,<span class="string">&quot;[warn]:&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">            <span class="built_in">strcpy</span>(s,<span class="string">&quot;[error]:&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">           <span class="built_in">strcpy</span>(s,<span class="string">&quot;[debug]:&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 临界区加锁</span></span><br><span class="line">    m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">    <span class="comment">// 构造日志内容、时间、级别</span></span><br><span class="line">    <span class="type">int</span> n = <span class="built_in">snprintf</span>(m_buf,<span class="number">48</span>,<span class="string">&quot;%d-%02d-%02d %02d:%02d:%02d.%06ld %s&quot;</span>,</span><br><span class="line">                            my_tm.tm_year+<span class="number">1900</span>,my_tm.tm_mon+<span class="number">1</span>,my_tm.tm_mday,</span><br><span class="line">                            my_tm.tm_hour,my_tm.tm_min,my_tm.tm_sec,now.tv_usec,s);</span><br><span class="line">    <span class="keyword">if</span>(n &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">abort</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 正文</span></span><br><span class="line">    va_list valst;</span><br><span class="line">    <span class="built_in">va_start</span>(valst,format);</span><br><span class="line">    <span class="type">int</span> m = <span class="built_in">vsnprintf</span>(m_buf + n,m_log_buf_size <span class="number">-1</span>, format, valst);</span><br><span class="line">    <span class="keyword">if</span>(m &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">abort</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">va_end</span>(valst);</span><br><span class="line">    m_buf[n + m] = <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    m_buf[n + m + <span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 异步写</span></span><br><span class="line">    <span class="keyword">if</span>(m_is_async &amp;&amp; !m_log_duque-&gt;<span class="built_in">full</span>())&#123;</span><br><span class="line">        m_log_duque-&gt;<span class="built_in">push_back</span>(m_buf);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;  <span class="comment">// 同步写</span></span><br><span class="line">        <span class="built_in">fputs</span>(m_buf,m_fp);</span><br><span class="line">    &#125;</span><br><span class="line">    m_mutex.<span class="built_in">unlock</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码是 <code>Log</code> 类的写日志函数 <code>write_log</code>，它实现了日志的记录和切割功能。以下是对代码的详细解释：</p>
+<ol>
+<li><p><strong>获取当前时间：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">timeval</span> now = &#123;<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line"><span class="built_in">gettimeofday</span>(&amp;now,<span class="literal">nullptr</span>);</span><br><span class="line"><span class="type">time_t</span> t = now.tv_sec;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">tm</span> *sys_tm = <span class="built_in">localtime</span>(&amp;t);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">tm</span> my_tm = *sys_tm;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>gettimeofday</code> 获取当前时间（秒和微秒），然后将秒数转换为本地时间结构体 <code>tm</code>，保存在 <code>my_tm</code> 中。</p>
+</li>
+<li><p><strong>判断是否需要切换日志文件：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">m_mutex.<span class="built_in">lock</span>();</span><br><span class="line">m_count++;</span><br><span class="line"><span class="keyword">if</span> (m_today != my_tm.tm_mday || m_count % m_split_lines == <span class="number">0</span>) &#123;</span><br></pre></td></tr></table></figure>
+
+<p>每次写入日志，都会判断当前日期是否与 <code>m_today</code> 相同，以及是否达到了日志的最大行数。如果是，则需要切换到新的日志文件。</p>
+</li>
+<li><p><strong>关闭并刷新当前日志文件，打开新日志文件：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">fflush</span>(m_fp);</span><br><span class="line"><span class="built_in">fclose</span>(m_fp);</span><br><span class="line"></span><br><span class="line"><span class="type">char</span> new_log[<span class="number">256</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">char</span> tail[<span class="number">16</span>] = &#123;<span class="number">0</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>先刷新和关闭当前的日志文件，然后构造新的日志文件名。如果是新的一天，直接拼接日期和文件名，如果是同一天但已达到最大行数，追加一个序号。</p>
+</li>
+<li><p><strong>构造新的日志文件路径：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">snprintf_nowarn</span>(tail,<span class="number">16</span>,<span class="string">&quot;%d_%02d_%02d_&quot;</span>,my_tm.tm_year + <span class="number">1900</span>,my_tm.tm_mon+<span class="number">1</span>,my_tm.tm_mday);</span><br><span class="line"><span class="keyword">if</span> (m_today != my_tm.tm_mday) &#123;</span><br><span class="line">    <span class="built_in">snprintf_nowarn</span>(new_log,<span class="number">255</span>,<span class="string">&quot;%s%s%s&quot;</span>,dir_name,tail,log_name);</span><br><span class="line">    m_today = my_tm.tm_mday;</span><br><span class="line">    m_count = <span class="number">0</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">snprintf_nowarn</span>(new_log,<span class="number">255</span>,<span class="string">&quot;%s%s%s.%lld&quot;</span>,dir_name,tail,log_name,m_count / m_split_lines);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>snprintf_nowarn</code> 构造新的日志文件路径，并更新 <code>m_today</code> 和 <code>m_count</code>。</p>
+</li>
+<li><p><strong>打开新的日志文件：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_fp = <span class="built_in">fopen</span>(new_log,<span class="string">&quot;a&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>fopen</code> 打开新的日志文件，以追加写入的方式。</p>
+</li>
+<li><p><strong>构造日志级别前缀：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> s[<span class="number">16</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">switch</span>(level)&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据传入的日志级别（0: Debug, 1: Info, 2: Warn, 3: Error）选择对应的日志级别前缀。</p>
+</li>
+<li><p><strong>构造日志内容：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> n = <span class="built_in">snprintf</span>(m_buf,<span class="number">48</span>,<span class="string">&quot;%d-%02d-%02d %02d:%02d:%02d.%06ld %s&quot;</span>,</span><br><span class="line">                  my_tm.tm_year+<span class="number">1900</span>,my_tm.tm_mon+<span class="number">1</span>,my_tm.tm_mday,</span><br><span class="line">                        my_tm.tm_hour,my_tm.tm_min,my_tm.tm_sec,now.tv_usec,s);</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>snprintf</code> 构造时间戳和日志级别前缀。</p>
+</li>
+<li><p><strong>构造日志正文：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">va_list valst;</span><br><span class="line"><span class="built_in">va_start</span>(valst,format);</span><br><span class="line"><span class="type">int</span> m = <span class="built_in">vsnprintf</span>(m_buf + n,m_log_buf_size <span class="number">-1</span>, format, valst);</span><br><span class="line"><span class="built_in">va_end</span>(valst);</span><br></pre></td></tr></table></figure>
+
+<p><code>va_list</code> 是一个指向参数的列表的类型，用于存储可变参数信息。<code>va_start</code> 宏用于初始化 <code>valst</code>，使其指向参数列表中的第一个可变参数。第一个参数是 <code>valst</code>，第二个参数是可变参数列表的最后一个已知的固定参数。<code>vsnprintf</code> 是一个可变参数版本的 <code>snprintf</code> 函数，用于将格式化的数据写入字符串。这里，它将可变参数根据指定的 <code>format</code> 格式化并写入 <code>m_buf</code> 字符数组中，起始位置是 <code>m_buf + n</code>，最大写入长度是 <code>m_log_buf_size - 1</code>。使用 <code>vsnprintf</code> 将可变参数格式化成字符串，追加到之前的时间戳后。</p>
+</li>
+<li><p><strong>添加换行符和异步&#x2F;同步写入：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">m_buf[n + m] = <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">m_buf[n + m + <span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(m_is_async &amp;&amp; !m_log_duque-&gt;<span class="built_in">full</span>())&#123;</span><br><span class="line">    m_log_duque-&gt;<span class="built_in">push_back</span>(m_buf);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="built_in">fputs</span>(m_buf,m_fp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在字符串末尾添加换行符，并根据异步标志和队列是否满，选择是异步写入到阻塞队列还是同步写入到文件。最后，解锁临界区。</p>
+</li>
+</ol>
+<p>这段代码完成了日志的记录、切割和写入功能，支持同步和异步两种写入模式。</p>
+<h3 id="强制刷新文件缓冲-flush"><a href="#强制刷新文件缓冲-flush" class="headerlink" title="强制刷新文件缓冲 flush"></a>强制刷新文件缓冲 flush</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 强制刷新文件缓冲</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Log::flush</span><span class="params">(<span class="type">void</span>)</span></span>&#123;</span><br><span class="line">    m_mutex.<span class="built_in">lock</span>();  <span class="comment">// 加锁，确保在多线程环境中对文件缓冲的操作是互斥的</span></span><br><span class="line">    <span class="built_in">fflush</span>(m_fp);    <span class="comment">// 刷新文件缓冲，将缓冲区中的数据写入文件</span></span><br><span class="line">    m_mutex.<span class="built_in">unlock</span>();  <span class="comment">// 解锁，释放互斥锁，允许其他线程对文件缓冲进行操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                从零实现WebServer之日志类
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2023/12/29/从零实现WebServer之日志类/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Mzy</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2023-12-29 10:37</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2023/12/28/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6%E5%8C%85%E8%A3%85%E7%B1%BB/"
+                                   title="从零实现WebServer之线程同步机制包装类"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">从零实现WebServer之线程同步机制包装类</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <div id="waline-comment"></div>
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+        >
+          window.KeepCommentPlugin.walineOptions = JSON.parse('{}'.replace(/&#34;/g, '"'))
+
+          window.KeepCommentPlugin.initWaline = () => {
+            if (window?.Waline) {
+              window.KeepCommentPlugin.walineOptions.el = '#waline-comment'
+              window.KeepCommentPlugin.walineOptions.comment = '.post-comments-count'
+              window.KeepCommentPlugin.walineOptions.serverURL = 'https://waline-test-liart.vercel.app'
+              window.KeepCommentPlugin.walineOptions.lang = 'zh-CN' || 'zh-CN'
+              window.KeepCommentPlugin.walineOptions.reaction = 'true' === 'true'
+              window.Waline.init(window.KeepCommentPlugin.walineOptions)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initWaline()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initWaline()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E6%97%A5%E5%BF%97%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之日志类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E6%A8%A1%E6%9D%BF%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">阻塞队列模板类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">日志类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.2.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%AE%9E%E4%BE%8B-get-instance"><span class="nav-number">1.2.2.</span> <span class="nav-text">获取实例 get_instance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-Log"><span class="nav-number">1.2.3.</span> <span class="nav-text">构造函数 Log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E5%86%99-async-write-log"><span class="nav-number">1.2.4.</span> <span class="nav-text">异步写 async_write_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8F%E5%AE%9A%E4%B9%89-snprintf-nowarn"><span class="nav-number">1.2.5.</span> <span class="nav-text">宏定义 snprintf_nowarn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%A5%E5%BF%97-init"><span class="nav-number">1.2.6.</span> <span class="nav-text">初始化日志 init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%97%A5%E5%BF%97-write-log"><span class="nav-number">1.2.7.</span> <span class="nav-text">写日志 write_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%BA%E5%88%B6%E5%88%B7%E6%96%B0%E6%96%87%E4%BB%B6%E7%BC%93%E5%86%B2-flush"><span class="nav-number">1.2.8.</span> <span class="nav-text">强制刷新文件缓冲 flush</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2022</span>&nbsp;-&nbsp;2023
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Mzy</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+                
+                <div class="deploy-info info-item default">
+                    
+                        本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/deploy-provider/github.png"></span> 提供部署服务
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">48.6k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-box border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E6%97%A5%E5%BF%97%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之日志类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E6%A8%A1%E6%9D%BF%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">阻塞队列模板类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">日志类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.2.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%AE%9E%E4%BE%8B-get-instance"><span class="nav-number">1.2.2.</span> <span class="nav-text">获取实例 get_instance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-Log"><span class="nav-number">1.2.3.</span> <span class="nav-text">构造函数 Log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E5%86%99-async-write-log"><span class="nav-number">1.2.4.</span> <span class="nav-text">异步写 async_write_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8F%E5%AE%9A%E4%B9%89-snprintf-nowarn"><span class="nav-number">1.2.5.</span> <span class="nav-text">宏定义 snprintf_nowarn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%A5%E5%BF%97-init"><span class="nav-number">1.2.6.</span> <span class="nav-text">初始化日志 init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%97%A5%E5%BF%97-write-log"><span class="nav-number">1.2.7.</span> <span class="nav-text">写日志 write_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%BA%E5%88%B6%E5%88%B7%E6%96%B0%E6%96%87%E4%BB%B6%E7%BC%93%E5%86%B2-flush"><span class="nav-number">1.2.8.</span> <span class="nav-text">强制刷新文件缓冲 flush</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/toggle-theme.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/code-block.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/anime.min.js"></script>
+
+<!-- local-search -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/local-search.js"></script>
+
+
+<!-- lazyload -->
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/post-helper.js"></script>
+
+        <!-- toc -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/toc.js"></script>
+        
+
+        <!-- copyright-info -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/copyright-info.js"></script>
+        
+
+        <!-- share -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/share.js"></script>
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+
+    <!-- photos-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
