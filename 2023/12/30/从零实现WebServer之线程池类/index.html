@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="mzy的成长历程">
+    <meta name="author" content="Mzy">
+    
+    <title>
+        
+            从零实现WebServer之线程池类 |
+        
+        Mzy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/author.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/brands.min.css">
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"dybil.top","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#00CC33","title":"Mzy's Blog","author":"Mzy","avatar":"/images/author.svg","logo":"/images/author.svg","favicon":"/images/author.svg"},"menu":{"Archives":"/archives","Tags":"/tags","Categories":"/categories","Links":"/links","About":"/about","Photos":"/photos"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"social_contact":{"enable":true,"links":{"github":"https://dybil.top","weixin":"https://dybil.top","qq":"https://dybil.top","weibo":"https://dybil.top","zhihu":"https://dybil.top","twitter":"https://dybil.top","facebook":"https://dybil.top","email":"https://dybil.top"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"category":true,"tag":true,"announcement":null},"post":{"author_badge":{"enable":true,"level_badge":false,"custom_badge":["炼气","筑基","结丹","元婴","化神"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":true,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"waline","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":"https://waline-test-liart.vercel.app","reaction":true,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":true,"provider":"jsdelivr"},"pjax":{"enable":true},"footer":{"since":2022,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","version":"4.0.5"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/author.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Mzy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class=""
+                           href="/"
+                        >首页</a>
+                    </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >归档</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >标签</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >分类</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >友链</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >关于</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/photos"
+                            >相册</a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item flex-center">
+                <a class=""
+                   href="/"
+                >首页</a>
+            </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories"
+                    >分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links"
+                    >友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/photos"
+                    >相册</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        从零实现WebServer之线程池类
+                    </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/author.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Mzy</span>
+                                
+                                    <span class="author-badge">元婴</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2023-12-30 14:29:34</span>
+                <span class="mobile">2023-12-30 14:29</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Sat Dec 30 2023 14:30:20 GMT+0800">2023-12-30 14:30:20</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>2.2k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>9 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h1 id="从零实现WebServer之线程池类"><a href="#从零实现WebServer之线程池类" class="headerlink" title="从零实现WebServer之线程池类"></a>从零实现WebServer之线程池类</h1><h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/%E7%BA%BF%E7%A8%8B%E6%B1%A0.svg"  alt="线程池"></p>
+<h2 id="构造函数-threadpool"><a href="#构造函数-threadpool" class="headerlink" title="构造函数 threadpool"></a>构造函数 threadpool</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">threadpool&lt;T&gt;::<span class="built_in">threadpool</span>(<span class="type">int</span> actor_model, connection_pool *connPoll, <span class="type">uint32_t</span> thread_number, <span class="type">uint32_t</span> max_request)</span><br><span class="line">    : <span class="built_in">m_actor_model</span>(actor_model), <span class="built_in">m_connPool</span>(connPoll), <span class="built_in">m_thread_number</span>(thread_number), <span class="built_in">m_max_request</span>(max_request) &#123;</span><br><span class="line">    <span class="keyword">if</span> (thread_number &lt;= <span class="number">0</span> || max_request &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    m_threads = <span class="keyword">new</span> <span class="type">pthread_t</span>[m_thread_number];</span><br><span class="line">    <span class="keyword">if</span> (!m_threads) &#123;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">uint32_t</span> i = <span class="number">0</span>; i &lt; thread_number; i++) &#123;</span><br><span class="line">        <span class="comment">// 内存单元、线程属性(NULL)、工作函数，传递参数（线程池）</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">pthread_create</span>(m_threads + i, <span class="literal">NULL</span>, worker, <span class="keyword">this</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span>[] m_threads;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 分离主线程与子线程，子线程结束后资源自动回收</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">pthread_detach</span>(m_threads[i]) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">delete</span>[] m_threads;</span><br><span class="line">            <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>threadpool</code> 类的构造函数 <code>threadpool::threadpool</code> 中，进行了线程池的初始化工作。下面是对该函数的一些主要步骤的解释：</p>
+<ol>
+<li><p><strong>成员初始化列表：</strong> 使用成员初始化列表初始化线程池的各个成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">threadpool&lt;T&gt;::<span class="built_in">threadpool</span>(<span class="type">int</span> actor_model, connection_pool *connPool, <span class="type">uint32_t</span> thread_number, <span class="type">uint32_t</span> max_request)</span><br><span class="line">    : <span class="built_in">m_actor_model</span>(actor_model), <span class="built_in">m_connPool</span>(connPool), <span class="built_in">m_thread_number</span>(thread_number), <span class="built_in">m_max_request</span>(max_request) &#123;</span><br></pre></td></tr></table></figure>
+
+<p>在初始化列表中，完成对成员变量 <code>m_actor_model</code>、<code>m_connPool</code>、<code>m_thread_number</code>、<code>m_max_request</code> 的初始化。</p>
+</li>
+<li><p><strong>线程标识符内存分配：</strong> 使用 <code>new</code> 运算符分配存储线程标识符的内存。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_threads = <span class="keyword">new</span> <span class="type">pthread_t</span>[m_thread_number];</span><br></pre></td></tr></table></figure>
+
+<p>如果内存分配失败，抛出异常。</p>
+</li>
+<li><p><strong>创建工作线程：</strong> 使用 <code>pthread_create</code> 函数创建线程，将线程的入口函数设置为 <code>worker</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">uint32_t</span> i = <span class="number">0</span>; i &lt; thread_number; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">pthread_create</span>(m_threads + i, <span class="literal">NULL</span>, worker, <span class="keyword">this</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">delete</span>[] m_threads;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 分离主线程与子线程，子线程结束后资源自动回收</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">pthread_detach</span>(m_threads[i]) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">delete</span>[] m_threads;</span><br><span class="line">        <span class="keyword">throw</span> std::<span class="built_in">exception</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>循环创建工作线程，将线程的入口函数设置为 <code>worker</code>，并传递当前线程池对象作为参数。同时，使用 <code>pthread_detach</code> 将子线程分离，使其在结束后自动释放资源。</p>
+</li>
+<li><p><strong>异常检查：</strong> 在函数执行过程中，进行异常检查，如果发生异常，释放已分配的资源。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (!m_threads) &#123;</span><br><span class="line">    throw std::exception();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在最后，释放线程标识符的内存。</p>
+</li>
+</ol>
+<p>该构造函数完成了线程池的初始化工作，包括成员变量的初始化、线程标识符的内存分配、工作线程的创建等。</p>
+<h2 id="析构函数-threadpool"><a href="#析构函数-threadpool" class="headerlink" title="析构函数 ~threadpool"></a>析构函数 ~threadpool</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 析构，释放线程数组</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">threadpool&lt;T&gt;::~<span class="built_in">threadpool</span>()&#123;</span><br><span class="line">    <span class="keyword">delete</span>[] m_threads;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>threadpool</code> 类的析构函数 <code>threadpool::~threadpool</code> 中，进行了线程池的资源释放工作。</p>
+<p><strong>释放线程标识符数组内存：</strong> 使用 <code>delete[]</code> 运算符释放动态分配的线程标识符数组内存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete[] m_threads;</span><br></pre></td></tr></table></figure>
+
+<p>该步骤的目标是在线程池对象销毁时释放动态分配的线程数组内存，以防止内存泄漏。</p>
+<h2 id="添加请求-append"><a href="#添加请求-append" class="headerlink" title="添加请求 append"></a>添加请求 append</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加请求，并利用信号量通知工作线程</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="type">bool</span> threadpool&lt;T&gt;::<span class="built_in">append</span>(T *request,<span class="type">int</span> state)&#123;</span><br><span class="line">    <span class="comment">// 任务队列是临界区，加互斥锁</span></span><br><span class="line">    m_queuelocker.<span class="built_in">lock</span>();</span><br><span class="line">    <span class="keyword">if</span>(m_workqueue.<span class="built_in">size</span>() &gt;= m_max_request)&#123;</span><br><span class="line">        m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 加入请求队列，然后解锁</span></span><br><span class="line">    request-&gt;m_state = state;</span><br><span class="line">    m_workqueue.<span class="built_in">push_back</span>(request);</span><br><span class="line">    m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">     <span class="comment">// 增加信号量，表示有任务要处理</span></span><br><span class="line">    m_queuestat.<span class="built_in">post</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>threadpool</code> 类的成员函数 <code>threadpool::append</code> 中，实现了向任务队列添加请求的操作。下面是对该函数的主要步骤的解释：</p>
+<ol>
+<li><p><strong>加锁：</strong> 使用互斥锁 <code>m_queuelocker</code> 对任务队列进行加锁，确保多个线程访问任务队列时的互斥性。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_queuelocker.<span class="built_in">lock</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>检查任务队列是否已满：</strong> 判断当前任务队列的大小是否已经达到了最大请求数量 <code>m_max_request</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (m_workqueue.<span class="built_in">size</span>() &gt;= m_max_request) &#123;</span><br><span class="line">    m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果队列已满，释放互斥锁并返回 <code>false</code>，表示添加请求失败。</p>
+</li>
+<li><p><strong>设置请求状态：</strong> 将传入的请求对象的状态设置为函数参数 <code>state</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">request-&gt;m_state = state;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>加入请求队列：</strong> 将请求对象加入到任务队列中。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_workqueue.<span class="built_in">push_back</span>(request);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>解锁：</strong> 释放互斥锁，允许其他线程访问任务队列。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_queuelocker.<span class="built_in">unlock</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>返回添加请求成功：</strong> 返回 <code>true</code>，表示成功添加请求。</p>
+</li>
+</ol>
+<p>该函数的目标是向任务队列添加请求，并在保证线程安全的情况下进行操作。</p>
+<h2 id="添加请求-不带状态"><a href="#添加请求-不带状态" class="headerlink" title="添加请求,不带状态"></a>添加请求,不带状态</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加请求，不带状态</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="type">bool</span> threadpool&lt;T&gt;::<span class="built_in">append_p</span>(T *request)&#123;</span><br><span class="line">    m_queuelocker.<span class="built_in">lock</span>();</span><br><span class="line">    <span class="keyword">if</span>(m_workqueue.<span class="built_in">size</span>() &gt;= m_max_request)&#123;</span><br><span class="line">        m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    m_workqueue.<span class="built_in">push_back</span>(request);</span><br><span class="line">    m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">    m_queuestat.<span class="built_in">post</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>threadpool</code> 类的成员函数 <code>threadpool::append_p</code> 中，实现了向任务队列添加请求的操作，不带状态。以下是该函数的主要步骤解释：</p>
+<ol>
+<li><p><strong>加锁：</strong> 使用互斥锁 <code>m_queuelocker</code> 对任务队列进行加锁，确保多个线程访问任务队列时的互斥性。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_queuelocker.<span class="built_in">lock</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>检查任务队列是否已满：</strong> 判断当前任务队列的大小是否已经达到了最大请求数量 <code>m_max_request</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (m_workqueue.<span class="built_in">size</span>() &gt;= m_max_request) &#123;</span><br><span class="line">    m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果队列已满，释放互斥锁并返回 <code>false</code>，表示添加请求失败。</p>
+</li>
+<li><p><strong>加入请求队列：</strong> 将请求对象加入到任务队列中。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_workqueue.<span class="built_in">push_back</span>(request);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>解锁：</strong> 释放互斥锁，允许其他线程访问任务队列。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_queuelocker.<span class="built_in">unlock</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>通知工作线程：</strong> 使用信号量 <code>m_queuestat</code> 发送信号，通知工作线程有新的请求可以处理。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_queuestat.<span class="built_in">post</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>返回添加请求成功：</strong> 返回 <code>true</code>，表示成功添加请求。</p>
+</li>
+</ol>
+<p>该函数的目标是向任务队列添加请求，并在保证线程安全的情况下进行操作。</p>
+<h2 id="工作线程-worker"><a href="#工作线程-worker" class="headerlink" title="工作线程 worker"></a>工作线程 worker</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 工作线程运行</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="type">void</span>* threadpool&lt;T&gt;::<span class="built_in">worker</span>(<span class="type">void</span> *arg)&#123;</span><br><span class="line">    <span class="comment">// 转换为线程池类</span></span><br><span class="line">    threadpool *pool = (threadpool *)arg;</span><br><span class="line">    pool-&gt;<span class="built_in">run</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>threadpool</code> 类的静态成员函数 <code>threadpool::worker</code> 中，实现了工作线程的运行。以下是该函数的主要步骤解释：</p>
+<ol>
+<li><p><strong>类型转换：</strong> 将传入的 <code>void*</code> 类型参数 <code>arg</code> 转换为 <code>threadpool*</code> 类型，以便访问线程池对象的成员函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">threadpool *pool = (threadpool *)arg;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>调用线程池的 <code>run</code> 函数：</strong> 调用线程池对象的 <code>run</code> 函数，开始执行工作线程的任务。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pool-&gt;<span class="built_in">run</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>返回空指针：</strong> 由于 <code>pthread_create</code> 函数要求线程函数的返回类型为 <code>void*</code>，因此返回 <code>nullptr</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>该静态成员函数的目标是作为线程函数，在工作线程中调用线程池对象的 <code>run</code> 函数，执行具体的任务。</p>
+<h2 id="工作函数-run"><a href="#工作函数-run" class="headerlink" title="工作函数 run"></a>工作函数 run</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 工作函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="type">void</span> threadpool&lt;T&gt;::<span class="built_in">run</span>()&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        <span class="comment">// 信号量阻塞，等待任务</span></span><br><span class="line">        m_queuestat.<span class="built_in">wait</span>();</span><br><span class="line">        <span class="comment">// 请求队列临界区，加互斥锁</span></span><br><span class="line">        m_queuelocker.<span class="built_in">lock</span>();</span><br><span class="line">        <span class="keyword">if</span>(m_workqueue.<span class="built_in">empty</span>())&#123;</span><br><span class="line">            m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 从请求队列取第一个请求</span></span><br><span class="line">        T *request = m_workqueue.<span class="built_in">front</span>();</span><br><span class="line">        m_workqueue.<span class="built_in">pop_front</span>();</span><br><span class="line">        m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">        <span class="keyword">if</span>(!request)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        <span class="comment">// reactor</span></span><br><span class="line">        <span class="keyword">if</span>(m_actor_model == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="comment">// 读</span></span><br><span class="line">            <span class="keyword">if</span>(request-&gt;m_state == <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(request-&gt;<span class="built_in">read_once</span>())&#123;</span><br><span class="line">                    request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">                    <span class="function">connectionRAII <span class="title">mysqlcon</span><span class="params">(&amp;request-&gt;mysql, m_connPool)</span></span>;</span><br><span class="line">                    request-&gt;<span class="built_in">process</span>();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">                    request-&gt;timer_flag = <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 写</span></span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(request-&gt;<span class="built_in">write</span>())&#123;</span><br><span class="line">                    request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">                    request-&gt;timer_flag = <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// proactor</span></span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">// 从连接池中取出一个数据库连接 RAII</span></span><br><span class="line">            connectionRAII <span class="built_in">mysqlcon</span>(&amp;request-&gt;mysql, m_connPool);</span><br><span class="line">            <span class="comment">// 处理请求</span></span><br><span class="line">            request-&gt;<span class="built_in">process</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>threadpool</code> 类的成员函数 <code>threadpool::run</code> 中，实现了工作线程的具体任务执行。以下是该函数的主要步骤解释：</p>
+<ol>
+<li><p><strong>信号量等待：</strong> 使用信号量 <code>m_queuestat</code> 进行阻塞等待，等待任务的到来。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m_queuestat.<span class="built_in">wait</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>请求队列操作：</strong> 进入临界区，加互斥锁，检查请求队列是否为空。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">m_queuelocker.<span class="built_in">lock</span>();</span><br><span class="line"><span class="keyword">if</span>(m_workqueue.<span class="built_in">empty</span>())&#123;</span><br><span class="line">    m_queuelocker.<span class="built_in">unlock</span>();</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>取出请求：</strong> 如果请求队列非空，从队列头取出第一个请求，并在请求队列中移除。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T *request = m_workqueue.<span class="built_in">front</span>();</span><br><span class="line">m_workqueue.<span class="built_in">pop_front</span>();</span><br><span class="line">m_queuelocker.<span class="built_in">unlock</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>处理请求：</strong> 检查请求是否为空，如果为空则继续循环。根据线程池的处理模式（<code>reactor </code>或 <code>proactor</code>）执行不同的处理逻辑。</p>
+<ul>
+<li>Reactor 模式：<ul>
+<li>如果请求是读操作（<code>m_state == 0</code>），调用 <code>read_once</code> 函数执行一次读操作，然后创建数据库连接 <code>connectionRAII</code> 对象，执行请求的处理函数 <code>process</code>。</li>
+<li>如果请求是写操作，调用 <code>write</code> 函数执行一次写操作。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!request)</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line"><span class="keyword">if</span>(m_actor_model == <span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(request-&gt;m_state == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="comment">// 读操作</span></span><br><span class="line">        <span class="keyword">if</span>(request-&gt;<span class="built_in">read_once</span>())&#123;</span><br><span class="line">            request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">            <span class="function">connectionRAII <span class="title">mysqlcon</span><span class="params">(&amp;request-&gt;mysql, m_connPool)</span></span>;</span><br><span class="line">            request-&gt;<span class="built_in">process</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">            request-&gt;timer_flag = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 写操作</span></span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(request-&gt;<span class="built_in">write</span>())&#123;</span><br><span class="line">            request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            request-&gt;improv = <span class="number">1</span>;</span><br><span class="line">            request-&gt;timer_flag = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Proactor 模式：<ul>
+<li>创建数据库连接 <code>connectionRAII</code> 对象，执行请求的处理函数 <code>process</code>。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">// Proactor 模式</span></span><br><span class="line">    connectionRAII <span class="built_in">mysqlcon</span>(&amp;request-&gt;mysql, m_connPool);</span><br><span class="line">    request-&gt;<span class="built_in">process</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>循环继续：</strong> 任务处理完成后，继续循环，等待下一个任务的到来。</p>
+</li>
+</ol>
+<p>该函数的目标是作为工作线程的执行函数，不断从请求队列中取出请求并执行相应的操作。具体的操作依赖于线程池的处理模式（<code>Reactor</code> 或 <code>Proactor</code>）。</p>
+<h2 id="其他线程池"><a href="#其他线程池" class="headerlink" title="其他线程池"></a>其他线程池</h2><p><a href="https://dybil.top/2023/11/08/%E6%89%8B%E5%86%99%E7%BA%BF%E7%A8%8B%E6%B1%A0/">手写线程池 | Mzy’s Blog (dybil.top)</a></p>
+
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                从零实现WebServer之线程池类
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2023/12/30/从零实现WebServer之线程池类/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Mzy</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2023-12-30 14:29</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2023/12/29/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%B1%BB/"
+                                   title="从零实现WebServer之数据库连接池类"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">从零实现WebServer之数据库连接池类</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <div id="waline-comment"></div>
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+        >
+          window.KeepCommentPlugin.walineOptions = JSON.parse('{}'.replace(/&#34;/g, '"'))
+
+          window.KeepCommentPlugin.initWaline = () => {
+            if (window?.Waline) {
+              window.KeepCommentPlugin.walineOptions.el = '#waline-comment'
+              window.KeepCommentPlugin.walineOptions.comment = '.post-comments-count'
+              window.KeepCommentPlugin.walineOptions.serverURL = 'https://waline-test-liart.vercel.app'
+              window.KeepCommentPlugin.walineOptions.lang = 'zh-CN' || 'zh-CN'
+              window.KeepCommentPlugin.walineOptions.reaction = 'true' === 'true'
+              window.Waline.init(window.KeepCommentPlugin.walineOptions)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initWaline()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initWaline()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之线程池类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-threadpool"><span class="nav-number">1.2.</span> <span class="nav-text">构造函数 threadpool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-threadpool"><span class="nav-number">1.3.</span> <span class="nav-text">析构函数 ~threadpool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%AF%B7%E6%B1%82-append"><span class="nav-number">1.4.</span> <span class="nav-text">添加请求 append</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%AF%B7%E6%B1%82-%E4%B8%8D%E5%B8%A6%E7%8A%B6%E6%80%81"><span class="nav-number">1.5.</span> <span class="nav-text">添加请求,不带状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E7%BA%BF%E7%A8%8B-worker"><span class="nav-number">1.6.</span> <span class="nav-text">工作线程 worker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%87%BD%E6%95%B0-run"><span class="nav-number">1.7.</span> <span class="nav-text">工作函数 run</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-number">1.8.</span> <span class="nav-text">其他线程池</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2022</span>&nbsp;-&nbsp;2023
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Mzy</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+                
+                <div class="deploy-info info-item default">
+                    
+                        本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/deploy-provider/github.png"></span> 提供部署服务
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">56.9k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之线程池类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-threadpool"><span class="nav-number">1.2.</span> <span class="nav-text">构造函数 threadpool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-threadpool"><span class="nav-number">1.3.</span> <span class="nav-text">析构函数 ~threadpool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%AF%B7%E6%B1%82-append"><span class="nav-number">1.4.</span> <span class="nav-text">添加请求 append</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%AF%B7%E6%B1%82-%E4%B8%8D%E5%B8%A6%E7%8A%B6%E6%80%81"><span class="nav-number">1.5.</span> <span class="nav-text">添加请求,不带状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E7%BA%BF%E7%A8%8B-worker"><span class="nav-number">1.6.</span> <span class="nav-text">工作线程 worker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%87%BD%E6%95%B0-run"><span class="nav-number">1.7.</span> <span class="nav-text">工作函数 run</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-number">1.8.</span> <span class="nav-text">其他线程池</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/toggle-theme.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/code-block.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/anime.min.js"></script>
+
+<!-- local-search -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/local-search.js"></script>
+
+
+<!-- lazyload -->
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/post-helper.js"></script>
+
+        <!-- toc -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/toc.js"></script>
+        
+
+        <!-- copyright-info -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/copyright-info.js"></script>
+        
+
+        <!-- share -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/share.js"></script>
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+
+    <!-- photos-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
