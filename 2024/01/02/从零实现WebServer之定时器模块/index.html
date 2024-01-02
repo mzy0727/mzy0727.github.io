@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="mzy的成长历程">
+    <meta name="author" content="Mzy">
+    
+    <title>
+        
+            从零实现WebServer之定时器模块 |
+        
+        Mzy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/author.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/brands.min.css">
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"dybil.top","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#00CC33","title":"Mzy's Blog","author":"Mzy","avatar":"/images/author.svg","logo":"/images/author.svg","favicon":"/images/author.svg"},"menu":{"Archives":"/archives","Tags":"/tags","Categories":"/categories","Links":"/links","About":"/about","Photos":"/photos"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"social_contact":{"enable":true,"links":{"github":"https://dybil.top","weixin":"https://dybil.top","qq":"https://dybil.top","weibo":"https://dybil.top","zhihu":"https://dybil.top","twitter":"https://dybil.top","facebook":"https://dybil.top","email":"https://dybil.top"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"category":true,"tag":true,"announcement":null},"post":{"author_badge":{"enable":true,"level_badge":false,"custom_badge":["炼气","筑基","结丹","元婴","化神"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":true,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"waline","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":"https://waline-test-liart.vercel.app","reaction":true,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":true,"provider":"jsdelivr"},"pjax":{"enable":true},"footer":{"since":2022,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","version":"4.0.5"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/author.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Mzy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class=""
+                           href="/"
+                        >首页</a>
+                    </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >归档</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >标签</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >分类</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >友链</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >关于</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/photos"
+                            >相册</a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item flex-center">
+                <a class=""
+                   href="/"
+                >首页</a>
+            </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories"
+                    >分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links"
+                    >友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/photos"
+                    >相册</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        从零实现WebServer之定时器模块
+                    </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/author.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Mzy</span>
+                                
+                                    <span class="author-badge">元婴</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-01-02 17:18:56</span>
+                <span class="mobile">2024-01-02 17:18</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Tue Jan 02 2024 17:19:37 GMT+0800">2024-01-02 17:19:37</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>5.2k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>20 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h1 id="从零实现WebServer之定时器模块"><a href="#从零实现WebServer之定时器模块" class="headerlink" title="从零实现WebServer之定时器模块"></a>从零实现WebServer之定时器模块</h1><h2 id="客户端结构体"><a href="#客户端结构体" class="headerlink" title="客户端结构体"></a>客户端结构体</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前向声明</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">util_timer</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端数据结构体</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">client_data</span>&#123;</span><br><span class="line">    sockaddr_in address;    <span class="comment">// 客户端地址</span></span><br><span class="line">    <span class="type">int</span> sockfd;             <span class="comment">// 客户socket</span></span><br><span class="line">    util_timer *timer;      <span class="comment">// 定时器</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码进行了对 <code>util_timer</code> 类的前向声明，并定义了一个客户端数据结构体 <code>client_data</code>。这样的设计是为了解决头文件的循环包含问题，即在头文件中需要引用对方的类或结构体，但又不能直接包含对方的头文件。</p>
+<p>以下是代码的解释：</p>
+<ul>
+<li><code>class util_timer;</code>：这是对 <code>util_timer</code> 类的前向声明。前向声明告诉编译器，在这个文件中会用到 <code>util_timer</code> 类，但具体的定义会在其他地方（可能是其他源文件）给出。</li>
+<li><code>struct client_data</code>：这是一个结构体的定义，用于存储客户端的相关信息。结构体包含以下成员：<ul>
+<li><code>sockaddr_in address;</code>：用于存储客户端的地址信息，包括 <code>IP</code> 地址和端口号。</li>
+<li><code>int sockfd;</code>：客户端的套接字文件描述符，用于标识连接。</li>
+<li><code>util_timer *timer;</code>：指向 <code>util_timer</code> 类型的指针，用于关联客户端的定时器。</li>
+</ul>
+</li>
+</ul>
+<p>通过前向声明，可以在该头文件中使用 <code>util_timer</code> 类型的指针而不需要包含完整的 <code>util_timer</code> 类定义。这有助于避免循环包含问题。</p>
+<h2 id="定时器类"><a href="#定时器类" class="headerlink" title="定时器类"></a>定时器类</h2><p>这个定时器类通常用于实现定时任务，比如在网络编程中，可以使用定时器来管理连接的超时，定期清理不活跃的连接等。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定时器类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">util_timer</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">util_timer</span>():<span class="built_in">prev</span>(<span class="literal">nullptr</span>), <span class="built_in">next</span>(<span class="literal">nullptr</span>)&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="type">time_t</span> expire;                  <span class="comment">// 超时时间</span></span><br><span class="line">    <span class="built_in">void</span> (*cb_func)(client_data*);  <span class="comment">// 回调函数</span></span><br><span class="line">    client_data *user_data;         <span class="comment">// 连接资源</span></span><br><span class="line">    util_timer *prev;               <span class="comment">// 前指针</span></span><br><span class="line">    util_timer *next;               <span class="comment">// 后指针</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个定时器类 <code>util_timer</code> 的实现。以下是该类中的主要成员和说明：</p>
+<ul>
+<li><code>util_timer()</code>：构造函数，用于初始化 <code>util_timer</code> 对象。在构造函数中，<code>prev</code> 和 <code>next</code> 被初始化为 <code>nullptr</code>，表示初始时还没有前一个和后一个定时器。</li>
+<li><code>expire</code>：定时器的超时时间，使用 <code>time_t</code> 类型表示。当当前时间超过 <code>expire</code> 时，定时器即过期。</li>
+<li><code>cb_func</code>：回调函数指针，指向一个以 <code>client_data*</code> 为参数的函数。当定时器到期时，将调用这个回调函数进行特定的操作。</li>
+<li><code>user_data</code>：连接资源，通常是一个指向连接相关信息的结构体或对象的指针，用于在定时器到期时执行回调函数时提供必要的参数。</li>
+<li><code>prev</code> 和 <code>next</code>：分别表示定时器链表中的前一个定时器和后一个定时器。这两个指针用于将定时器组织成一个双向链表，方便在定时器到期或者被删除时快速地进行链表操作。</li>
+</ul>
+<h2 id="定时器双向链表类"><a href="#定时器双向链表类" class="headerlink" title="定时器双向链表类"></a>定时器双向链表类</h2><p>这个类主要用于管理定时器对象，通过添加、调整、删除、处理定时器来实现定时任务的功能。链表中的定时器按照过期时间升序排序，方便快速定位到期的定时器。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定时器双向链表，按过期时间升序排序</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">sort_timer_lst</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">sort_timer_lst</span>();</span><br><span class="line">    ~<span class="built_in">sort_timer_lst</span>();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">add_timer</span><span class="params">(util_timer *timer)</span></span>;      <span class="comment">// 添加定时器</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">adjust_timer</span><span class="params">(util_timer *timer)</span></span>;   <span class="comment">// 调整定时器</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">del_timer</span><span class="params">(util_timer *timer)</span></span>;      <span class="comment">// 删除定时器</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">tick</span><span class="params">()</span></span>;    <span class="comment">// 定时任务处理函数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">add_timer</span><span class="params">(util_timer *timer, util_timer *lst_head)</span></span>;    <span class="comment">// 辅助添加函数</span></span><br><span class="line"></span><br><span class="line">    util_timer *head;   <span class="comment">// 链表头</span></span><br><span class="line">    util_timer *tail;   <span class="comment">// 链表尾</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<p>这段代码定义了一个定时器双向链表类 <code>sort_timer_lst</code>，用于管理定时器对象，并按照过期时间升序排序。以下是代码的解释：</p>
+<ul>
+<li><code>class sort_timer_lst</code>：定时器双向链表类的声明。</li>
+<li><code>public</code> 成员函数：<ul>
+<li><code>sort_timer_lst()</code>：构造函数，用于初始化链表头尾。</li>
+<li><code>~sort_timer_lst()</code>：析构函数，用于释放链表中的所有定时器对象。</li>
+<li><code>void add_timer(util_timer *timer)</code>：添加定时器到链表中。</li>
+<li><code>void adjust_timer(util_timer *timer)</code>：调整定时器，即将定时器从原位置移动到合适的位置。</li>
+<li><code>void del_timer(util_timer *timer)</code>：从链表中删除定时器。</li>
+<li><code>void tick()</code>：定时任务处理函数，用于处理到期的定时器。</li>
+</ul>
+</li>
+<li><code>private</code> 成员函数：<ul>
+<li><code>void add_timer(util_timer *timer, util_timer *lst_head)</code>：辅助添加函数，用于在指定的链表头 <code>lst_head</code> 处添加定时器。</li>
+</ul>
+</li>
+<li>成员变量：<ul>
+<li><code>util_timer *head;</code>：链表头指针，指向定时器链表的第一个节点。</li>
+<li><code>util_timer *tail;</code>：链表尾指针，指向定时器链表的最后一个节点。</li>
+</ul>
+</li>
+</ul>
+<h3 id="构造函数-sort-timer-lst"><a href="#构造函数-sort-timer-lst" class="headerlink" title="构造函数 sort_timer_lst"></a>构造函数 sort_timer_lst</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定时器链表构造函数</span></span><br><span class="line">sort_timer_lst::<span class="built_in">sort_timer_lst</span>()&#123;</span><br><span class="line">    head = <span class="literal">nullptr</span>;</span><br><span class="line">    tail = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>sort_timer_lst</code> 类的构造函数的实现，初始化链表的头尾指针：</p>
+<p>构造函数 (<code>sort_timer_lst::sort_timer_lst()</code>)：</p>
+<ul>
+<li>将链表头指针 <code>head</code> 和链表尾指针 <code>tail</code> 初始化为 <code>nullptr</code>，表示初始时链表为空。</li>
+</ul>
+<h3 id="析构函数-sort-timer-lst"><a href="#析构函数-sort-timer-lst" class="headerlink" title="析构函数 ~sort_timer_lst"></a>析构函数 ~sort_timer_lst</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定时器链表析构函数，析构所有定时器</span></span><br><span class="line">sort_timer_lst::~<span class="built_in">sort_timer_lst</span>()&#123;</span><br><span class="line">    util_timer *tmp = head;</span><br><span class="line">    <span class="keyword">while</span> (tmp)</span><br><span class="line">    &#123;</span><br><span class="line">        head = tmp-&gt;next;</span><br><span class="line">        <span class="keyword">delete</span> tmp;</span><br><span class="line">        tmp = head;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>sort_timer_lst</code> 类的析构函数的实现，用于释放链表中的所有定时器：</p>
+<p><strong>析构函数 (<code>sort_timer_lst::~sort_timer_lst()</code>)：</strong></p>
+<ul>
+<li>使用循环遍历整个链表，删除每个节点（定时器），释放相关内存。</li>
+<li>遍历过程中，将链表头指针 <code>head</code> 指向下一个节点，然后删除当前节点。循环直到链表为空。</li>
+</ul>
+<h3 id="添加定时器（指定位置）-add-timer"><a href="#添加定时器（指定位置）-add-timer" class="headerlink" title="添加定时器（指定位置） add_timer"></a>添加定时器（指定位置） add_timer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加定时器，从给定head开始寻找可以插入的位置</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sort_timer_lst::add_timer</span><span class="params">(util_timer *timer, util_timer *lst_head)</span></span>&#123;</span><br><span class="line">    util_timer *prev = lst_head;</span><br><span class="line">    util_timer *tmp = prev-&gt;next;</span><br><span class="line">    <span class="comment">// 遍历链表，找到合适的位置插入</span></span><br><span class="line">    <span class="keyword">while</span>(tmp != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(timer-&gt;expire &lt; tmp-&gt;expire)&#123;</span><br><span class="line">            prev-&gt;next = timer;</span><br><span class="line">            timer-&gt;next = tmp;</span><br><span class="line">            tmp-&gt;prev = timer;</span><br><span class="line">            timer-&gt;prev = prev;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        prev = tmp;</span><br><span class="line">        tmp = tmp-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果找到位置，则插入；否则插入到链表尾部</span></span><br><span class="line">    <span class="keyword">if</span>(tmp != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        prev-&gt;next = timer;</span><br><span class="line">        timer-&gt;prev = prev;</span><br><span class="line">        timer-&gt;next = <span class="literal">nullptr</span>;</span><br><span class="line">        tail = timer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>add_timer</code> 函数用于向定时器链表中添加定时器。</li>
+<li>参数 <code>timer</code> 是待添加的定时器，参数 <code>lst_head</code> 是链表的头节点，表示从哪个位置开始寻找插入位置。</li>
+<li>首先，定义两个指针 <code>prev</code> 和 <code>tmp</code> 分别指向 <code>lst_head</code> 的下一个节点，初始化为链表头部。</li>
+<li>然后，遍历链表，比较 <code>timer</code> 的超时时间和当前节点 <code>tmp</code> 的超时时间，找到合适的位置插入。</li>
+<li>如果找到合适的位置，插入 <code>timer</code> 到 <code>prev</code> 和 <code>tmp</code> 之间，调整指针指向。</li>
+<li>如果找不到合适的位置，将 <code>timer</code> 插入到链表尾部，更新 <code>tail</code> 指针。</li>
+<li>这样，保证链表按照超时时间升序排列。</li>
+</ul>
+<h3 id="添加定时器（头结点）-add-timer"><a href="#添加定时器（头结点）-add-timer" class="headerlink" title="添加定时器（头结点） add_timer"></a>添加定时器（头结点） add_timer</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 添加定时器，按过期时间升序插入</span><br><span class="line">void sort_timer_lst::add_timer(util_timer *timer)&#123;</span><br><span class="line">    if(timer == nullptr)</span><br><span class="line">        return ;</span><br><span class="line">    if(head == nullptr)&#123;</span><br><span class="line">        head = tail = timer;</span><br><span class="line">        return ;</span><br><span class="line">    &#125;</span><br><span class="line">    // 添加到链表头</span><br><span class="line">    if(timer-&gt;expire &lt; head-&gt;expire)&#123;</span><br><span class="line">        timer-&gt;next = head;</span><br><span class="line">        head-&gt;prev = timer;</span><br><span class="line">        head = timer;</span><br><span class="line">        return ;</span><br><span class="line">    &#125;</span><br><span class="line">    // 添加到链表中</span><br><span class="line">    add_timer(timer,head);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>sort_timer_lst</code> 类的添加定时器函数的实现，用于将定时器按照超时时间升序插入链表中：</p>
+<p><strong>详解：</strong></p>
+<ol>
+<li><strong>空链表情况：</strong><ul>
+<li>如果链表为空（<code>head</code> 为 <code>nullptr</code>），直接将 <code>head</code> 和 <code>tail</code> 指向传入的定时器，表示链表中只有一个定时器。</li>
+</ul>
+</li>
+<li><strong>插入到链表头部情况：</strong><ul>
+<li>如果传入的定时器的超时时间小于链表头部定时器的超时时间，将传入的定时器插入到链表头部，更新 <code>head</code> 指针。</li>
+</ul>
+</li>
+<li><strong>调用辅助函数 <code>add_timer</code>：</strong><ul>
+<li>如果传入的定时器的超时时间大于等于链表头部定时器的超时时间，调用辅助函数 <code>add_timer</code> 进行插入操作。</li>
+</ul>
+</li>
+<li><strong>辅助函数 <code>add_timer</code>：</strong><ul>
+<li>辅助函数的目标是在链表中找到合适的位置插入新的定时器，以保持链表的升序排序。</li>
+<li>通过比较定时器的超时时间，找到合适的位置插入新的定时器。</li>
+<li>如果找到合适的位置，插入定时器并调整前后指针，保持链表的有序性。</li>
+<li>如果找不到合适的位置，将定时器插入到链表尾部，更新 <code>tail</code> 指针。</li>
+</ul>
+</li>
+</ol>
+<h3 id="调整定时器-adjust-timer"><a href="#调整定时器-adjust-timer" class="headerlink" title="调整定时器 adjust_timer"></a>调整定时器 adjust_timer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调整定时器</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sort_timer_lst::adjust_timer</span><span class="params">(util_timer *timer)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(timer == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    util_timer *tmp = timer-&gt;next;</span><br><span class="line">    <span class="keyword">if</span>(tmp == <span class="literal">nullptr</span> || (timer-&gt;expire &lt; tmp-&gt;expire))&#123;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 先从链表中删除，再重新按顺序插入</span></span><br><span class="line">    <span class="keyword">if</span>(timer == head)&#123;</span><br><span class="line">        head = head-&gt;next;</span><br><span class="line">        head-&gt;prev = <span class="literal">nullptr</span>;</span><br><span class="line">        timer-&gt;next = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="built_in">add_timer</span>(timer,head);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        timer-&gt;prev-&gt;next = timer-&gt;next;</span><br><span class="line">        timer-&gt;next-&gt;prev = timer-&gt;prev;</span><br><span class="line">        <span class="built_in">add_timer</span>(timer,timer-&gt;next);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>sort_timer_lst</code> 类的调整定时器函数的实现，用于将链表中的定时器重新按照超时时间升序排列：</p>
+<ol>
+<li><strong>空链表或只有一个定时器情况：</strong><ul>
+<li>如果链表为空或只有一个定时器，无需调整，直接返回。</li>
+</ul>
+</li>
+<li><strong>比较当前定时器和下一个定时器的超时时间：</strong><ul>
+<li>如果当前定时器的超时时间小于下一个定时器的超时时间，无需调整，直接返回。</li>
+</ul>
+</li>
+<li><strong>删除当前定时器并重新插入：</strong><ul>
+<li>如果当前定时器是链表头部的定时器，从链表头部删除，然后调用添加定时器函数 <code>add_timer</code> 重新插入链表。</li>
+<li>如果当前定时器不是链表头部的定时器，从链表中删除，然后调用添加定时器函数 <code>add_timer</code> 从删除点的下一个位置开始重新插入链表。</li>
+</ul>
+</li>
+</ol>
+<h3 id="删除定时器-del-timer"><a href="#删除定时器-del-timer" class="headerlink" title="删除定时器 del_timer"></a>删除定时器 del_timer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 删除定时器</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sort_timer_lst::del_timer</span><span class="params">(util_timer *timer)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(timer == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>((timer == head) &amp;&amp; (timer == tail))&#123;</span><br><span class="line">        <span class="keyword">delete</span> timer;</span><br><span class="line">        head = <span class="literal">nullptr</span>;</span><br><span class="line">        tail = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(timer == head)&#123;</span><br><span class="line">        head = head-&gt;next;</span><br><span class="line">        head-&gt;prev = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">delete</span> timer;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(timer == tail)&#123;</span><br><span class="line">        tail = tail-&gt;prev;</span><br><span class="line">        tail-&gt;next = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">delete</span> timer;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    timer-&gt;prev-&gt;next = timer-&gt;next;</span><br><span class="line">    timer-&gt;next-&gt;prev = timer-&gt;prev;</span><br><span class="line">    <span class="keyword">delete</span> timer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>sort_timer_lst</code> 类的删除定时器函数的实现，用于从链表中删除指定的定时器：</p>
+<ol>
+<li><strong>空链表情况：</strong><ul>
+<li>如果链表为空，直接返回，无需删除。</li>
+</ul>
+</li>
+<li><strong>删除链表头部定时器情况：</strong><ul>
+<li>如果待删除的定时器是链表头部的定时器，将链表头部指针移动到下一个定时器，并删除原链表头部定时器。</li>
+</ul>
+</li>
+<li><strong>删除链表尾部定时器情况：</strong><ul>
+<li>如果待删除的定时器是链表尾部的定时器，将链表尾部指针移动到上一个定时器，并删除原链表尾部定时器。</li>
+</ul>
+</li>
+<li><strong>一般情况：</strong><ul>
+<li>如果待删除的定时器不是头部或尾部定时器，将待删除定时器的前后节点连接起来，然后删除待删除定时器。</li>
+</ul>
+</li>
+</ol>
+<h3 id="定时任务处理函数-tick"><a href="#定时任务处理函数-tick" class="headerlink" title="定时任务处理函数 tick"></a>定时任务处理函数 tick</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SIGALRM 信号每次被触发，主循环中调有一次定时任务处理函数，处理链表容器中到期的定时器</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sort_timer_lst::tick</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">time_t</span> cur = <span class="built_in">time</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    util_timer *tmp = head;</span><br><span class="line">    <span class="keyword">while</span>(tmp != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(cur &lt; tmp-&gt;expire)&#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 过期时间小于当前时间，释放连接</span></span><br><span class="line">        tmp-&gt;<span class="built_in">cb_func</span>(tmp-&gt;user_data);</span><br><span class="line">        head = tmp-&gt;next;</span><br><span class="line">        <span class="keyword">if</span>(head != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            head-&gt;prev = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">delete</span> tmp;</span><br><span class="line">        tmp = head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="通用类"><a href="#通用类" class="headerlink" title="通用类"></a>通用类</h2><p>这个类主要包含了一些通用的工具函数，例如处理信号、初始化定时器、设置非阻塞模式、添加文件描述符到 <code>epoll</code> 事件表等。这些工具函数在服务器程序中可能会被频繁调用，用于处理与网络、定时器相关的操作。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通用类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Utils</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Utils</span>()&#123;&#125;</span><br><span class="line">    ~<span class="built_in">Utils</span>()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 静态函数避免this指针</span></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">sig_handler</span><span class="params">(<span class="type">int</span> sig)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">(<span class="type">int</span> timeslot)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">setnonblocking</span><span class="params">(<span class="type">int</span> fd)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addfd</span><span class="params">(<span class="type">int</span> epollfd, <span class="type">int</span> fd, <span class="type">bool</span> one_shot, <span class="type">int</span> TRIGMode)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">addsig</span><span class="params">(<span class="type">int</span> sig, <span class="type">void</span>(*handler)(<span class="type">int</span>), <span class="type">bool</span> restart = <span class="literal">true</span>)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">timer_handler</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">show_error</span><span class="params">(<span class="type">int</span> connfd, <span class="type">const</span> <span class="type">char</span> *info)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> *u_pipefd;           <span class="comment">// 本地套接字</span></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> u_epollfd;           <span class="comment">// epoll句柄</span></span><br><span class="line">    sort_timer_lst m_timer_lst;     <span class="comment">// 定时器链表</span></span><br><span class="line">    <span class="type">int</span> m_timeslot;                 <span class="comment">// 定时时间</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码定义了一个通用类 <code>Utils</code>，主要包含了一些静态和非静态的工具函数。以下是对这个类的主要函数的解释：</p>
+<ul>
+<li><strong>构造函数和析构函数：</strong><ul>
+<li><code>Utils()</code>：构造函数，用于初始化 <code>Utils</code> 类的实例。</li>
+<li><code>~Utils()</code>：析构函数，用于释放 <code>Utils</code> 类的实例。</li>
+</ul>
+</li>
+<li><strong>静态成员变量：</strong><ul>
+<li><code>static int *u_pipefd;</code>：本地套接字数组。</li>
+<li><code>static int u_epollfd;</code>：<code>epoll</code> 句柄。</li>
+</ul>
+</li>
+<li><strong>非静态成员变量：</strong><ul>
+<li><code>sort_timer_lst m_timer_lst;</code>：定时器链表对象。</li>
+<li><code>int m_timeslot;</code>：定时时间。</li>
+</ul>
+</li>
+<li><strong>静态函数：</strong><ul>
+<li><code>static void sig_handler(int sig)</code>：信号处理函数。用于处理指定信号 <code>sig</code> 的行为。</li>
+</ul>
+</li>
+<li><strong>非静态函数：</strong><ul>
+<li><code>void init(int timeslot)</code>：初始化函数，用于初始化定时时间。</li>
+<li><code>int setnonblocking(int fd)</code>：设置文件描述符 <code>fd</code> 为非阻塞模式。</li>
+<li><code>void addfd(int epollfd, int fd, bool one_shot, int TRIGMode)</code>：将文件描述符 <code>fd</code> 添加到 <code>epoll</code> 事件表中。</li>
+<li><code>void addsig(int sig, void(*handler)(int), bool restart = true)</code>：添加信号处理函数，指定信号 <code>sig</code> 的处理函数为 <code>handler</code>。</li>
+<li><code>void timer_handler()</code>：定时器处理函数，用于处理定时器到期的事件。</li>
+<li><code>void show_error(int connfd, const char *info)</code>：显示错误信息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="初始化函数-init"><a href="#初始化函数-init" class="headerlink" title="初始化函数 init"></a>初始化函数 init</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Utils::init</span><span class="params">(<span class="type">int</span> timeslot)</span></span>&#123;</span><br><span class="line">    m_timeslot = timeslot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设置时间槽大小：</p>
+<ul>
+<li>将函数参数 <code>timeslot</code> 赋值给类成员变量 <code>m_timeslot</code>，即设置定时器时间槽大小。</li>
+</ul>
+<p>该函数用于初始化 <code>Utils</code> 类的定时器时间槽大小。</p>
+<h3 id="设置非阻塞-setnoblocking"><a href="#设置非阻塞-setnoblocking" class="headerlink" title="设置非阻塞 setnoblocking"></a>设置非阻塞 setnoblocking</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置非阻塞，读不到数据时返回-1，并设置errno为EAGAIN</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">Utils::setnoblocking</span><span class="params">(<span class="type">int</span> fd)</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> old_option = <span class="built_in">fcntl</span>(fd,F_GETFL);</span><br><span class="line">    <span class="type">int</span> new_option = old_option | O_NONBLOCK;</span><br><span class="line">    <span class="built_in">fcntl</span>(fd,F_SETFL,new_option);</span><br><span class="line">    <span class="keyword">return</span> old_option;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Utils</code> 类的设置非阻塞函数 <code>setnonblocking</code> 的实现，用于将指定文件描述符设置为非阻塞模式：</p>
+<ol>
+<li><strong>获取旧的文件描述符状态：</strong><ul>
+<li>使用 <code>fcntl</code> 函数的 <code>F_GETFL</code> 命令获取文件描述符 <code>fd</code> 的当前状态，并将其保存在变量 <code>old_option</code> 中。</li>
+</ul>
+</li>
+<li><strong>设置新的文件描述符状态：</strong><ul>
+<li>使用位运算将 <code>O_NONBLOCK</code> 标志加入到 <code>old_option</code> 中，形成新的文件描述符状态 <code>new_option</code>。</li>
+</ul>
+</li>
+<li><strong>将新的文件描述符状态应用到文件描述符：</strong><ul>
+<li>使用 <code>fcntl</code> 函数的 <code>F_SETFL</code> 命令，将新的文件描述符状态 <code>new_option</code> 应用到文件描述符 <code>fd</code> 上。</li>
+</ul>
+</li>
+<li><strong>返回旧的文件描述符状态：</strong><ul>
+<li>返回调用该函数之前文件描述符的状态，即返回 <code>old_option</code>。</li>
+</ul>
+</li>
+</ol>
+<h3 id="向epoll注册事件-addfd"><a href="#向epoll注册事件-addfd" class="headerlink" title="向epoll注册事件 addfd"></a>向epoll注册事件 addfd</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 向epoll注册事件</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Utils::addfd</span><span class="params">(<span class="type">int</span> epollfd, <span class="type">int</span> fd, <span class="type">bool</span> one_shot, <span class="type">int</span> TRIGMode)</span></span>&#123;</span><br><span class="line">    epoll_event event;</span><br><span class="line">    event.data.fd = fd;</span><br><span class="line">    <span class="comment">// ET模式</span></span><br><span class="line">    <span class="keyword">if</span>(TRIGMode == <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="comment">// EPOLLRDHUP 对端关闭</span></span><br><span class="line">        event.events = EPOLLIN | EPOLLET | EPOLLRDHUP;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;  <span class="comment">// 默认LT模式</span></span><br><span class="line">        event.events = EPOLLIN | EPOLLRDHUP;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 只触发一次</span></span><br><span class="line">    <span class="keyword">if</span>(one_shot)&#123;</span><br><span class="line">        event.events |= EPOLLONESHOT;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">epoll_ctl</span>(epollfd,EPOLL_CTL_ADD,fd,&amp;event);</span><br><span class="line">    <span class="comment">// 设置非阻塞</span></span><br><span class="line">    <span class="built_in">setnoblocking</span>(fd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Utils</code> 类的向 <code>epoll</code> 注册事件的函数 <code>addfd</code> 的实现，用于向指定的<code>epoll</code>实例注册事件：</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li><code>epollfd</code>:<code>epoll</code> 实例的文件描述符。</li>
+<li><code>fd</code>: 要注册的文件描述符。</li>
+<li><code>one_shot</code>: 是否设置为一次性事件。</li>
+<li><code>TRIGMode</code>: 触发模式，1 表示使用 ET 模式，0 表示使用默认的 <code>LT</code> 模式。</li>
+</ul>
+<p><strong>详解：</strong></p>
+<ol>
+<li><strong>初始化 <code>epoll_event</code> 结构体：</strong><ul>
+<li>创建一个 <code>epoll_event</code> 结构体实例 <code>event</code>，并将要注册的文件描述符 <code>fd</code> 存储在 <code>event.data.fd</code> 中。</li>
+</ul>
+</li>
+<li><strong>设置事件类型：</strong><ul>
+<li>根据触发模式 <code>TRIGMode</code> 的值设置事件类型，如果为 1（ET 模式），则设置 <code>EPOLLIN</code>、<code>EPOLLET</code> 和 <code>EPOLLRDHUP</code> 事件；否则，默认使用 LT 模式，只设置 <code>EPOLLIN</code> 和 <code>EPOLLRDHUP</code> 事件。</li>
+</ul>
+</li>
+<li><strong>设置一次性事件：</strong><ul>
+<li>如果 <code>one_shot</code> 为 <code>true</code>，则将 <code>EPOLLONESHOT</code> 标志添加到事件类型中，表示这是一个一次性事件。</li>
+</ul>
+</li>
+<li><strong>向 epoll 实例注册事件：</strong><ul>
+<li>使用 <code>epoll_ctl</code> 函数向 <code>epoll</code>实例注册事件，将事件添加到事件列表中。</li>
+</ul>
+</li>
+<li><strong>设置文件描述符为非阻塞模式：</strong><ul>
+<li>调用 <code>setnonblocking</code> 函数将文件描述符 <code>fd</code> 设置为非阻塞模式。</li>
+</ul>
+</li>
+</ol>
+<h3 id="信号处理函数-sig-handler"><a href="#信号处理函数-sig-handler" class="headerlink" title="信号处理函数 sig_handler"></a>信号处理函数 sig_handler</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 信号处理函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Utils::sig_handler</span><span class="params">(<span class="type">int</span> sig)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 为保证函数的可重入性，保留原来的errno</span></span><br><span class="line">    <span class="comment">// 可重入性表示中断后再次进入该函数，环境变量与之前相同，不会丢失数据</span></span><br><span class="line">    <span class="type">int</span> save_errno = errno;</span><br><span class="line">    <span class="type">int</span> msg = sig;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将信号从管道写端写入，以字符类型传输</span></span><br><span class="line">    <span class="comment">// 回到主循环处理信号业务逻辑</span></span><br><span class="line">    <span class="built_in">send</span>(u_epollfd[<span class="number">1</span>],(<span class="type">char</span> *)&amp;msg,<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 恢复errno</span></span><br><span class="line">    errno = save_errno;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Utils</code> 类中的信号处理函数 <code>sig_handler</code> 的实现，用于处理捕获到的信号：</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li><code>sig</code>: 捕获到的信号。</li>
+</ul>
+<p><strong>详解：</strong></p>
+<ol>
+<li><strong>保留原始 <code>errno</code>：</strong><ul>
+<li>为了保证函数的可重入性，首先保存当前的 <code>errno</code>，以便后续恢复。</li>
+</ul>
+</li>
+<li><strong>将信号写入管道：</strong><ul>
+<li>将捕获到的信号 <code>sig</code> 通过管道的写端（<code>u_epollfd[1]</code>）写入，以字符类型传输。</li>
+</ul>
+</li>
+<li><strong>恢复 <code>errno</code>：</strong><ul>
+<li>恢复之前保存的 <code>errno</code>，保证函数的可重入性。</li>
+</ul>
+</li>
+</ol>
+<p>该函数将捕获到的信号发送到主循环中，通过管道实现了信号的跨线程通信，主循环将会从管道的读端读取到信号，并进行相应的处理逻辑。这种机制常用于处理信号与主程序逻辑的异步通信。</p>
+<h3 id="设置信号-addsig"><a href="#设置信号-addsig" class="headerlink" title="设置信号 addsig"></a>设置信号 addsig</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置信号</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Utils::addsig</span><span class="params">(<span class="type">int</span> sig, <span class="type">void</span> (*handler)(<span class="type">int</span>), <span class="type">bool</span> restart)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 创建sigaction结构体</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sigaction</span> sa;</span><br><span class="line">    <span class="built_in">memset</span>(&amp;sa,<span class="number">0</span>,<span class="built_in">sizeof</span>(sa));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置信号处理函数</span></span><br><span class="line">    sa.sa_handler = handler;</span><br><span class="line">    <span class="keyword">if</span>(restart)&#123;</span><br><span class="line">        <span class="comment">// 使被信号打断的系统调用重新自动发起</span></span><br><span class="line">        sa.sa_flags |= SA_RESTART;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 对信号集初始化，将所有信号添加到信号集中</span></span><br><span class="line">    <span class="built_in">sigfillset</span>(&amp;sa.sa_mask);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置信号， -1 表示有错误发生</span></span><br><span class="line">    <span class="built_in">assert</span>(<span class="built_in">sigaction</span>(sig,&amp;sa,<span class="literal">NULL</span>) != <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Utils</code> 类中的设置信号函数 <code>addsig</code> 的实现，用于设置捕获到的信号的处理函数：</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li><code>sig</code>: 要设置的信号。</li>
+<li><code>handler</code>: 信号处理函数的指针。</li>
+<li><code>restart</code>: 是否开启对系统调用的自动重启。</li>
+</ul>
+<p><strong>详解：</strong></p>
+<ol>
+<li><strong>初始化 <code>sigaction</code> 结构体：</strong><ul>
+<li>创建 <code>sigaction</code> 结构体并用 <code>memset</code> 初始化。</li>
+</ul>
+</li>
+<li><strong>设置信号处理函数：</strong><ul>
+<li>将信号处理函数指针设置为传入的 <code>handler</code>。</li>
+</ul>
+</li>
+<li><strong>设置自动重启标志（可选）：</strong><ul>
+<li>如果 <code>restart</code> 为 <code>true</code>，则设置 <code>SA_RESTART</code> 标志，使被信号打断的系统调用重新自动发起。</li>
+</ul>
+</li>
+<li><strong>初始化信号集：</strong><ul>
+<li>使用 <code>sigfillset</code> 将所有信号添加到信号集中，以确保在信号处理函数执行期间，所有信号都被阻塞。</li>
+</ul>
+</li>
+<li><strong>设置信号处理：</strong><ul>
+<li>使用 <code>sigaction</code> 函数将指定信号与设置好的 <code>sigaction</code> 结构体关联起来，实现信号的处理函数设置。</li>
+</ul>
+</li>
+</ol>
+<h3 id="定时器触发-timer-handler"><a href="#定时器触发-timer-handler" class="headerlink" title="定时器触发 timer_handler"></a>定时器触发 timer_handler</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定时器触发</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Utils::timer_handler</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 处理连接链表</span></span><br><span class="line">    m_timer_lst.<span class="built_in">tick</span>();</span><br><span class="line">    <span class="comment">// 重新设置时钟</span></span><br><span class="line">    <span class="built_in">alarm</span>(m_timeslot);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Utils</code> 类中的定时器处理函数 <code>timer_handler</code> 的实现，用于处理定时器链表中的定时器触发事件，并重新设置时钟：</p>
+<ol>
+<li><strong>处理连接链表：</strong><ul>
+<li>调用 <code>m_timer_lst.tick()</code> 处理定时器链表中的定时器触发事件。该函数的具体实现逻辑是遍历定时器链表，找到超时的定时器并执行相应的操作。</li>
+</ul>
+</li>
+<li><strong>重新设置时钟：</strong><ul>
+<li>调用 <code>alarm(m_timeslot)</code> 重新设置时钟，以确保下一次定时器的触发事件。</li>
+</ul>
+</li>
+</ol>
+<p>该函数的执行流程是在定时器触发时被调用，首先处理定时器链表中的定时器触发事件，然后重新设置时钟，为下一次触发事件做准备。这样可以保证定时器链表中的定时器得到及时处理。</p>
+<h3 id="错误信息显示函数-show-error"><a href="#错误信息显示函数-show-error" class="headerlink" title="错误信息显示函数 show_error"></a>错误信息显示函数 show_error</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Utils::show_error</span><span class="params">(<span class="type">int</span> connfd, <span class="type">const</span> <span class="type">char</span> *info)</span></span>&#123;</span><br><span class="line">    <span class="built_in">send</span>(connfd,info,<span class="built_in">strlen</span>(info),<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">close</span>(connfd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Utils</code> 类中的错误信息显示函数 <code>show_error</code> 的实现，用于向指定连接发送错误信息并关闭连接：</p>
+<p><strong>详解：</strong></p>
+<ol>
+<li><strong>发送错误信息：</strong><ul>
+<li>使用 <code>send</code> 函数向连接（<code>connfd</code>）发送错误信息（<code>info</code>）。<code>strlen(info)</code> 表示发送 <code>info</code> 字符串的长度。</li>
+</ul>
+</li>
+<li><strong>关闭连接：</strong><ul>
+<li>使用 <code>close</code> 函数关闭连接，确保错误信息发送后连接得到关闭。</li>
+</ul>
+</li>
+</ol>
+<p>该函数在处理连接过程中出现错误时使用，通过发送错误信息告知连接一些错误详情，并关闭连接以终止与客户端的通信。</p>
+<h3 id="回调函数-cb-func"><a href="#回调函数-cb-func" class="headerlink" title="回调函数 cb_func"></a>回调函数 cb_func</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *Utils::u_pipefd = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> Utils::u_epollfd = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定时器回调函数，释放客户端连接</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">cb_func</span><span class="params">(client_data *user_data)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 删除非活动连接在socket上的注册事件</span></span><br><span class="line">    <span class="built_in">epoll_ctl</span>(Utils::u_epollfd,EPOLL_CTL_DEL,user_data-&gt;sockfd,<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">assert</span>(user_data);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 关闭socket</span></span><br><span class="line">    <span class="built_in">close</span>(user_data-&gt;sockfd);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 减少连接数</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是 <code>Utils</code> 类中的回调函数 <code>cb_func</code> 的实现，用于释放客户端连接资源：</p>
+<p><strong>详解：</strong></p>
+<ol>
+<li><strong>删除 <code>epoll</code> 注册事件：</strong><ul>
+<li>使用 <code>epoll_ctl</code> 函数删除非活动连接在 epoll 上的注册事件。这样，该连接将不再被 epoll 监听。</li>
+</ul>
+</li>
+<li><strong>关闭连接 socket：</strong><ul>
+<li>使用 <code>close</code> 函数关闭客户端连接的 socket。</li>
+</ul>
+</li>
+<li><strong>减少连接数：</strong><ul>
+<li>减少连接数，这可能是通过某种计数机制来实现的，具体实现可能在其他部分的代码中。</li>
+</ul>
+</li>
+</ol>
+<p>该回调函数通常在定时器处理过程中被调用，用于释放非活动连接的资源。</p>
+
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                从零实现WebServer之定时器模块
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2024/01/02/从零实现WebServer之定时器模块/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Mzy</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2024-01-02 17:18</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2023/12/30/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%B1%BB/"
+                                   title="从零实现WebServer之线程池类"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">从零实现WebServer之线程池类</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <div id="waline-comment"></div>
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+        >
+          window.KeepCommentPlugin.walineOptions = JSON.parse('{}'.replace(/&#34;/g, '"'))
+
+          window.KeepCommentPlugin.initWaline = () => {
+            if (window?.Waline) {
+              window.KeepCommentPlugin.walineOptions.el = '#waline-comment'
+              window.KeepCommentPlugin.walineOptions.comment = '.post-comments-count'
+              window.KeepCommentPlugin.walineOptions.serverURL = 'https://waline-test-liart.vercel.app'
+              window.KeepCommentPlugin.walineOptions.lang = 'zh-CN' || 'zh-CN'
+              window.KeepCommentPlugin.walineOptions.reaction = 'true' === 'true'
+              window.Waline.init(window.KeepCommentPlugin.walineOptions)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initWaline()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initWaline()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E5%AE%9A%E6%97%B6%E5%99%A8%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之定时器模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.1.</span> <span class="nav-text">客户端结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">定时器类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">定时器双向链表类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-sort-timer-lst"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数 sort_timer_lst</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-sort-timer-lst"><span class="nav-number">1.3.2.</span> <span class="nav-text">析构函数 ~sort_timer_lst</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%AE%9A%E6%97%B6%E5%99%A8%EF%BC%88%E6%8C%87%E5%AE%9A%E4%BD%8D%E7%BD%AE%EF%BC%89-add-timer"><span class="nav-number">1.3.3.</span> <span class="nav-text">添加定时器（指定位置） add_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%AE%9A%E6%97%B6%E5%99%A8%EF%BC%88%E5%A4%B4%E7%BB%93%E7%82%B9%EF%BC%89-add-timer"><span class="nav-number">1.3.4.</span> <span class="nav-text">添加定时器（头结点） add_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E6%95%B4%E5%AE%9A%E6%97%B6%E5%99%A8-adjust-timer"><span class="nav-number">1.3.5.</span> <span class="nav-text">调整定时器 adjust_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%AE%9A%E6%97%B6%E5%99%A8-del-timer"><span class="nav-number">1.3.6.</span> <span class="nav-text">删除定时器 del_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0-tick"><span class="nav-number">1.3.7.</span> <span class="nav-text">定时任务处理函数 tick</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E7%B1%BB"><span class="nav-number">1.4.</span> <span class="nav-text">通用类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%87%BD%E6%95%B0-init"><span class="nav-number">1.4.1.</span> <span class="nav-text">初始化函数 init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%9D%9E%E9%98%BB%E5%A1%9E-setnoblocking"><span class="nav-number">1.4.2.</span> <span class="nav-text">设置非阻塞 setnoblocking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91epoll%E6%B3%A8%E5%86%8C%E4%BA%8B%E4%BB%B6-addfd"><span class="nav-number">1.4.3.</span> <span class="nav-text">向epoll注册事件 addfd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0-sig-handler"><span class="nav-number">1.4.4.</span> <span class="nav-text">信号处理函数 sig_handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%BF%A1%E5%8F%B7-addsig"><span class="nav-number">1.4.5.</span> <span class="nav-text">设置信号 addsig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E8%A7%A6%E5%8F%91-timer-handler"><span class="nav-number">1.4.6.</span> <span class="nav-text">定时器触发 timer_handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF%E6%98%BE%E7%A4%BA%E5%87%BD%E6%95%B0-show-error"><span class="nav-number">1.4.7.</span> <span class="nav-text">错误信息显示函数 show_error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0-cb-func"><span class="nav-number">1.4.8.</span> <span class="nav-text">回调函数 cb_func</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2022</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Mzy</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+                
+                <div class="deploy-info info-item default">
+                    
+                        本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/deploy-provider/github.png"></span> 提供部署服务
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">62.1k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E5%AE%9A%E6%97%B6%E5%99%A8%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之定时器模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.1.</span> <span class="nav-text">客户端结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">定时器类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">定时器双向链表类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-sort-timer-lst"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数 sort_timer_lst</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-sort-timer-lst"><span class="nav-number">1.3.2.</span> <span class="nav-text">析构函数 ~sort_timer_lst</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%AE%9A%E6%97%B6%E5%99%A8%EF%BC%88%E6%8C%87%E5%AE%9A%E4%BD%8D%E7%BD%AE%EF%BC%89-add-timer"><span class="nav-number">1.3.3.</span> <span class="nav-text">添加定时器（指定位置） add_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%AE%9A%E6%97%B6%E5%99%A8%EF%BC%88%E5%A4%B4%E7%BB%93%E7%82%B9%EF%BC%89-add-timer"><span class="nav-number">1.3.4.</span> <span class="nav-text">添加定时器（头结点） add_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E6%95%B4%E5%AE%9A%E6%97%B6%E5%99%A8-adjust-timer"><span class="nav-number">1.3.5.</span> <span class="nav-text">调整定时器 adjust_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%AE%9A%E6%97%B6%E5%99%A8-del-timer"><span class="nav-number">1.3.6.</span> <span class="nav-text">删除定时器 del_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0-tick"><span class="nav-number">1.3.7.</span> <span class="nav-text">定时任务处理函数 tick</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E7%B1%BB"><span class="nav-number">1.4.</span> <span class="nav-text">通用类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%87%BD%E6%95%B0-init"><span class="nav-number">1.4.1.</span> <span class="nav-text">初始化函数 init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%9D%9E%E9%98%BB%E5%A1%9E-setnoblocking"><span class="nav-number">1.4.2.</span> <span class="nav-text">设置非阻塞 setnoblocking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91epoll%E6%B3%A8%E5%86%8C%E4%BA%8B%E4%BB%B6-addfd"><span class="nav-number">1.4.3.</span> <span class="nav-text">向epoll注册事件 addfd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0-sig-handler"><span class="nav-number">1.4.4.</span> <span class="nav-text">信号处理函数 sig_handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%BF%A1%E5%8F%B7-addsig"><span class="nav-number">1.4.5.</span> <span class="nav-text">设置信号 addsig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E8%A7%A6%E5%8F%91-timer-handler"><span class="nav-number">1.4.6.</span> <span class="nav-text">定时器触发 timer_handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF%E6%98%BE%E7%A4%BA%E5%87%BD%E6%95%B0-show-error"><span class="nav-number">1.4.7.</span> <span class="nav-text">错误信息显示函数 show_error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0-cb-func"><span class="nav-number">1.4.8.</span> <span class="nav-text">回调函数 cb_func</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/toggle-theme.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/code-block.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/anime.min.js"></script>
+
+<!-- local-search -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/local-search.js"></script>
+
+
+<!-- lazyload -->
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/post-helper.js"></script>
+
+        <!-- toc -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/toc.js"></script>
+        
+
+        <!-- copyright-info -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/copyright-info.js"></script>
+        
+
+        <!-- share -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/share.js"></script>
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+
+    <!-- photos-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
