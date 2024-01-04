@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="mzy的成长历程">
+    <meta name="author" content="Mzy">
+    
+    <title>
+        
+            定时器之时间轮 |
+        
+        Mzy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/author.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/brands.min.css">
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"dybil.top","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#00CC33","title":"Mzy's Blog","author":"Mzy","avatar":"/images/author.svg","logo":"/images/author.svg","favicon":"/images/author.svg"},"menu":{"Archives":"/archives","Tags":"/tags","Categories":"/categories","Links":"/links","About":"/about","Photos":"/photos"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"social_contact":{"enable":true,"links":{"github":"https://dybil.top","weixin":"https://dybil.top","qq":"https://dybil.top","weibo":"https://dybil.top","zhihu":"https://dybil.top","twitter":"https://dybil.top","facebook":"https://dybil.top","email":"https://dybil.top"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"category":true,"tag":true,"announcement":null},"post":{"author_badge":{"enable":true,"level_badge":false,"custom_badge":["炼气","筑基","结丹","元婴","化神"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":true,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"waline","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":"https://waline-test-liart.vercel.app","reaction":true,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":true,"provider":"jsdelivr"},"pjax":{"enable":true},"footer":{"since":2022,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","version":"4.0.5"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/author.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Mzy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class=""
+                           href="/"
+                        >首页</a>
+                    </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >归档</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >标签</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >分类</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >友链</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >关于</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/photos"
+                            >相册</a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item flex-center">
+                <a class=""
+                   href="/"
+                >首页</a>
+            </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories"
+                    >分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links"
+                    >友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/photos"
+                    >相册</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        定时器之时间轮
+                    </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/author.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Mzy</span>
+                                
+                                    <span class="author-badge">元婴</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-01-04 10:38:43</span>
+                <span class="mobile">2024-01-04 10:38</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Jan 04 2024 10:39:11 GMT+0800">2024-01-04 10:39:11</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>4k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>16 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h1 id="定时器之时间轮"><a href="#定时器之时间轮" class="headerlink" title="定时器之时间轮"></a>定时器之时间轮</h1><p>基于排序链表的定时器存在一个问题：添加定时器的效率偏低。一种简单的时间轮如图所示：</p>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/1625345-20190513163827874-1380641046.png"  alt="时间轮"></p>
+<p>在这个时间轮中，实线指针指向轮子上的一个槽（slot）。它以恒定的速度顺时针转动，每转动一步就指向下一个槽（slot）。每次转动称为一个滴答（tick）。一个tick时间间隔为时间轮的<code>si</code>（slot interval）。该时间轮共有<code>N</code>个槽，因此它转动一周的时间是<code>N*si</code>。每个槽指向一条定时器链表，每条链表上的定时器具有相同的特征：它们的定时时间相差<code>N*si</code>的整数倍。时间轮正是利用这个关系将定时器散列到不同的链表中。假如现在指针指向槽<code>cs</code>，我们要添加一个定时时间为<code>ti</code>的定时器，则该定时器将被插入槽<code>ts</code>（timer slot）对应的链表中：<br>$$<br>ts&#x3D;(cs+\frac{ti}{si})%N<br>$$<br>这个公式用于计算在时间轮中插入定时器时，定时器应该插入的槽（slot）位置。</p>
+<ul>
+<li>$$<ul>
+<li>cs：当前指针指向的槽的位置。\</li>
+<li>\frac{ti}{si}	：定时器的定时时间。\</li>
+<li>si：槽间隔，即每个槽代表的时间。\</li>
+<li>N：时间轮的槽数。<br>$$</li>
+</ul>
+</li>
+</ul>
+<p>具体解释如下：</p>
+<ol>
+<li>计算定时器应该插入的槽相对于当前指针指向的槽的偏移量：<code>ti/si</code>。这个偏移量表示定时器的定时时间需要经过多少个槽间隔。</li>
+<li>将偏移量加上当前指针指向的槽的位置 <code>cs</code>，得到插入槽的绝对位置。</li>
+<li>使用模运算 <code>N</code>，确保插入的槽位置在时间轮的范围内。这是因为时间轮是循环的，超过最大槽数时需要回到起点。</li>
+</ol>
+<p>因此，公式的含义是，根据当前指针指向的槽位置和定时器的定时时间，计算出定时器应该插入的槽位置。</p>
+<p>基于排序链表的定时器使用唯一的一条链表来管理所有的定时器，所以插入操作的效率随着定时器的数目增多而降低。而时间轮使用了哈希表处理冲突的思想，将定时器散列到不同的链表上。这样每条链表上的定时器数目都将明显少于原来的排序链表上的定时器数目，插入操作的效率基本不受定时器数目的影响。很显然，对于时间轮而言，要<strong>提高精度</strong>，就要使<code>si</code>的值足够小; 要<strong>提高执行效率</strong>，则要求<code>N</code>值足够大，使定时器尽可能的分布在不同的槽。</p>
+<h2 id="客户端结构体"><a href="#客户端结构体" class="headerlink" title="客户端结构体"></a>客户端结构体</h2><p>这样的结构体通常用于存储与网络编程相关的客户端数据，其中 <code>tw_timer</code> 类型的 <code>timer</code> 成员可能用于实现定时器功能，用于跟踪特定客户端的超时或其他时间相关事件。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 前向声明</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">tw_timer</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用户数据结构</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">client_data</span>&#123;</span><br><span class="line">    sockaddr_in address;</span><br><span class="line">    <span class="type">int</span> sockfd;</span><br><span class="line">    <span class="type">char</span> buf[BUFFER_SIZE];  <span class="comment">// 存储数据缓冲区</span></span><br><span class="line">    tw_timer* timer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义了一个名为 <code>client_data</code> 的结构体，其中包含以下成员：</p>
+<ul>
+<li><code>address</code>: 一个 <code>sockaddr_in</code> 类型的成员，用于存储网络地址信息。</li>
+<li><code>sockfd</code>: 一个整数类型的成员，用于存储套接字描述符。</li>
+<li><code>buf</code>: 一个字符数组，大小为 <code>BUFFER_SIZE</code>，用于存储数据缓冲区。</li>
+<li><code>timer</code>: 一个指向 <code>tw_timer</code> 类型对象的指针。这个指针用于关联一个计时器对象到用户数据结构中。</li>
+</ul>
+<h2 id="基于时间轮的定时器类"><a href="#基于时间轮的定时器类" class="headerlink" title="基于时间轮的定时器类"></a>基于时间轮的定时器类</h2><p>构造函数使用成员初始化列表来初始化类的成员变量，而在类中的两个 <code>public:</code> 标记之间，有一个 <code>public</code> 访问修饰符，表示以下成员（<code>rotation</code>、<code>time_slot</code>等）都是公有的，可以在类外部访问。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基于时间轮的定时器类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">tw_timer</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">tw_timer</span>(<span class="type">int</span> rot, <span class="type">int</span> ts)</span><br><span class="line">    :<span class="built_in">next</span>(<span class="literal">nullptr</span>),<span class="built_in">prev</span>(<span class="literal">nullptr</span>),<span class="built_in">rotation</span>(rot),<span class="built_in">time_slot</span>(ts)&#123;&#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> rotation;                   <span class="comment">// 记录定时器在时间轮转多少圈后生效</span></span><br><span class="line">    <span class="type">int</span> time_slot;                  <span class="comment">// 记录定时器属于哪一个槽</span></span><br><span class="line">    <span class="built_in">void</span> (*cb_func)(client_data*);  <span class="comment">// 回调函数</span></span><br><span class="line">    client_data *user_data;         <span class="comment">// 指向用户的指针</span></span><br><span class="line">    tw_timer* next;                 <span class="comment">//指向上一个定时器</span></span><br><span class="line">    tw_timer* prev;                 <span class="comment">//指向下一个定时器</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>rotation</code> 和 <code>time_slot</code> 是用于记录定时器在时间轮中的位置的整数成员变量。</li>
+<li><code>cb_func</code> 是一个函数指针，指向一个回调函数，该函数接受一个 <code>client_data*</code> 参数，用于在定时器触发时执行特定的操作。</li>
+<li><code>user_data</code> 是一个指向 <code>client_data</code> 结构体的指针，用于存储与定时器相关联的用户数据。</li>
+<li><code>next</code> 和 <code>prev</code> 是指向下一个和上一个定时器节点的指针，用于在时间轮上组织定时器节点的链表结构。</li>
+</ul>
+<div class="keep-note success"><ul>
+<li>在C++中，类的构造函数体中的成员初始化列表是在花括号之后定义的，并且这个列表的最后不需要分号。这是因为成员初始化列表的目的是初始化类的成员变量，而不是执行语句块。分号通常用于终结语句，而成员初始化列表不是一个语句块，而是一个在构造函数体之前执行的特殊部分。</li>
+</ul>
+</div>
+
+<h2 id="时间轮类"><a href="#时间轮类" class="headerlink" title="时间轮类"></a>时间轮类</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 时间轮类：管理定时器</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">timer_wheel</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> N = <span class="number">60</span>;    <span class="comment">// 时间轮的槽数</span></span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> TI = <span class="number">1</span>;    <span class="comment">// 时间轮的槽间隔</span></span><br><span class="line">    tw_timer* slots[N];         <span class="comment">// 每个槽的头指针，指向定时器链表的头节点</span></span><br><span class="line">    <span class="type">int</span> cur_slot;               <span class="comment">// 当前时间轮指向的槽</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="构造函数-timer-wheel"><a href="#构造函数-timer-wheel" class="headerlink" title="构造函数 timer_wheel"></a>构造函数 timer_wheel</h3><p>这段代码的目的是在创建时间轮对象时，将类的成员变量初始化为合适的初始值。初始化列表用于初始化 <code>cur_slot</code>，而循环语句用于将每个槽的头指针初始化为空指针。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">timer_wheel</span>() : <span class="built_in">cur_slot</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">        slots[i] = <span class="literal">nullptr</span>;     <span class="comment">// 每个槽点头节点初始化为空</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>timer_wheel()</code>: 这是构造函数的定义，表示创建 <code>timer_wheel</code> 类的对象时将执行的初始化操作。</li>
+<li><code>: cur_slot(0)</code>: 成员初始化列表的一部分，用于将 <code>cur_slot</code> 成员变量初始化为0。这表示时间轮创建时，当前指针指向槽0。</li>
+<li><code>for (int i = 0; i &lt; N; ++i)</code>: 这是一个循环语句，用于遍历时间轮的每个槽。</li>
+<li><code>slots[i] = nullptr;</code>: 在循环中，每次迭代都将 <code>slots[i]</code> 初始化为 <code>nullptr</code>，表示每个槽的头指针初始为空。这是因为在时间轮创建时，还没有任何定时器加入。</li>
+</ul>
+<h3 id="析构函数-timer-wheel"><a href="#析构函数-timer-wheel" class="headerlink" title="析构函数 ~timer_wheel"></a>析构函数 ~timer_wheel</h3><p>这段代码的目的是在销毁时间轮对象时，遍历每个槽中的定时器链表，并释放每个定时器节点占用的内存，确保没有内存泄漏。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">~<span class="built_in">timer_wheel</span>()&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; i++)&#123;</span><br><span class="line">        tw_timer* tmp = slots[i];</span><br><span class="line">        <span class="keyword">while</span>(tmp != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            slots[i] = tmp-&gt;next;</span><br><span class="line">            <span class="keyword">delete</span> tmp; <span class="comment">// 遍历每个槽销毁new分配在堆中的定时器</span></span><br><span class="line">            tmp = slots[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>~timer_wheel()</code>: 这是析构函数的定义，表示当 <code>timer_wheel</code> 类的对象被销毁时将执行的清理操作。</li>
+<li><code>for (int i = 0; i &lt; N; i++)</code>: 这是一个循环语句，用于遍历时间轮的每个槽。</li>
+<li><code>tw_timer* tmp = slots[i];</code>: 在循环中，首先声明一个指针 <code>tmp</code> 并将其初始化为当前槽的头指针 <code>slots[i]</code>。</li>
+<li><code>while (tmp != nullptr) &#123;</code>: 这是一个 while 循环，用于遍历当前槽中的定时器链表。</li>
+<li><code>slots[i] = tmp-&gt;next;</code>: 将当前槽的头指针指向下一个定时器节点，以准备下一次循环。</li>
+<li><code>delete tmp;</code>: 删除当前定时器节点，释放其在堆上分配的内存。</li>
+<li><code>tmp = slots[i];</code>: 更新 <code>tmp</code> 指针，指向当前槽的头指针，以便继续下一次循环。</li>
+</ul>
+<h3 id="添加新的定时器-add-timer"><a href="#添加新的定时器-add-timer" class="headerlink" title="添加新的定时器 add_timer"></a>添加新的定时器 add_timer</h3><p>这个函数的目的是根据给定的超时时间，在时间轮中创建并插入一个定时器，并返回指向该定时器的指针。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据 timeout 创建一个定时器, 并插入时间轮, </span></span><br><span class="line">    <span class="comment">// 返回创建的定时器指针, 用户拿到指针后再加入对应的用户数据</span></span><br><span class="line">    <span class="function">tw_timer* <span class="title">add_timer</span><span class="params">(<span class="type">int</span> timeout)</span></span>&#123;   <span class="comment">// 添加新的定时器，插入到合适的槽中</span></span><br><span class="line">        <span class="keyword">if</span>(timeout &lt; <span class="number">0</span>)&#123;    <span class="comment">// 时间错误</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 计算定时器在多少个 SI 时间后触发</span></span><br><span class="line">        <span class="type">int</span> ticks = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(timeout &lt; TI)&#123;   <span class="comment">// 小于每个槽点间隔时间，则为1</span></span><br><span class="line">            ticks = <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            ticks = timeout / TI;   <span class="comment">// 相对当前位置的槽数</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> rotation = ticks / N;   <span class="comment">// 记录多少圈后生效</span></span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> ts = (cur_slot + (ticks % N)) % N;  <span class="comment">// 确定插入槽点位置</span></span><br><span class="line">        tw_timer* timer = <span class="keyword">new</span> <span class="built_in">tw_timer</span>(rotation,ts);    <span class="comment">// 根据位置和圈数，插入对应的槽中</span></span><br><span class="line">        <span class="keyword">if</span>(slots[ts] == <span class="literal">nullptr</span>)&#123; <span class="comment">// 所在槽头节点为空，直接插入</span></span><br><span class="line">            <span class="built_in">printf</span>( <span class="string">&quot;add timer, rotation is %d, ts is %d, cur_slot is %d\n&quot;</span>, rotation, ts, cur_slot );</span><br><span class="line">            slots[ts] = timer;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;  <span class="comment">// 头插法</span></span><br><span class="line">            timer-&gt;next = slots[ts];</span><br><span class="line">            slots[ts]-&gt;prev = timer;</span><br><span class="line">            slots[ts] = timer;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> timer;   <span class="comment">// 返回含有时间信息和所在槽位置的定时器</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>if (timeout &lt; 0)</code>: 如果超时时间小于0，表示时间错误，返回空指针。</li>
+<li><code>int ticks = (timeout &lt; TI) ? 1 : (timeout / TI);</code>: 计算定时器在多少个槽间隔时间后触发。</li>
+<li><code>int rotation = ticks / N;</code>: 记录多少圈后定时器生效。</li>
+<li><code>int ts = (cur_slot + (ticks % N)) % N;</code>: 确定插入槽点位置。</li>
+<li><code>tw_timer* timer = new tw_timer(rotation, ts);</code>: 根据位置和圈数创建一个新的 <code>tw_timer</code> 对象。</li>
+<li><code>if (slots[ts] == nullptr) &#123; ... &#125; else &#123; ... &#125;</code>: 根据槽中是否已经有定时器节点，采用直接插入或头插法插入新的定时器节点。</li>
+<li><code>return timer;</code>: 返回含有时间信息和所在槽位置的定时器指针。</li>
+</ul>
+<h3 id="删除目标定时器-del-timer"><a href="#删除目标定时器-del-timer" class="headerlink" title="删除目标定时器 del_timer"></a>删除目标定时器 del_timer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 删除目标定时器, 当轮子的槽较多时, 复杂度接近 O(n)</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">del_timer</span><span class="params">(tw_timer* timer)</span></span>&#123;    <span class="comment">// 从时间轮上删除定时器</span></span><br><span class="line">    <span class="keyword">if</span>(timer == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> ts = timer-&gt;time_slot;  <span class="comment">// 找到所在槽索引</span></span><br><span class="line">    <span class="comment">// 删除操作</span></span><br><span class="line">    <span class="keyword">if</span>(timer == slots[ts])&#123;     <span class="comment">// 头节点特殊处理</span></span><br><span class="line">        slots[ts] = slots[ts]-&gt;next;</span><br><span class="line">        <span class="keyword">if</span>(slots[ts] != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            slots[ts]-&gt;prev = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">delete</span> timer;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;      <span class="comment">// 其他节点, 双链表的删除操作</span></span><br><span class="line">        timer-&gt;prev-&gt;next = timer-&gt;next;</span><br><span class="line">        <span class="keyword">if</span>(timer-&gt;next != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            timer-&gt;next-&gt;prev = timer-&gt;prev;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">delete</span> timer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数的目的是从时间轮中删除指定的定时器。</p>
+<ul>
+<li><code>if (timer == nullptr) &#123; return; &#125;</code>: 如果传入的定时器指针为空，直接返回，不执行删除操作。</li>
+<li><code>int ts = timer-&gt;time_slot;</code>: 获取定时器所在槽的索引。</li>
+<li><code>if (timer == slots[ts]) &#123; ... &#125; else &#123; ... &#125;</code>: 如果目标定时器是头节点，则特殊处理，否则执行双链表的删除操作。<ul>
+<li><code>slots[ts] = slots[ts]-&gt;next;</code>: 更新槽的头节点指针。</li>
+<li><code>if (slots[ts] != nullptr) &#123; slots[ts]-&gt;prev = nullptr; &#125;</code>: 如果新的头节点不为空，更新其前驱指针为 <code>nullptr</code>。</li>
+<li><code>delete timer;</code>: 删除目标定时器。</li>
+<li>如果目标定时器不是头节点，执行双链表的删除操作：<ul>
+<li><code>timer-&gt;prev-&gt;next = timer-&gt;next;</code>: 更新前一个节点的后继指针。</li>
+<li><code>if (timer-&gt;next != nullptr) &#123; timer-&gt;next-&gt;prev = timer-&gt;prev; &#125;</code>: 如果目标定时器的后继节点不为空，更新其前驱指针。</li>
+<li><code>delete timer;</code>: 删除目标定时器。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="心跳函数-tick"><a href="#心跳函数-tick" class="headerlink" title="心跳函数 tick"></a>心跳函数 tick</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 心跳函数，每次跳完之后轮子向前走一个槽</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tick</span><span class="params">()</span></span>&#123;</span><br><span class="line">    tw_timer *tmp = slots[cur_slot];</span><br><span class="line">    <span class="built_in">printf</span>( <span class="string">&quot;current slot is %d\n&quot;</span>, cur_slot );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历当前槽所指向的链表</span></span><br><span class="line">    <span class="keyword">while</span> (tmp != <span class="literal">nullptr</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>( <span class="string">&quot;tick the timer once\n&quot;</span> );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(tmp-&gt;rotation &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            tmp-&gt;rotation--;</span><br><span class="line">            tmp = tmp-&gt;next;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;  <span class="comment">// 处理到期的定时器</span></span><br><span class="line">            <span class="comment">// 回调</span></span><br><span class="line">            tmp-&gt;<span class="built_in">cb_func</span>(tmp-&gt;user_data);</span><br><span class="line">            <span class="keyword">if</span>(tmp == slots[cur_slot])&#123;</span><br><span class="line">                <span class="built_in">printf</span>( <span class="string">&quot;delete header in cur_slot\n&quot;</span> );</span><br><span class="line">                slots[cur_slot] = tmp-&gt;next;</span><br><span class="line">                <span class="keyword">delete</span> tmp;</span><br><span class="line">                <span class="keyword">if</span>(slots[cur_slot] != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">                    slots[cur_slot]-&gt;prev = <span class="literal">nullptr</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                tmp = slots[cur_slot];</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                tmp-&gt;prev-&gt;next = tmp-&gt;next;</span><br><span class="line">                <span class="keyword">if</span>(tmp-&gt;next != <span class="literal">nullptr</span>)&#123;</span><br><span class="line">                    tmp-&gt;next-&gt;prev = tmp-&gt;prev;</span><br><span class="line">                &#125;</span><br><span class="line">                tw_timer* tmp2 = tmp-&gt;next;</span><br><span class="line">                <span class="keyword">delete</span> tmp;</span><br><span class="line">                tmp = tmp2;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cur_slot = ++cur_slot % N;  <span class="comment">// 轮子往后走一个槽</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数是时间轮的心跳函数，用于处理定时器的到期事件。函数逻辑如下：</p>
+<ul>
+<li><code>tw_timer* tmp = slots[cur_slot];</code>: 获取当前槽头节点指针。</li>
+<li><code>printf(&quot;current slot is %d\n&quot;, cur_slot);</code>: 打印当前槽的索引。</li>
+<li><code>while (tmp != nullptr) &#123; ... &#125;</code>: 遍历当前槽所指向的链表。<ul>
+<li><code>if (tmp-&gt;rotation &gt; 0) &#123; ... &#125; else &#123; ... &#125;</code>: 如果定时器的剩余轮数大于0，减少轮数并移动到下一个定时器。</li>
+<li>如果定时器剩余轮数为0，表示定时器到期，执行以下操作：<ul>
+<li><code>tmp-&gt;cb_func(tmp-&gt;user_data);</code>: 调用定时器的回调函数。</li>
+<li>判断是否是头节点：<ul>
+<li>如果是头节点：<ul>
+<li><code>printf(&quot;delete header in cur_slot\n&quot;);</code>: 打印删除头节点的消息。</li>
+<li><code>slots[cur_slot] = tmp-&gt;next;</code>: 更新头节点指针。</li>
+<li><code>delete tmp;</code>: 删除当前定时器。</li>
+<li>如果新的头节点不为空，更新其前驱指针。</li>
+<li><code>tmp = slots[cur_slot];</code>: 更新 tmp 指针。</li>
+</ul>
+</li>
+<li>如果不是头节点：<ul>
+<li><code>tmp-&gt;prev-&gt;next = tmp-&gt;next;</code>: 更新前一个节点的后继指针。</li>
+<li>如果定时器的后继节点不为空，更新其前驱指针。</li>
+<li><code>tw_timer* tmp2 = tmp-&gt;next;</code>: 保存下一个定时器节点的指针。</li>
+<li><code>delete tmp;</code>: 删除当前定时器。</li>
+<li><code>tmp = tmp2;</code>: 更新 <code>tmp</code> 指针。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>cur_slot = ++cur_slot % N;</code>: 轮子往后走一个槽，更新当前槽的索引。</li>
+</ul>
+<div class="keep-note success"><p><code>tmp = slots[cur_slot];</code> 这行代码的目的是将 <code>tmp</code> 指针重新指向当前槽的头节点，以便在下一轮循环中继续遍历当前槽所指向的定时器链表。</p>
+<p>在心跳函数中，<code>tmp</code> 指针用于遍历当前槽的定时器链表，处理每个定时器的情况。当一个定时器到期并被处理后，可能会影响当前槽的链表结构（例如删除头节点），所以在处理完一个定时器后，需要重新将 <code>tmp</code> 指针指向当前槽的新的头节点，以确保下一次循环可以正确遍历整个链表。</p>
+</div>
+
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;timer_wheel.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">callback_func</span><span class="params">(client_data* user_data)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 在这里进行定时器到期时的操作，这里只是简单打印一条消息</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Timer expired! sockfd: %d\n&quot;</span>, user_data-&gt;sockfd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建时间轮对象</span></span><br><span class="line">    timer_wheel tw;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加一些定时器</span></span><br><span class="line">    tw_timer* timer1 = tw.<span class="built_in">add_timer</span>(<span class="number">5</span>);  <span class="comment">// 5秒后触发</span></span><br><span class="line">    timer1-&gt;cb_func = callback_func;</span><br><span class="line">    client_data data1;</span><br><span class="line">    data1.sockfd = <span class="number">1</span>;</span><br><span class="line">    data1.timer = timer1;</span><br><span class="line">    timer1-&gt;user_data = &amp;data1;</span><br><span class="line"></span><br><span class="line">    tw_timer* timer2 = tw.<span class="built_in">add_timer</span>(<span class="number">10</span>);  <span class="comment">// 10秒后触发</span></span><br><span class="line">    timer2-&gt;cb_func = callback_func;</span><br><span class="line">    client_data data2;</span><br><span class="line">    data2.sockfd = <span class="number">2</span>;</span><br><span class="line">    data2.timer = timer2;</span><br><span class="line">    timer2-&gt;user_data = &amp;data2;</span><br><span class="line"></span><br><span class="line">    tw_timer* timer3 = tw.<span class="built_in">add_timer</span>(<span class="number">15</span>);  <span class="comment">// 15秒后触发</span></span><br><span class="line">    timer3-&gt;cb_func = callback_func;</span><br><span class="line">    client_data data3;</span><br><span class="line">    data3.sockfd = <span class="number">3</span>;</span><br><span class="line">    data3.timer = timer3;</span><br><span class="line">    timer3-&gt;user_data = &amp;data3;</span><br><span class="line"></span><br><span class="line">    tw_timer* timer4 = tw.<span class="built_in">add_timer</span>(<span class="number">65</span>);  <span class="comment">// 15秒后触发</span></span><br><span class="line">    timer4-&gt;cb_func = callback_func;</span><br><span class="line">    client_data data4;</span><br><span class="line">    data4.sockfd = <span class="number">4</span>;</span><br><span class="line">    data4.timer = timer4;</span><br><span class="line">    timer4-&gt;user_data = &amp;data4;</span><br><span class="line"></span><br><span class="line">    tw_timer* timer5 = tw.<span class="built_in">add_timer</span>(<span class="number">75</span>);  <span class="comment">// 15秒后触发</span></span><br><span class="line">    timer5-&gt;cb_func = callback_func;</span><br><span class="line">    client_data data5;</span><br><span class="line">    data5.sockfd = <span class="number">5</span>;</span><br><span class="line">    data5.timer = timer5;</span><br><span class="line">    timer5-&gt;user_data = &amp;data5;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 模拟时间流逝，每秒调用一次时间轮的 tick 函数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">76</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">sleep</span>(<span class="number">1</span>);</span><br><span class="line">        tw.<span class="built_in">tick</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">add timer, rotation is 0, ts is 5, cur_slot is 0</span><br><span class="line">add timer, rotation is 0, ts is 10, cur_slot is 0</span><br><span class="line">add timer, rotation is 0, ts is 15, cur_slot is 0</span><br><span class="line">add timer, rotation is 1, ts is 5, cur_slot is 0</span><br><span class="line">add timer, rotation is 1, ts is 15, cur_slot is 0</span><br><span class="line">current slot is 0</span><br><span class="line">current slot is 1</span><br><span class="line">current slot is 2</span><br><span class="line">current slot is 3</span><br><span class="line">current slot is 4</span><br><span class="line">current slot is 5</span><br><span class="line">tick the timer once</span><br><span class="line">tick the timer once</span><br><span class="line">Timer expired! sockfd: 1</span><br><span class="line">delete ordinary node in cur_slot</span><br><span class="line">current slot is 6</span><br><span class="line">current slot is 7</span><br><span class="line">current slot is 8</span><br><span class="line">current slot is 9</span><br><span class="line">current slot is 10</span><br><span class="line">tick the timer once</span><br><span class="line">Timer expired! sockfd: 2</span><br><span class="line">delete header in cur_slot</span><br><span class="line">current slot is 11</span><br><span class="line">current slot is 12</span><br><span class="line">current slot is 13</span><br><span class="line">current slot is 14</span><br><span class="line">current slot is 15</span><br><span class="line">tick the timer once</span><br><span class="line">tick the timer once</span><br><span class="line">Timer expired! sockfd: 3</span><br><span class="line">delete ordinary node in cur_slot</span><br><span class="line">current slot is 16</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">current slot is 59</span><br><span class="line">current slot is 0</span><br><span class="line">current slot is 1</span><br><span class="line">current slot is 2</span><br><span class="line">current slot is 3</span><br><span class="line">current slot is 4</span><br><span class="line">current slot is 5</span><br><span class="line">tick the timer once</span><br><span class="line">Timer expired! sockfd: 4</span><br><span class="line">delete header in cur_slot</span><br><span class="line">current slot is 6</span><br><span class="line">current slot is 7</span><br><span class="line">current slot is 8</span><br><span class="line">current slot is 9</span><br><span class="line">current slot is 10</span><br><span class="line">current slot is 11</span><br><span class="line">current slot is 12</span><br><span class="line">current slot is 13</span><br><span class="line">current slot is 14</span><br><span class="line">current slot is 15</span><br><span class="line">tick the timer once</span><br><span class="line">Timer expired! sockfd: 5</span><br><span class="line">delete header in cur_slot</span><br></pre></td></tr></table></figure>
+
+
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                定时器之时间轮
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2024/01/04/定时器之时间轮/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Mzy</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2024-01-04 10:38</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/01/02/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8B%E5%AE%9A%E6%97%B6%E5%99%A8%E6%A8%A1%E5%9D%97/"
+                                   title="从零实现WebServer之定时器模块"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">从零实现WebServer之定时器模块</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <div id="waline-comment"></div>
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+        >
+          window.KeepCommentPlugin.walineOptions = JSON.parse('{}'.replace(/&#34;/g, '"'))
+
+          window.KeepCommentPlugin.initWaline = () => {
+            if (window?.Waline) {
+              window.KeepCommentPlugin.walineOptions.el = '#waline-comment'
+              window.KeepCommentPlugin.walineOptions.comment = '.post-comments-count'
+              window.KeepCommentPlugin.walineOptions.serverURL = 'https://waline-test-liart.vercel.app'
+              window.KeepCommentPlugin.walineOptions.lang = 'zh-CN' || 'zh-CN'
+              window.KeepCommentPlugin.walineOptions.reaction = 'true' === 'true'
+              window.Waline.init(window.KeepCommentPlugin.walineOptions)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initWaline()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initWaline()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B9%8B%E6%97%B6%E9%97%B4%E8%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">定时器之时间轮</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.1.</span> <span class="nav-text">客户端结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E8%BD%AE%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">基于时间轮的定时器类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E8%BD%AE%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">时间轮类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-timer-wheel"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数 timer_wheel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-timer-wheel"><span class="nav-number">1.3.2.</span> <span class="nav-text">析构函数 ~timer_wheel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8-add-timer"><span class="nav-number">1.3.3.</span> <span class="nav-text">添加新的定时器 add_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E7%9B%AE%E6%A0%87%E5%AE%9A%E6%97%B6%E5%99%A8-del-timer"><span class="nav-number">1.3.4.</span> <span class="nav-text">删除目标定时器 del_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%83%E8%B7%B3%E5%87%BD%E6%95%B0-tick"><span class="nav-number">1.3.5.</span> <span class="nav-text">心跳函数 tick</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">1.4.</span> <span class="nav-text">单元测试</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2022</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Mzy</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+                
+                <div class="deploy-info info-item default">
+                    
+                        本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/deploy-provider/github.png"></span> 提供部署服务
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">66.1k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B9%8B%E6%97%B6%E9%97%B4%E8%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">定时器之时间轮</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.1.</span> <span class="nav-text">客户端结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E8%BD%AE%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">基于时间轮的定时器类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E8%BD%AE%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">时间轮类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-timer-wheel"><span class="nav-number">1.3.1.</span> <span class="nav-text">构造函数 timer_wheel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-timer-wheel"><span class="nav-number">1.3.2.</span> <span class="nav-text">析构函数 ~timer_wheel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E5%AE%9A%E6%97%B6%E5%99%A8-add-timer"><span class="nav-number">1.3.3.</span> <span class="nav-text">添加新的定时器 add_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E7%9B%AE%E6%A0%87%E5%AE%9A%E6%97%B6%E5%99%A8-del-timer"><span class="nav-number">1.3.4.</span> <span class="nav-text">删除目标定时器 del_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%83%E8%B7%B3%E5%87%BD%E6%95%B0-tick"><span class="nav-number">1.3.5.</span> <span class="nav-text">心跳函数 tick</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">1.4.</span> <span class="nav-text">单元测试</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/toggle-theme.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/code-block.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/anime.min.js"></script>
+
+<!-- local-search -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/local-search.js"></script>
+
+
+<!-- lazyload -->
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/post-helper.js"></script>
+
+        <!-- toc -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/toc.js"></script>
+        
+
+        <!-- copyright-info -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/copyright-info.js"></script>
+        
+
+        <!-- share -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/share.js"></script>
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+
+    <!-- photos-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
