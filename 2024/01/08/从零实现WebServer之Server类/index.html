@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="mzy的成长历程">
+    <meta name="author" content="Mzy">
+    
+    <title>
+        
+            从零实现WebServer之Server类 |
+        
+        Mzy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/author.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/brands.min.css">
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"dybil.top","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#00CC33","title":"Mzy's Blog","author":"Mzy","avatar":"/images/author.svg","logo":"/images/author.svg","favicon":"/images/author.svg"},"menu":{"Archives":"/archives","Tags":"/tags","Categories":"/categories","Links":"/links","About":"/about","Photos":"/photos"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"social_contact":{"enable":true,"links":{"github":"https://dybil.top","weixin":"https://dybil.top","qq":"https://dybil.top","weibo":"https://dybil.top","zhihu":"https://dybil.top","twitter":"https://dybil.top","facebook":"https://dybil.top","email":"https://dybil.top"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"category":true,"tag":true,"announcement":null},"post":{"author_badge":{"enable":true,"level_badge":false,"custom_badge":["炼气","筑基","结丹","元婴","化神"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":true,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"waline","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":"https://waline-test-liart.vercel.app","reaction":true,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":true,"provider":"jsdelivr"},"pjax":{"enable":true},"footer":{"since":2022,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","version":"4.0.5"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/author.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Mzy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class=""
+                           href="/"
+                        >首页</a>
+                    </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >归档</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >标签</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >分类</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >友链</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >关于</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/photos"
+                            >相册</a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item flex-center">
+                <a class=""
+                   href="/"
+                >首页</a>
+            </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories"
+                    >分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links"
+                    >友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/photos"
+                    >相册</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        从零实现WebServer之Server类
+                    </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/author.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Mzy</span>
+                                
+                                    <span class="author-badge">元婴</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-01-08 09:38:15</span>
+                <span class="mobile">2024-01-08 09:38</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Mon Jan 08 2024 09:38:43 GMT+0800">2024-01-08 09:38:43</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>6.6k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>27 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h1 id="从零实现WebServer之Server类"><a href="#从零实现WebServer之Server类" class="headerlink" title="从零实现WebServer之Server类"></a>从零实现WebServer之Server类</h1><div class="keep-note success"><ul>
+<li><code>log_write</code>: 写入日志。</li>
+<li><code>sql_pool</code>: 管理数据库连接池。</li>
+<li><code>thread_pool</code>: 管理线程池。</li>
+<li><code>eventListen</code>: 监听监听套接字上的事件。</li>
+<li><code>eventLoop</code>: 进入主事件循环。</li>
+<li><code>timer</code>: 为客户连接设置计时器。</li>
+<li><code>adjust_timer</code>: 调整计时器的过期时间。</li>
+<li><code>deal_timer</code>: 处理特定套接字的计时器过期。</li>
+<li><code>dealclinetdata</code>: 处理客户端数据。</li>
+<li><code>dealwithsignal</code>: 处理信号，处理超时和停止服务器。</li>
+<li><code>dealwithread</code>: 处理读事件。</li>
+<li><code>dealwithwrite</code>: 处理写事件。</li>
+</ul>
+</div>
+
+<h2 id="Sever类"><a href="#Sever类" class="headerlink" title="Sever类"></a>Sever类</h2><h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/arch.jpg"  alt="整体框架"></p>
+<h3 id="构造函数-WebServer"><a href="#构造函数-WebServer" class="headerlink" title="构造函数 WebServer"></a>构造函数 WebServer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">WebServer::<span class="built_in">WebServer</span>(string user, string password, string database_name, <span class="type">const</span> <span class="type">char</span> *root,</span><br><span class="line">                     <span class="type">int</span> port, <span class="type">int</span> close_log, <span class="type">int</span> async_log, <span class="type">int</span> sql_num,</span><br><span class="line">                     <span class="type">int</span> thread_num, <span class="type">int</span> actor_model, <span class="type">int</span> trig_mode, <span class="type">int</span> opt_linger) &#123;</span><br><span class="line">    <span class="comment">// 初始化成员变量</span></span><br><span class="line">    m_user = user;</span><br><span class="line">    m_passWord = password;</span><br><span class="line">    m_databaseName = database_name;</span><br><span class="line">    m_root = root;</span><br><span class="line">    m_port = port;</span><br><span class="line">    m_close_log = close_log;</span><br><span class="line">    m_async_log = async_log;</span><br><span class="line">    m_sql_num = sql_num;</span><br><span class="line">    m_thread_num = thread_num;</span><br><span class="line">    m_actormodel = actor_model;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置监听触发模式和连接触发模式</span></span><br><span class="line">    m_listen_trig_mode = trig_mode &amp; <span class="number">2</span>;</span><br><span class="line">    m_conn_trig_mode = trig_mode &amp; <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    m_opt_linger = opt_linger;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配空间并初始化http_conn和client_data数组</span></span><br><span class="line">    users = <span class="keyword">new</span> http_conn[MAX_FD];</span><br><span class="line">    users_timer = <span class="keyword">new</span> client_data[MAX_FD];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 写入日志、初始化数据库连接池、初始化线程池</span></span><br><span class="line">    <span class="built_in">log_write</span>();</span><br><span class="line">    <span class="built_in">sql_pool</span>();</span><br><span class="line">    <span class="built_in">thread_pool</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过参数初始化成员变量。</li>
+<li>根据传入的 <code>trig_mode</code> 参数设置监听触发模式和连接触发模式。</li>
+<li>分配空间并初始化 <code>http_conn</code> 和 <code>client_data</code> 数组。</li>
+<li>调用 <code>log_write</code>、<code>sql_pool</code> 和 <code>thread_pool</code> 函数来进行日志写入、初始化数据库连接池和初始化线程池。</li>
+</ul>
+<p>在整个服务器初始化过程中，这个构造函数负责一些基本的配置、资源的分配和初始化。</p>
+<h3 id="析构函数-WebServer"><a href="#析构函数-WebServer" class="headerlink" title="析构函数 ~WebServer"></a>析构函数 ~WebServer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">WebServer::~<span class="built_in">WebServer</span>() &#123;</span><br><span class="line">    <span class="comment">// 关闭 epoll 句柄、监听套接字和信号管道</span></span><br><span class="line">    <span class="built_in">close</span>(m_epollfd);</span><br><span class="line">    <span class="built_in">close</span>(m_listenfd);</span><br><span class="line">    <span class="built_in">close</span>(m_pipefd[<span class="number">1</span>]);</span><br><span class="line">    <span class="built_in">close</span>(m_pipefd[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放 http_conn 和 client_data 数组的内存</span></span><br><span class="line">    <span class="keyword">delete</span>[] users;</span><br><span class="line">    <span class="keyword">delete</span>[] users_timer;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放线程池和数据库连接池的内存</span></span><br><span class="line">    <span class="keyword">delete</span> m_pool;</span><br><span class="line">    <span class="keyword">delete</span> m_connPool;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>关闭 epoll 句柄、监听套接字和信号管道。</li>
+<li>释放 <code>http_conn</code> 和 <code>client_data</code> 数组的内存。</li>
+<li>释放线程池和数据库连接池的内存。</li>
+</ul>
+<p>这个析构函数用于在对象生命周期结束时执行清理和释放资源的操作。</p>
+<h3 id="初始化日志-log-write"><a href="#初始化日志-log-write" class="headerlink" title="初始化日志 log_write"></a>初始化日志 log_write</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化日志</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::log_write</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_close_log == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 如果不关闭日志，则进行日志初始化</span></span><br><span class="line">        <span class="keyword">if</span> (m_async_log == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// 异步写入，需要设置阻塞队列长度</span></span><br><span class="line">            Log::<span class="built_in">get_instance</span>()-&gt;<span class="built_in">init</span>(<span class="string">&quot;./log/ServerLog&quot;</span>, <span class="number">2000</span>, <span class="number">800000</span>, <span class="number">800</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 同步写入</span></span><br><span class="line">            Log::<span class="built_in">get_instance</span>()-&gt;<span class="built_in">init</span>(<span class="string">&quot;./log/ServerLog&quot;</span>, <span class="number">2000</span>, <span class="number">800000</span>, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>首先检查是否关闭日志（<code>m_close_log == 0</code>）。</li>
+<li>如果不关闭日志，根据是否异步日志<code>m_async_log == 1</code>，选择相应的日志初始化方式。<ul>
+<li>对于异步写入，需要设置阻塞队列的长度。</li>
+<li>对于同步写入，不需要阻塞队列。</li>
+</ul>
+</li>
+</ul>
+<p>这个函数用于初始化日志模块，根据配置选择同步或异步写入，并设置相应的参数。这样可以在需要时记录服务器的运行日志。</p>
+<h3 id="初始化数据库连接池-sql-pool"><a href="#初始化数据库连接池-sql-pool" class="headerlink" title="初始化数据库连接池 sql_pool"></a>初始化数据库连接池 sql_pool</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化数据库连接池</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::sql_pool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取数据库连接池的单例</span></span><br><span class="line">    m_connPool = connection_pool::<span class="built_in">get_instance</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化数据库连接池</span></span><br><span class="line">    m_connPool-&gt;<span class="built_in">init</span>(<span class="string">&quot;localhost&quot;</span>, m_user, m_passWord, m_databaseName, <span class="number">3306</span>, m_sql_num, m_close_log);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过数据库连接池初始化用户表</span></span><br><span class="line">    users-&gt;<span class="built_in">initmysql_result</span>(m_connPool);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取数据库连接池的单例对象。</li>
+<li>使用传入的配置信息初始化数据库连接池，包括数据库地址、用户名、密码、数据库名、端口号、连接池大小等参数。</li>
+<li>调用 <code>initmysql_result</code> 函数初始化用户表，该函数可能会使用数据库连接池执行相应的查询操作。</li>
+</ul>
+<p>这个函数用于初始化数据库连接池，并通过连接池初始化用户表，以便服务器在运行过程中能够使用数据库连接进行数据操作。</p>
+<h3 id="初始化线程池-thread-pool"><a href="#初始化线程池-thread-pool" class="headerlink" title="初始化线程池 thread_pool"></a>初始化线程池 thread_pool</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化线程池</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::thread_pool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建一个线程池对象，用于处理 http_conn 类型的任务</span></span><br><span class="line">    m_pool = <span class="keyword">new</span> <span class="built_in">threadpool</span>&lt;http_conn&gt;(m_actormodel, m_connPool, m_thread_num);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建一个新的线程池对象，该线程池针对 <code>http_conn</code> 类型的任务进行处理。</li>
+<li>使用传入的参数 <code>m_actormodel</code>、<code>m_connPool</code> 和 <code>m_thread_num</code> 初始化线程池。</li>
+</ul>
+<p>总体来说，这个函数用于初始化服务器的线程池，为处理 HTTP 连接请求提供并发处理的能力。线程池是一种常用的技术，可以有效地管理和复用线程，提高服务器的性能。</p>
+<h3 id="监听事件-eventListen"><a href="#监听事件-eventListen" class="headerlink" title="监听事件 eventListen"></a>监听事件 eventListen</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 监听事件，网络编程基础步骤</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::eventListen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建一个 IPv4 面向连接的套接字</span></span><br><span class="line">    m_listenfd = <span class="built_in">socket</span>(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">assert</span>(m_listenfd &gt;= <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置优雅关闭连接</span></span><br><span class="line">    <span class="keyword">if</span> (m_opt_linger) &#123;</span><br><span class="line">        <span class="keyword">struct</span> <span class="title class_">linger</span> tmp = &#123;<span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">        <span class="built_in">setsockopt</span>(m_listenfd, SOL_SOCKET, SO_LINGER, &amp;tmp, <span class="built_in">sizeof</span>(tmp));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 允许端口重用</span></span><br><span class="line">    <span class="type">int</span> flag = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">setsockopt</span>(m_listenfd, SOL_SOCKET, SO_REUSEADDR, &amp;flag, <span class="built_in">sizeof</span>(flag));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置监听地址和端口</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> address;</span><br><span class="line">    <span class="built_in">bzero</span>(&amp;address, <span class="built_in">sizeof</span>(address));</span><br><span class="line">    address.sin_family = AF_INET;</span><br><span class="line">    address.sin_addr.s_addr = <span class="built_in">htonl</span>(INADDR_ANY);</span><br><span class="line">    address.sin_port = <span class="built_in">htons</span>(m_port);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绑定地址和端口</span></span><br><span class="line">    <span class="type">int</span> ret = <span class="built_in">bind</span>(m_listenfd, (<span class="keyword">struct</span> sockaddr *)&amp;address, <span class="built_in">sizeof</span>(address));</span><br><span class="line">    <span class="built_in">assert</span>(ret &gt;= <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 监听连接请求</span></span><br><span class="line">    ret = <span class="built_in">listen</span>(m_listenfd, <span class="number">5</span>);</span><br><span class="line">    <span class="built_in">assert</span>(ret &gt;= <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建 epoll 句柄</span></span><br><span class="line">    m_epollfd = <span class="built_in">epoll_create</span>(<span class="number">5</span>);</span><br><span class="line">    <span class="built_in">assert</span>(m_epollfd != <span class="number">-1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化定时器</span></span><br><span class="line">    utils.<span class="built_in">init</span>(TIMESLOT);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册监听套接字事件并设置为非阻塞</span></span><br><span class="line">    utils.<span class="built_in">addfd</span>(m_epollfd, m_listenfd, <span class="literal">false</span>, m_listen_trig_mode);</span><br><span class="line">    http_conn::m_epollfd = m_epollfd;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建一对套接字，用于统一事件源</span></span><br><span class="line">    ret = <span class="built_in">socketpair</span>(PF_UNIX, SOCK_STREAM, <span class="number">0</span>, m_pipefd);</span><br><span class="line">    <span class="built_in">assert</span>(ret != <span class="number">-1</span>);</span><br><span class="line">    utils.<span class="built_in">setnonblocking</span>(m_pipefd[<span class="number">1</span>]);</span><br><span class="line">    utils.<span class="built_in">addfd</span>(m_epollfd, m_pipefd[<span class="number">0</span>], <span class="literal">false</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 忽略SIGPIPE信号</span></span><br><span class="line">    utils.<span class="built_in">addsig</span>(SIGPIPE, SIG_IGN);</span><br><span class="line">    <span class="comment">// 处理时钟信号</span></span><br><span class="line">    utils.<span class="built_in">addsig</span>(SIGALRM, utils.sig_handler, <span class="literal">false</span>);</span><br><span class="line">    <span class="comment">// 处理终止信号</span></span><br><span class="line">    utils.<span class="built_in">addsig</span>(SIGTERM, utils.sig_handler, <span class="literal">false</span>);</span><br><span class="line">    <span class="comment">// 处理终止信号</span></span><br><span class="line">    utils.<span class="built_in">addsig</span>(SIGABRT, utils.sig_handler, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置定时器</span></span><br><span class="line">    <span class="built_in">alarm</span>(TIMESLOT);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将一些静态成员变量设置为全局变量，以在信号处理函数中使用</span></span><br><span class="line">    Utils::u_pipefd = m_pipefd;</span><br><span class="line">    Utils::u_epollfd = m_epollfd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><strong>创建监听套接字：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m_listenfd = <span class="built_in">socket</span>(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">assert</span>(m_listenfd &gt;= <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用IPv4协议（<code>PF_INET</code>）创建一个面向连接的套接字（<code>SOCK_STREAM</code>）。</li>
+<li>断言确保套接字创建成功。</li>
+</ul>
+</li>
+<li><p><strong>设置优雅关闭连接：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (m_opt_linger) &#123;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">linger</span> tmp = &#123;<span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">    <span class="built_in">setsockopt</span>(m_listenfd, SOL_SOCKET, SO_LINGER, &amp;tmp, <span class="built_in">sizeof</span>(tmp));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果启用了优雅关闭选项（<code>m_opt_linger</code>为真），则设置 <code>SO_LINGER</code> 选项，以确保在关闭连接时等待数据发送完毕。</li>
+</ul>
+</li>
+<li><p><strong>端口重用：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> flag = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(m_listenfd, SOL_SOCKET, SO_REUSEADDR, &amp;flag, <span class="built_in">sizeof</span>(flag));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置 <code>SO_REUSEADDR</code> 选项，允许重用端口。</li>
+</ul>
+</li>
+<li><p><strong>绑定地址和端口：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> address;</span><br><span class="line"><span class="built_in">bzero</span>(&amp;address, <span class="built_in">sizeof</span>(address));</span><br><span class="line">address.sin_family = AF_INET;</span><br><span class="line">address.sin_addr.s_addr = <span class="built_in">htonl</span>(INADDR_ANY);</span><br><span class="line">address.sin_port = <span class="built_in">htons</span>(m_port);</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> ret = <span class="built_in">bind</span>(m_listenfd, (<span class="keyword">struct</span> sockaddr *)&amp;address, <span class="built_in">sizeof</span>(address));</span><br><span class="line"><span class="built_in">assert</span>(ret &gt;= <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置服务器地址结构体，并将套接字与指定的地址和端口进行绑定。</li>
+<li>断言确保绑定成功。</li>
+</ul>
+</li>
+<li><p><strong>监听连接请求：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = <span class="built_in">listen</span>(m_listenfd, <span class="number">5</span>);</span><br><span class="line"><span class="built_in">assert</span>(ret &gt;= <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>开始监听连接请求，设置监听队列的最大长度为5。</li>
+<li>断言确保监听成功。</li>
+</ul>
+</li>
+<li><p><strong>创建 epoll 句柄：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m_epollfd = <span class="built_in">epoll_create</span>(<span class="number">5</span>);</span><br><span class="line"><span class="built_in">assert</span>(m_epollfd != <span class="number">-1</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建 epoll 句柄，用于事件管理。</li>
+<li>断言确保创建成功。</li>
+</ul>
+</li>
+<li><p><strong>初始化定时器：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">utils.<span class="built_in">init</span>(TIMESLOT);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>utils</code> 对象初始化定时器，设置最小超时单位为 <code>TIMESLOT</code>。</li>
+</ul>
+</li>
+<li><p><strong>注册监听套接字事件：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">utils.<span class="built_in">addfd</span>(m_epollfd, m_listenfd, <span class="literal">false</span>, m_listen_trig_mode);</span><br><span class="line">http_conn::m_epollfd = m_epollfd;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>utils</code> 对象注册监听套接字事件，并设置为非阻塞模式。</li>
+<li>将 <code>http_conn</code> 类的静态成员变量 <code>m_epollfd</code> 设置为当前 epoll 句柄。</li>
+</ul>
+</li>
+<li><p><strong>创建统一事件源：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ret = <span class="built_in">socketpair</span>(PF_UNIX, SOCK_STREAM, <span class="number">0</span>, m_pipefd);</span><br><span class="line"><span class="built_in">assert</span>(ret != <span class="number">-1</span>);</span><br><span class="line">utils.<span class="built_in">setnonblocking</span>(m_pipefd[<span class="number">1</span>]);</span><br><span class="line">utils.<span class="built_in">addfd</span>(m_epollfd, m_pipefd[<span class="number">0</span>], <span class="literal">false</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建一对套接字，用于统一事件源，其中一个套接字用于写，另一个用于读。</li>
+<li>将写入端设置为非阻塞，并将其加入 epoll 监听。</li>
+</ul>
+</li>
+<li><p><strong>处理信号：</strong></p>
+</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">utils.<span class="built_in">addsig</span>(SIGPIPE, SIG_IGN);</span><br><span class="line">utils.<span class="built_in">addsig</span>(SIGALRM, utils.sig_handler, <span class="literal">false</span>);</span><br><span class="line">utils.<span class="built_in">addsig</span>(SIGTERM, utils.sig_handler, <span class="literal">false</span>);</span><br><span class="line">utils.<span class="built_in">addsig</span>(SIGABRT, utils.sig_handler, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>忽略 <code>SIGPIPE</code> 信号，避免因向已关闭的连接发送数据而导致进程退出。</li>
+<li>处理时钟信号、终止信号、终止信号，分别执行指定的信号处理函数。</li>
+</ul>
+<ol>
+<li><strong>设置定时器：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alarm</span>(TIMESLOT);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置 <code>TIMESLOT</code> 秒后发送 <code>SIGALRM</code> 信号，触发定时器。</li>
+</ul>
+<ol>
+<li><strong>设置全局变量：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Utils::u_pipefd = m_pipefd;</span><br><span class="line">Utils::u_epollfd = m_epollfd;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将一些静态成员变量设置为全局变量，以在信号处理函数中使用。</li>
+</ul>
+<p>这个函数完成了服务器的基本初始化，包括创建套接字、绑定地址和端口、开始监听、创建 epoll 句柄等。同时，它还设置了定时器、信号处理函数等，为后续的事件循环做好准备。</p>
+<div class="keep-note success"><p>优雅关闭连接是指在服务器或客户端主动关闭连接时，通过一些合理的方式来确保数据的完整性和可靠性。优雅关闭连接的目标是在关闭连接的同时尽量保持数据的完整性，防止数据的丢失或被截断。</p>
+<p>一般情况下，TCP连接的关闭过程是通过TCP的四次握手来完成的。在这个过程中，有两个方向上的连接，一个是客户端到服务器端的连接（客户端发送FIN，服务器端回应ACK），另一个是服务器端到客户端的连接（服务器端发送FIN，客户端回应ACK）。通过这个四次握手，连接可以被优雅地关闭。</p>
+</div>
+
+<div class="keep-note success"><p>统一事件源”是一种多线程或多进程编程模型中的设计模式，用于将不同的事件（通常是信号）集中到一个共享的事件源中，以便于集中处理。这样的设计模式主要用于在多线程或多进程环境中处理异步事件，避免多个线程或进程分别处理相同的事件。</p>
+<p>在上下文中，特别是在网络编程中，”统一事件源”通常用于以下目的：</p>
+<ol>
+<li><strong>信号处理：</strong> 在UNIX-like系统中，信号是一种异步的通知机制，用于通知进程发生了某些事件，如中断、错误等。通过统一事件源，可以将多个信号通过一个特殊的套接字进行传递，然后通过事件循环集中处理。</li>
+<li><strong>线程间通信：</strong> 在多线程编程中，不同的线程可能需要相互通信，例如，一个线程产生了某个事件，而另一个线程需要处理这个事件。通过一个共享的事件源，线程可以将事件放置在事件队列中，其他线程则可以从队列中取出事件进行处理。</li>
+</ol>
+<p>在上述 <code>WebServer::eventListen</code> 函数中，通过创建一对套接字（<code>m_pipefd</code>），其中一个用于写入，另一个用于读取，实现了统一事件源的机制。这对套接字被加入到 epoll 监听中，用于通知主循环中的线程或进程发生了某些事件，以进行相应的处理。这种机制是为了避免在多线程或多进程环境中产生竞争条件，使得事件处理更加集中和可控。</p>
+</div>
+
+
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置客户和定时器</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::timer</span><span class="params">(<span class="type">int</span> connfd, <span class="keyword">struct</span> sockaddr_in client_address)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 初始化客户</span></span><br><span class="line">    users[connfd].<span class="built_in">init</span>(connfd, client_address, m_root, m_conn_trig_mode, m_close_log, m_user, m_passWord, m_databaseName);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建定时器，设置回调函数和超时时间，绑定用户数据，将定时器添加到链表中</span></span><br><span class="line">    users_timer[connfd].address = client_address;</span><br><span class="line">    users_timer[connfd].sockfd = connfd;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建新的定时器对象</span></span><br><span class="line">    util_timer *timer = <span class="keyword">new</span> util_timer;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 设置定时器的用户数据和回调函数</span></span><br><span class="line">    timer-&gt;user_data = &amp;users_timer[connfd];</span><br><span class="line">    timer-&gt;cb_func = cb_func;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算超时时间，设置为当前时间加上3倍的最小超时单位</span></span><br><span class="line">    <span class="type">time_t</span> cur = <span class="built_in">time</span>(<span class="literal">NULL</span>);</span><br><span class="line">    timer-&gt;expire = cur + <span class="number">3</span> * TIMESLOT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将定时器与用户数据绑定</span></span><br><span class="line">    users_timer[connfd].timer = timer;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将定时器添加到定时器链表中</span></span><br><span class="line">    utils.m_timer_lst.<span class="built_in">add_timer</span>(timer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><strong>初始化客户：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">users[connfd].<span class="built_in">init</span>(connfd, client_address, m_root, m_conn_trig_mode, m_close_log, m_user, m_passWord, m_databaseName);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 <code>connfd</code> 和 <code>client_address</code> 等参数初始化 <code>http_conn</code> 类对象，表示一个客户端连接。</li>
+</ul>
+</li>
+<li><p><strong>创建定时器：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">util_timer *timer = <span class="keyword">new</span> util_timer;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建一个新的 <code>util_timer</code> 对象，用于表示定时器。</li>
+</ul>
+</li>
+<li><p><strong>设置定时器的用户数据和回调函数：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">timer-&gt;user_data = &amp;users_timer[connfd];</span><br><span class="line">timer-&gt;cb_func = cb_func;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将定时器的用户数据设置为当前客户端对应的 <code>users_timer</code> 对象，表示定时器与客户端连接关联。</li>
+<li>设置定时器的回调函数为 <code>cb_func</code>，表示定时器超时时要执行的回调函数。</li>
+</ul>
+</li>
+<li><p><strong>设置定时器超时时间：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">time_t</span> cur = <span class="built_in">time</span>(<span class="literal">NULL</span>);</span><br><span class="line">timer-&gt;expire = cur + <span class="number">3</span> * TIMESLOT;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>计算定时器的超时时间，设置为当前时间加上3倍的最小超时单位。</li>
+</ul>
+</li>
+<li><p><strong>将定时器与用户数据绑定：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">users_timer[connfd].timer = timer;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将定时器与当前客户端连接关联，以便后续能够通过客户端连接找到相应的定时器。</li>
+</ul>
+</li>
+<li><p><strong>将定时器添加到定时器链表中：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">utils.m_timer_lst.<span class="built_in">add_timer</span>(timer);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将新创建的定时器添加到定时器链表中，以便后续对定时器的管理和触发。</li>
+</ul>
+</li>
+</ol>
+<p>这个函数的目的是为了初始化客户端连接以及与之关联的定时器，确保在一定时间内没有数据交互时能够及时关闭连接。这种机制通常用于处理长连接中的超时问题。</p>
+<h3 id="调整定时器-adjust-timer"><a href="#调整定时器-adjust-timer" class="headerlink" title="调整定时器 adjust_timer"></a>调整定时器 adjust_timer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//若有数据传输，则将定时器往后延迟3个单位</span></span><br><span class="line"><span class="comment">//并对新的定时器在链表上的位置进行调整</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::adjust_timer</span><span class="params">(util_timer *timer)</span></span>&#123;</span><br><span class="line">    <span class="type">time_t</span> cur = <span class="built_in">time</span>(<span class="literal">NULL</span>);</span><br><span class="line">    timer-&gt;expire = cur + <span class="number">3</span> * TIMESLOT;</span><br><span class="line">    utils.m_timer_lst.<span class="built_in">adjust_timer</span>(timer);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">LOG_INFO</span>(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;adjust timer once&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>time_t cur = time(NULL);</code>: 获取当前时间，并存储在变量 <code>cur</code> 中。</li>
+<li><code>timer-&gt;expire = cur + 3 * TIMESLOT;</code>: 将定时器的过期时间设置为当前时间加上3个时间单位（<code>TIMESLOT</code> 的值）。这样，定时器被往后延迟了3个单位。</li>
+<li><code>utils.m_timer_lst.adjust_timer(timer);</code>: 调用 <code>utils</code> 对象中的 <code>m_timer_lst</code> 成员的 <code>adjust_timer</code> 函数，该函数用于对定时器在链表上的位置进行调整。这可能涉及到将定时器从一个位置移动到另一个位置，以确保定时器链表按照过期时间的顺序排列。</li>
+<li><code>LOG_INFO(&quot;%s&quot;, &quot;adjust timer once&quot;);</code>: 记录一条日志，表示定时器已被调整一次。</li>
+</ol>
+<p>这段代码的目的是在数据传输时延迟定时器的触发时间，并且对定时器在链表上的位置进行调整，以确保定时器链表的有序性。这种有序性通常用于有效地处理定时器事件，例如处理连接超时等情况。</p>
+<h3 id="删除计时器-deal-timer"><a href="#删除计时器-deal-timer" class="headerlink" title="删除计时器 deal_timer"></a>删除计时器 deal_timer</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 释放连接，删除计时器</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::deal_timer</span><span class="params">(util_timer *timer, <span class="type">int</span> sockfd)</span></span>&#123;</span><br><span class="line">    timer-&gt;<span class="built_in">cb_func</span>(&amp;users_timer[sockfd]);</span><br><span class="line">    <span class="keyword">if</span>(timer)&#123;</span><br><span class="line">        utils.m_timer_lst.<span class="built_in">del_timer</span>(timer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">LOG_INFO</span>(<span class="string">&quot;close fd %d&quot;</span>, users_timer[sockfd].sockfd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>timer-&gt;cb_func(&amp;users_timer[sockfd]);</code>: 调用定时器 <code>timer</code> 中的回调函数 <code>cb_func</code>，并传递 <code>users_timer[sockfd]</code> 作为参数。这里假设回调函数的目的是处理与连接相关的操作，可能是释放资源或执行其他必要的清理工作。</li>
+<li><code>if(timer) &#123; utils.m_timer_lst.del_timer(timer); &#125;</code>: 首先检查定时器是否存在（非空）。如果定时器存在，就调用 <code>utils</code> 对象中的 <code>m_timer_lst</code> 成员的 <code>del_timer</code> 函数，该函数用于从定时器链表中删除指定的定时器。这样，已经处理过的定时器就被移除了，防止在未来的定时器触发时再次执行相同的处理逻辑。</li>
+<li><code>LOG_INFO(&quot;close fd %d&quot;, users_timer[sockfd].sockfd);</code>: 记录一条日志，表示关闭了文件描述符（socket）为 <code>users_timer[sockfd].sockfd</code> 的连接。</li>
+</ol>
+<p>这段代码用于在定时器触发时处理与连接相关的操作，包括调用回调函数、从定时器链表中删除定时器，并记录相关的日志信息。这是一个常见的定时器处理模式，用于清理连接资源等操作。</p>
+<h3 id="接受新客户连接-dealclinetdata"><a href="#接受新客户连接-dealclinetdata" class="headerlink" title="接受新客户连接 dealclinetdata"></a>接受新客户连接 dealclinetdata</h3><p>当处理新的客户端连接时，<code>WebServer::dealclinetdata</code> 函数的作用主要是接受客户端连接，执行一些处理，并根据不同的触发模式（<code>m_listen_trig_mode</code>）进行逻辑判断。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接受新客户连接</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">WebServer::dealclinetdata</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> client_address;</span><br><span class="line">    <span class="type">socklen_t</span> client_addrlength = <span class="built_in">sizeof</span>(client_address);</span><br><span class="line">    <span class="keyword">if</span>(m_listen_trig_mode == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="type">int</span> connfd = <span class="built_in">accept</span>(m_listenfd, (<span class="keyword">struct</span> sockaddr *)&amp;client_address, &amp;client_addrlength);</span><br><span class="line">        <span class="keyword">if</span>(connfd &lt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;%s:errno is:%d&quot;</span>, <span class="string">&quot;accept error&quot;</span>, errno);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(http_conn::m_user_count &gt;= MAX_FD)&#123;</span><br><span class="line">            utils.<span class="built_in">show_error</span>(connfd, <span class="string">&quot;Internal server busy&quot;</span>);</span><br><span class="line">            <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;Internal server busy&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">timer</span>(connfd, client_address);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="type">int</span> connfd = <span class="built_in">accept</span>(m_listenfd, (<span class="keyword">struct</span> sockaddr *)&amp;client_address, &amp;client_addrlength);</span><br><span class="line">            <span class="keyword">if</span>(connfd &lt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;%s:errno is:%d&quot;</span>, <span class="string">&quot;accept error&quot;</span>, errno);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(http_conn::m_user_count &gt;= MAX_FD)&#123;</span><br><span class="line">                utils.<span class="built_in">show_error</span>(connfd, <span class="string">&quot;Internal server busy&quot;</span>);</span><br><span class="line">                <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;Internal server busy&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">timer</span>(connfd, client_address);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>struct sockaddr_in client_address;</code>: 创建一个结构体 <code>client_address</code>，用于存储客户端的地址信息。</li>
+<li><code>socklen_t client_addrlength = sizeof(client_address);</code>: 获取客户端地址结构体的大小。</li>
+<li><code>if(m_listen_trig_mode == 0) &#123; ... &#125;</code>: 如果触发模式为 0，表示非阻塞模式（可能是边缘触发），则执行以下逻辑：<ul>
+<li><code>int connfd = accept(m_listenfd, (struct sockaddr *)&amp;client_address, &amp;client_addrlength);</code>: 调用 <code>accept</code> 函数接受新的客户端连接，将客户端地址信息存储在 <code>client_address</code> 中，连接的文件描述符存储在 <code>connfd</code> 中。</li>
+<li>如果连接失败（<code>connfd &lt; 0</code>），记录错误信息并返回 <code>false</code>。</li>
+<li>如果当前连接数已经达到最大值（<code>MAX_FD</code>），通过向客户端返回服务器繁忙的错误信息，记录错误信息并返回 <code>false</code>。</li>
+<li>调用 <code>timer</code> 函数，处理与连接相关的定时器逻辑。</li>
+</ul>
+</li>
+<li><code>else &#123; ... &#125;</code>: 如果触发模式不为 0，表示可能是水平触发，执行以下逻辑：<ul>
+<li>在一个无限循环中，不断尝试接受新的客户端连接。</li>
+<li>对每个连接执行类似上述的逻辑：如果连接失败或者当前连接数已经达到最大值，跳出循环。</li>
+</ul>
+</li>
+<li><code>return true;</code>: 如果执行了一次连接处理或者在循环中成功处理了连接，返回 <code>true</code>。</li>
+</ol>
+<p>这个函数是用于处理新客户端连接的，具体操作包括接受连接、处理错误、处理服务器繁忙情况、执行定时器逻辑等。函数的返回值表示是否成功处理了连接。在非阻塞模式下，可能只处理一个连接；在水平触发模式下，可能会循环处理多个连接，直到没有新连接或者达到最大连接数。</p>
+<h3 id="处理信号-dealwithsignal"><a href="#处理信号-dealwithsignal" class="headerlink" title="处理信号 dealwithsignal"></a>处理信号 dealwithsignal</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 处理信号</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">WebServer::dealwithsignal</span><span class="params">(<span class="type">bool</span> &amp;timeout, <span class="type">bool</span> &amp;stop_server)</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    <span class="type">char</span> signals[<span class="number">1024</span>];</span><br><span class="line">    ret = <span class="built_in">recv</span>(m_pipefd[<span class="number">0</span>], signals, <span class="built_in">sizeof</span>(signals), <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(ret == <span class="number">-1</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ret == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; ret; ++i)&#123;</span><br><span class="line">            <span class="keyword">switch</span>(signals[i])&#123;</span><br><span class="line">                <span class="keyword">case</span> SIGALRM: timeout = <span class="literal">true</span>; <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> SIGTERM: stop_server = <span class="literal">true</span>; <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> SIGABRT: stop_server = <span class="literal">true</span>; <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>int ret = recv(m_pipefd[0], signals, sizeof(signals), 0);</code>: 通过管道 <code>m_pipefd</code> 接收信号。这个管道可能是通过调用 <code>pipe</code> 函数创建的，用于在信号处理函数中传递信号信息。</li>
+<li>如果 <code>ret == -1</code>，表示接收出错，函数返回 <code>false</code>。</li>
+<li>如果 <code>ret == 0</code>，表示没有信号数据可读，函数返回 <code>false</code>。</li>
+<li>如果有信号数据可读，则遍历接收到的信号数据，根据信号类型执行相应的操作：<ul>
+<li>如果是 <code>SIGALRM</code> 信号，将 <code>timeout</code> 标志设置为 <code>true</code>。</li>
+<li>如果是 <code>SIGTERM</code> 或 <code>SIGABRT</code> 信号，将 <code>stop_server</code> 标志设置为 <code>true</code>。</li>
+</ul>
+</li>
+<li>返回 <code>true</code> 表示信号处理成功。</li>
+</ol>
+<p>这段代码通常用于多线程或异步信号处理的情况，通过在主线程或主循环中接收信号，并根据接收到的信号类型执行相应的操作。在这里，通过管道实现了信号的传递，通过设置标志位来通知主程序发生了相应的信号事件，比如超时（<code>SIGALRM</code>）或终止服务器（<code>SIGTERM</code> 或 <code>SIGABRT</code>）。</p>
+<h3 id="处理读-dealwithread"><a href="#处理读-dealwithread" class="headerlink" title="处理读 dealwithread"></a>处理读 dealwithread</h3><p>这段代码用于处理读事件。根据服务器的模型（<code>reactor </code>模型或 <code>proactor </code>模型），执行不同的处理逻辑。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 处理读</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::dealwithread</span><span class="params">(<span class="type">int</span> sockfd)</span></span>&#123;</span><br><span class="line">    util_timer *timer = users_timer[sockfd].timer;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// reactor</span></span><br><span class="line">    <span class="keyword">if</span>(m_actormodel == <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="comment">// 更新计时器</span></span><br><span class="line">        <span class="keyword">if</span>(timer)&#123;</span><br><span class="line">            <span class="built_in">adjust_timer</span>(timer);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 若监测到读事件，将该事件放入请求队列</span></span><br><span class="line">        m_pool-&gt;<span class="built_in">append</span>(users + sockfd, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 等待工作线程读</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(users[sockfd].improv == <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="comment">// 读失败</span></span><br><span class="line">                <span class="keyword">if</span>(users[sockfd].timer_flag == <span class="number">1</span>)&#123;</span><br><span class="line">                    <span class="built_in">deal_timer</span>(timer, sockfd);</span><br><span class="line">                    users[sockfd].timer_flag = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                users[sockfd].improv = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// proactor</span></span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(users[sockfd].<span class="built_in">read_once</span>())&#123;</span><br><span class="line">            <span class="built_in">LOG_INFO</span>(<span class="string">&quot;deal with the client(%s)&quot;</span>, <span class="built_in">inet_ntoa</span>(users[sockfd].<span class="built_in">get_address</span>()-&gt;sin_addr));</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 更新计时器</span></span><br><span class="line">            <span class="keyword">if</span>(timer)&#123;</span><br><span class="line">                <span class="built_in">adjust_timer</span>(timer);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 若监测到读事件，将该事件放入请求队列</span></span><br><span class="line">            m_pool-&gt;<span class="built_in">append_p</span>(users + sockfd);  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 读失败</span></span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="built_in">deal_timer</span>(timer, sockfd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>util_timer *timer = users_timer[sockfd].timer;</code>: 获取与当前连接关联的定时器。</li>
+<li><code>if(m_actormodel == 1) &#123; ... &#125;</code>: 如果服务器采用<code>reactor</code>模型：<ul>
+<li><code>adjust_timer(timer);</code>: 调用 <code>adjust_timer</code> 函数，更新定时器的过期时间。</li>
+<li><code>m_pool-&gt;append(users + sockfd, 0);</code>: 将读事件放入请求队列。这里可能是一个任务队列，用于在工作线程中处理读事件。</li>
+<li>使用循环等待工作线程的处理结果。如果读事件处理失败（<code>users[sockfd].improv == 1</code>），则可能触发定时器处理。</li>
+</ul>
+</li>
+<li><code>else &#123; ... &#125;</code>: 如果服务器采用<code>proactor</code>模型：<ul>
+<li><code>if(users[sockfd].read_once()) &#123; ... &#125;</code>: 如果成功读取数据：<ul>
+<li><code>adjust_timer(timer);</code>: 调用 <code>adjust_timer</code> 函数，更新定时器的过期时间。</li>
+<li><code>m_pool-&gt;append_p(users + sockfd);</code>: 将读事件放入请求队列。这里可能是一个任务队列，用于在工作线程中处理读事件。</li>
+</ul>
+</li>
+<li>如果读事件失败，可能是连接出错，调用 <code>deal_timer(timer, sockfd);</code> 处理定时器。</li>
+</ul>
+</li>
+</ol>
+<p>这段代码根据服务器模型的不同，采用不同的处理方式。在<code>reactor</code>模型下，通过事件队列和工作线程来异步处理读事件，而在<code> proactor</code> 模型下，直接在主线程中处理读事件。</p>
+<h3 id="处理写-dealwithwrite"><a href="#处理写-dealwithwrite" class="headerlink" title="处理写 dealwithwrite"></a>处理写 dealwithwrite</h3><p>当处理写事件时，<code>WebServer::dealwithwrite</code> 函数的目标是根据服务器的模型（reactor 模型或 proactor 模型）执行不同的处理逻辑。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 处理写</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::dealwithwrite</span><span class="params">(<span class="type">int</span> sockfd)</span></span>&#123;</span><br><span class="line">    util_timer *timer = users_timer[sockfd].timer;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// reactor</span></span><br><span class="line">    <span class="keyword">if</span>(m_actormodel == <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(timer)&#123;</span><br><span class="line">            <span class="built_in">adjust_timer</span>(timer);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        m_pool-&gt;<span class="built_in">append</span>(users + sockfd, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(users[sockfd].improv == <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(users[sockfd].timer_flag == <span class="number">1</span>)&#123;</span><br><span class="line">                    <span class="built_in">deal_timer</span>(timer, sockfd);</span><br><span class="line">                    users[sockfd].timer_flag = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                users[sockfd].improv = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="comment">// proactor</span></span><br><span class="line">        <span class="keyword">if</span>(users[sockfd].<span class="built_in">write</span>())&#123;</span><br><span class="line">            <span class="built_in">LOG_INFO</span>(<span class="string">&quot;send data to the client(%s)&quot;</span>, <span class="built_in">inet_ntoa</span>(users[sockfd].<span class="built_in">get_address</span>()-&gt;sin_addr));</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(timer)&#123;</span><br><span class="line">                <span class="built_in">adjust_timer</span>(timer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="built_in">deal_timer</span>(timer, sockfd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><code>util_timer *timer = users_timer[sockfd].timer;</code>: 获取当前连接关联的定时器，该定时器可能用于处理超时事件。</p>
+</li>
+<li><p><strong>Reactor 模型</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cppCopy codeif(m_actormodel == 1)&#123;</span><br><span class="line">    if(timer)&#123;</span><br><span class="line">        adjust_timer(timer);</span><br><span class="line">    &#125;</span><br><span class="line">    m_pool-&gt;append(users + sockfd, 1);</span><br><span class="line">    while(true)&#123;</span><br><span class="line">        if(users[sockfd].improv == 1)&#123;</span><br><span class="line">            if(users[sockfd].timer_flag == 1)&#123;</span><br><span class="line">                deal_timer(timer, sockfd);</span><br><span class="line">                users[sockfd].timer_flag = 0;</span><br><span class="line">            &#125;</span><br><span class="line">            users[sockfd].improv = 0;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果采用<code> reactor</code> 模型，首先调用 <code>adjust_timer</code> 函数，更新定时器的过期时间。</li>
+<li>将写事件加入请求队列，可能是一个任务队列，用于在工作线程中异步处理写事件。</li>
+<li>通过循环等待工作线程的处理结果。如果 <code>users[sockfd].improv</code> 为 1，表示写事件处理失败。如果 <code>users[sockfd].timer_flag</code> 也为 1，表示定时器需要处理，就调用 <code>deal_timer</code> 函数来处理定时器。然后重置相关标志位，跳出循环。</li>
+</ul>
+</li>
+<li><p><strong>Proactor 模型</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cppCopy codeelse&#123;</span><br><span class="line">    if(users[sockfd].write())&#123;</span><br><span class="line">        LOG_INFO(&quot;send data to the client(%s)&quot;, inet_ntoa(users[sockfd].get_address()-&gt;sin_addr));</span><br><span class="line">        if(timer)&#123;</span><br><span class="line">            adjust_timer(timer);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        deal_timer(timer, sockfd);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果采用<code> proactor</code> 模型，通过 <code>write </code>函数尝试发送数据。如果发送成功：<ul>
+<li>记录日志，表示成功发送数据。</li>
+<li>调用 <code>adjust_timer</code> 函数，更新定时器的过期时间。</li>
+</ul>
+</li>
+<li>如果发送失败，可能是连接出错，就调用 <code>deal_timer</code> 函数来处理定时器。</li>
+</ul>
+</li>
+</ol>
+<p>这段代码负责处理写事件，具体的处理方式根据服务器模型的不同而异。在 reactor 模型下，通过异步任务队列和工作线程来处理，而在 proactor 模型下，直接在主线程中处理。</p>
+<h3 id="循环处理事件-eventLoop"><a href="#循环处理事件-eventLoop" class="headerlink" title="循环处理事件 eventLoop"></a>循环处理事件 eventLoop</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 循环处理事件</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">WebServer::eventLoop</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">bool</span> timeout = <span class="literal">false</span>;</span><br><span class="line">    <span class="type">bool</span> stop_server = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(!stop_server)&#123;</span><br><span class="line">        <span class="type">int</span> number = <span class="built_in">epoll_wait</span>(m_epollfd, events, MAX_EVENT_NUMBER, <span class="number">-1</span>);</span><br><span class="line">        <span class="comment">// epoll_wait会被信号打断，返回-1并设置errno=EINTR</span></span><br><span class="line">        <span class="keyword">if</span>(number &lt; <span class="number">0</span> &amp;&amp; errno != EINTR)&#123;</span><br><span class="line">            <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;epoll failure&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 遍历事件</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; number; i++)&#123;</span><br><span class="line">            <span class="type">int</span> sockfd = events[i].data.fd;</span><br><span class="line">            <span class="comment">// 处理新到的客户连接</span></span><br><span class="line">            <span class="keyword">if</span>(sockfd == m_listenfd)&#123;</span><br><span class="line">                <span class="type">bool</span> flag = <span class="built_in">dealclinetdata</span>();</span><br><span class="line">                <span class="keyword">if</span>(flag == <span class="literal">false</span>)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 对端关闭</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(events[i].events &amp; (EPOLLRDHUP | EPOLLHUP | EPOLLERR))&#123;</span><br><span class="line">                <span class="comment">// 服务器端关闭连接，移除对应的定时器</span></span><br><span class="line">                util_timer *timer = users_timer[sockfd].timer;</span><br><span class="line">                <span class="built_in">deal_timer</span>(timer, sockfd);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 处理信号</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>((sockfd == m_pipefd[<span class="number">0</span>]) &amp;&amp; (events[i].events &amp; EPOLLIN))&#123;</span><br><span class="line">                <span class="type">bool</span> flag = <span class="built_in">dealwithsignal</span>(timeout, stop_server);</span><br><span class="line">                <span class="keyword">if</span>(flag == <span class="literal">false</span>)</span><br><span class="line">                    <span class="built_in">LOG_ERROR</span>(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;dealclientdata failure&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 处理客户连接上接收到的数据</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(events[i].events &amp; EPOLLIN)&#123;</span><br><span class="line">                <span class="built_in">dealwithread</span>(sockfd);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 处理客户连接上要发送的数据</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(events[i].events &amp; EPOLLOUT)&#123;</span><br><span class="line">                <span class="built_in">dealwithwrite</span>(sockfd);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 时钟到时</span></span><br><span class="line">        <span class="keyword">if</span>(timeout)&#123;</span><br><span class="line">            utils.<span class="built_in">timer_handler</span>();</span><br><span class="line">            <span class="built_in">LOG_INFO</span>(<span class="string">&quot;%s&quot;</span>, <span class="string">&quot;timer tick&quot;</span>);</span><br><span class="line">            timeout = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>bool timeout = false;</code> 和 <code>bool stop_server = false;</code>: 两个标志位，<code>timeout</code> 表示是否发生超时，<code>stop_server</code> 表示是否要停止服务器。</li>
+<li><code>while(!stop_server) &#123; ... &#125;</code>: 在一个循环中处理事件，直到 <code>stop_server</code> 标志被设置为 <code>true</code>。</li>
+<li><code>int number = epoll_wait(m_epollfd, events, MAX_EVENT_NUMBER, -1);</code>: 使用 <code>epoll_wait</code> 函数等待事件的发生。<code>m_epollfd</code> 是 epoll 文件描述符，<code>events</code> 用于存储发生的事件，<code>MAX_EVENT_NUMBER</code> 表示最大事件数量，-1 表示无限等待。函数返回发生的事件数量。</li>
+<li><code>if(number &lt; 0 &amp;&amp; errno != EINTR) &#123; ... &#125;</code>: 如果 <code>epoll_wait</code> 函数返回负值并且错误码不是 <code>EINTR</code>，表示发生了错误，记录错误信息并跳出循环。</li>
+<li><code>for(int i = 0; i &lt; number; i++) &#123; ... &#125;</code>: 遍历发生的事件。<ul>
+<li><code>int sockfd = events[i].data.fd;</code>: 获取与事件关联的文件描述符。</li>
+<li><code>if(sockfd == m_listenfd) &#123; ... &#125;</code>: 如果是监听 socket 产生的事件，表示有新的客户连接请求，调用 <code>dealclinetdata</code> 处理。</li>
+<li><code>else if(events[i].events &amp; (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) &#123; ... &#125;</code>: 如果发生对端关闭、挂起、或错误事件，可能是客户端连接关闭，调用 <code>deal_timer</code> 处理相应的定时器。</li>
+<li><code>else if((sockfd == m_pipefd[0]) &amp;&amp; (events[i].events &amp; EPOLLIN)) &#123; ... &#125;</code>: 如果是管道产生的事件，表示有信号到达，调用 <code>dealwithsignal</code> 处理信号。</li>
+<li><code>else if(events[i].events &amp; EPOLLIN) &#123; ... &#125;</code>: 如果是读事件，调用 <code>dealwithread</code> 处理读事件。</li>
+<li><code>else if(events[i].events &amp; EPOLLOUT) &#123; ... &#125;</code>: 如果是写事件，调用 <code>dealwithwrite</code> 处理写事件。</li>
+</ul>
+</li>
+<li><code>if(timeout) &#123; ... &#125;</code>: 如果发生超时，调用 <code>utils.timer_handler()</code> 处理定时器事件，并记录日志。</li>
+</ol>
+<p>这段代码组成了服务器的主事件循环，通过 epoll 监听事件并调用相应的处理函数来处理新的连接、信号、读事件、写事件以及定时器事件。</p>
+<p>整个WebServer参考<a class="link"   target="_blank" rel="noopener" href="https://github.com/vatica/TinyWebSever-CPP" >https://github.com/vatica/TinyWebSever-CPP<i class="fas fa-external-link-alt"></i></a></p>
+
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                从零实现WebServer之Server类
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2024/01/08/从零实现WebServer之Server类/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Mzy</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2024-01-08 09:38</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/01/05/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8BHTTP%E8%AF%B7%E6%B1%82%E7%B1%BB/"
+                                   title="从零实现WebServer之HTTP请求类"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">从零实现WebServer之HTTP请求类</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <div id="waline-comment"></div>
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+        >
+          window.KeepCommentPlugin.walineOptions = JSON.parse('{}'.replace(/&#34;/g, '"'))
+
+          window.KeepCommentPlugin.initWaline = () => {
+            if (window?.Waline) {
+              window.KeepCommentPlugin.walineOptions.el = '#waline-comment'
+              window.KeepCommentPlugin.walineOptions.comment = '.post-comments-count'
+              window.KeepCommentPlugin.walineOptions.serverURL = 'https://waline-test-liart.vercel.app'
+              window.KeepCommentPlugin.walineOptions.lang = 'zh-CN' || 'zh-CN'
+              window.KeepCommentPlugin.walineOptions.reaction = 'true' === 'true'
+              window.Waline.init(window.KeepCommentPlugin.walineOptions)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initWaline()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initWaline()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8BServer%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之Server类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sever%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">Sever类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.1.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-WebServer"><span class="nav-number">1.1.2.</span> <span class="nav-text">构造函数 WebServer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-WebServer"><span class="nav-number">1.1.3.</span> <span class="nav-text">析构函数 ~WebServer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%A5%E5%BF%97-log-write"><span class="nav-number">1.1.4.</span> <span class="nav-text">初始化日志 log_write</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0-sql-pool"><span class="nav-number">1.1.5.</span> <span class="nav-text">初始化数据库连接池 sql_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E7%BA%BF%E7%A8%8B%E6%B1%A0-thread-pool"><span class="nav-number">1.1.6.</span> <span class="nav-text">初始化线程池 thread_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E5%90%AC%E4%BA%8B%E4%BB%B6-eventListen"><span class="nav-number">1.1.7.</span> <span class="nav-text">监听事件 eventListen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E6%95%B4%E5%AE%9A%E6%97%B6%E5%99%A8-adjust-timer"><span class="nav-number">1.1.8.</span> <span class="nav-text">调整定时器 adjust_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%AE%A1%E6%97%B6%E5%99%A8-deal-timer"><span class="nav-number">1.1.9.</span> <span class="nav-text">删除计时器 deal_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%97%E6%96%B0%E5%AE%A2%E6%88%B7%E8%BF%9E%E6%8E%A5-dealclinetdata"><span class="nav-number">1.1.10.</span> <span class="nav-text">接受新客户连接 dealclinetdata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7-dealwithsignal"><span class="nav-number">1.1.11.</span> <span class="nav-text">处理信号 dealwithsignal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E8%AF%BB-dealwithread"><span class="nav-number">1.1.12.</span> <span class="nav-text">处理读 dealwithread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%86%99-dealwithwrite"><span class="nav-number">1.1.13.</span> <span class="nav-text">处理写 dealwithwrite</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E5%A4%84%E7%90%86%E4%BA%8B%E4%BB%B6-eventLoop"><span class="nav-number">1.1.14.</span> <span class="nav-text">循环处理事件 eventLoop</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2022</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Mzy</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+                
+                <div class="deploy-info info-item default">
+                    
+                        本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/deploy-provider/github.png"></span> 提供部署服务
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">89.7k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0WebServer%E4%B9%8BServer%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">从零实现WebServer之Server类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sever%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">Sever类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.1.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-WebServer"><span class="nav-number">1.1.2.</span> <span class="nav-text">构造函数 WebServer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0-WebServer"><span class="nav-number">1.1.3.</span> <span class="nav-text">析构函数 ~WebServer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%A5%E5%BF%97-log-write"><span class="nav-number">1.1.4.</span> <span class="nav-text">初始化日志 log_write</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0-sql-pool"><span class="nav-number">1.1.5.</span> <span class="nav-text">初始化数据库连接池 sql_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E7%BA%BF%E7%A8%8B%E6%B1%A0-thread-pool"><span class="nav-number">1.1.6.</span> <span class="nav-text">初始化线程池 thread_pool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E5%90%AC%E4%BA%8B%E4%BB%B6-eventListen"><span class="nav-number">1.1.7.</span> <span class="nav-text">监听事件 eventListen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E6%95%B4%E5%AE%9A%E6%97%B6%E5%99%A8-adjust-timer"><span class="nav-number">1.1.8.</span> <span class="nav-text">调整定时器 adjust_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%AE%A1%E6%97%B6%E5%99%A8-deal-timer"><span class="nav-number">1.1.9.</span> <span class="nav-text">删除计时器 deal_timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%97%E6%96%B0%E5%AE%A2%E6%88%B7%E8%BF%9E%E6%8E%A5-dealclinetdata"><span class="nav-number">1.1.10.</span> <span class="nav-text">接受新客户连接 dealclinetdata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E4%BF%A1%E5%8F%B7-dealwithsignal"><span class="nav-number">1.1.11.</span> <span class="nav-text">处理信号 dealwithsignal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E8%AF%BB-dealwithread"><span class="nav-number">1.1.12.</span> <span class="nav-text">处理读 dealwithread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%86%99-dealwithwrite"><span class="nav-number">1.1.13.</span> <span class="nav-text">处理写 dealwithwrite</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E5%A4%84%E7%90%86%E4%BA%8B%E4%BB%B6-eventLoop"><span class="nav-number">1.1.14.</span> <span class="nav-text">循环处理事件 eventLoop</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/toggle-theme.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/code-block.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/anime.min.js"></script>
+
+<!-- local-search -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/local-search.js"></script>
+
+
+<!-- lazyload -->
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/post-helper.js"></script>
+
+        <!-- toc -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/toc.js"></script>
+        
+
+        <!-- copyright-info -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/copyright-info.js"></script>
+        
+
+        <!-- share -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/share.js"></script>
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+
+    <!-- photos-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
