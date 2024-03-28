@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="mzy的成长历程">
+    <meta name="author" content="Mzy">
+    
+    <title>
+        
+            从零实现分布式网络通信框架MPRPC |
+        
+        Mzy&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/author.svg">
+    
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/regular.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/solid.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/font/css/brands.min.css">
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"dybil.top","root":"/","language":"zh-CN","path":"search.json"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#00CC33","title":"Mzy's Blog","author":"Mzy","avatar":"/images/author.svg","logo":"/images/author.svg","favicon":"/images/author.svg"},"menu":{"Archives":"/archives","Tags":"/tags","Categories":"/categories","Links":"/links","About":"/about","Photos":"/photos"},"first_screen":{"enable":true,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":true},"social_contact":{"enable":true,"links":{"github":"https://dybil.top","weixin":"https://dybil.top","qq":"https://dybil.top","weibo":"https://dybil.top","zhihu":"https://dybil.top","twitter":"https://dybil.top","facebook":"https://dybil.top","email":"https://dybil.top"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"category":true,"tag":true,"announcement":null},"post":{"author_badge":{"enable":true,"level_badge":false,"custom_badge":["炼气","筑基","结丹","元婴","化神"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":true,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":false,"page_pv":true}},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"waline","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":"https://waline-test-liart.vercel.app","reaction":true,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":true,"provider":"jsdelivr"},"pjax":{"enable":true},"footer":{"since":2022,"word_count":true,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":true,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","version":"4.0.5"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container border-box">
+
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/author.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Mzy&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a class=""
+                           href="/"
+                        >首页</a>
+                    </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >归档</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >标签</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >分类</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/links"
+                            >友链</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >关于</a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/photos"
+                            >相册</a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            <li class="drawer-menu-item flex-center">
+                <a class=""
+                   href="/"
+                >首页</a>
+            </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories"
+                    >分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/links"
+                    >友链</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/photos"
+                    >相册</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        从零实现分布式网络通信框架MPRPC
+                    </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/author.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Mzy</span>
+                                
+                                    <span class="author-badge">元婴</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
+                <span class="pc">2024-02-28 18:46:18</span>
+                <span class="mobile">2024-02-28 18:46</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="pc" data-updated="Thu Mar 28 2024 18:48:37 GMT+0800">2024-03-28 18:48:37</span>
+            </span>
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <i class="icon fas fa-tags"></i>&nbsp;
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/WebServer/">WebServer</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>6.2k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>29 分钟</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h1 id="从零实现分布式网络通信框架"><a href="#从零实现分布式网络通信框架" class="headerlink" title="从零实现分布式网络通信框架"></a>从零实现分布式网络通信框架</h1><h2 id="集群与分布式"><a href="#集群与分布式" class="headerlink" title="集群与分布式"></a>集群与分布式</h2><p>集群：每一台服务器独立运行一个工程的所有模块</p>
+<p>分布式：一个工程拆分成很多模块，每一个模块独立部署运行在一个服务器主机上，所有服务器协同工作共同提供服务，每一台服务器称作分布式的一个节点，根据节点的并发要求，对一个节点可以再做节点模块集群部署。</p>
+<h3 id="单机服务器"><a href="#单机服务器" class="headerlink" title="单机服务器"></a>单机服务器</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/%E5%8D%95%E6%9C%BA.svg"  alt="单机服务器"></p>
+<p>缺点： </p>
+<ol>
+<li>受限于硬件资源，聊天服务器所能承受的用户的并发量</li>
+<li>任意模块的更改，都会导致整个项目代码重新编译、部署</li>
+<li>系统中，有些模块是属于CPU密集型的，有些模块是属于<code>I/O</code>密集型的，造成各模块对于硬件资源的需求是不一样的</li>
+</ol>
+<h3 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/%E9%9B%86%E7%BE%A4%E6%9C%8D%E5%8A%A1%E5%99%A8.svg"  alt="集群服务器"></p>
+<p>优点：并发量提升了</p>
+<p>缺点：项目代码还是需要整体重新编译，而且需要进行多次部署后台管理这样的模块，根本不需要高并发</p>
+<h3 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h3><p>所有服务器共同构成一个系统，把系统拆分成模块 放到每台服务器上，需要高并发的模块就多放几台，容易挂的也多放几台，资源需求就蛮少</p>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/%E5%88%86%E5%B8%83%E5%BC%8F.svg"  alt="分布式"></p>
+<p>优点：解决单机的三个缺点，集群的缺点</p>
+<p>缺点：系统复杂度大大增加，对基础架构要求更高</p>
+<ol>
+<li><strong>大系统的软件模块该怎么划分</strong>？个个模块可能会实现大量重复，需要架构的比较好</li>
+<li>各模块之间该怎么访问呢？<strong>机器1上的一个模块进程1怎么调用机器2是的模块进程2里面的业务方法呢</strong>？各个模块都运行在不同的进程里，docker虚拟化环境中</li>
+</ol>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20240111211235235.png"  alt="image-20240111211235235"></p>
+<h2 id="RPC（远程过程调用）"><a href="#RPC（远程过程调用）" class="headerlink" title="RPC（远程过程调用）"></a>RPC（远程过程调用）</h2><h3 id="RPC通信原理"><a href="#RPC通信原理" class="headerlink" title="RPC通信原理"></a>RPC通信原理</h3><p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6.svg"  alt="通信原理"></p>
+<p><code>User-stub</code>部分：设计<code>rpc</code>方法参数的打包和解析，也就是数据的序列化和反序列化，使用<code>Protobuf</code>。 </p>
+<p><code>RPCRuntime</code>部分：网络部分，包括寻找<code>rpc</code>服务主机，发起<code>rpc</code>调用请求和响应<code>rpc</code>调用结果，使用<code>muduo</code>网络库和<code>zookeeper</code>服务配置中心（专门做服务发现）。</p>
+<p><code>protobuf</code>相比<code>json</code>的好处:</p>
+<ol>
+<li><code>protobuf</code>是二进制存储，<code>xml</code>和<code>json</code>都是文本存储的</li>
+<li><code>protobuf</code>不需要存储额外的信息；<code>json</code>需要存储键</li>
+</ol>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/2020091816070210.png"  alt="img"></p>
+<p><strong>序列化就是将对象转换成二进制数据的过程，而反序列就是反过来将二进制转换为对象的过程</strong>。<strong>网络传输的数据必须是二进制数据，所以在 RPC 调用中，对入参对象与返回值对象进行序列化与反序列化是一个必须的过程。</strong></p>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/20200918160833181.png"  alt="img"></p>
+<h2 id="如何把本地服务通过proto发布成远程服务"><a href="#如何把本地服务通过proto发布成远程服务" class="headerlink" title="如何把本地服务通过proto发布成远程服务"></a>如何把本地服务通过<code>proto</code>发布成远程服务</h2><p><strong>本地服务</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">UserService原来是一个本地服务，提供了两个进程内的本地方法，Login和GetFriendLists</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">UserService</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">Login</span><span class="params">(std::string name, std::string pwd)</span></span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;doing local service Login&quot;</span>&lt;&lt;std::endl;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;name:&quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot;pwd:&quot;</span>&lt;&lt;pwd&lt;&lt;std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    UserService us;</span><br><span class="line">    us.<span class="built_in">Login</span>(<span class="string">&quot;xxx&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>新建一个<code>proto</code>文件</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> fixbug;</span><br><span class="line"></span><br><span class="line"><span class="keyword">option</span> cc_generic_services = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">ResultCode</span>&#123;</span><br><span class="line">    <span class="type">int32</span> errcode = <span class="number">1</span>;</span><br><span class="line">    <span class="type">bytes</span> errmsg = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">LoginRequest</span>&#123;</span><br><span class="line">    <span class="type">bytes</span> name = <span class="number">1</span>;</span><br><span class="line">    <span class="type">bytes</span> pwd = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">LoginResponse</span>&#123;</span><br><span class="line">    ResultCode result = <span class="number">1</span>;</span><br><span class="line">    <span class="type">bool</span> sucess = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">service </span><span class="title class_">UserServiceRpc</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">rpc</span> Login(LoginRequest) <span class="keyword">returns</span>(LoginResponse)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>protoc user.proto --cpp_out=./</code>，编译<code>user.proto</code>文件生成<code>.cpp</code>文件</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;user.pb.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> fixbug;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">UserService原来是一个本地服务，提供了两个进程内的本地方法，Login和GetFriendLists</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">UserService</span>:<span class="keyword">public</span> UserServiceRpc&#123;    <span class="comment">// 使用在rpc服务的发布端（rpc服务提供者）</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">Login</span><span class="params">(std::string name, std::string pwd)</span></span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;doing local service Login&quot;</span>&lt;&lt;std::endl;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;name:&quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot;pwd:&quot;</span>&lt;&lt;pwd&lt;&lt;std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    重写基类UserServiceRpc的虚函数 下面这些方法都是框架直接调用的</span></span><br><span class="line"><span class="comment">    1. caller ==&gt; Login(LoginRequest) ==&gt; moduo ==&gt; callee</span></span><br><span class="line"><span class="comment">    2. callee ==&gt; Login(LoginRequest) ==&gt; 交到下面重写的这个Login方法上了</span></span><br><span class="line"><span class="comment">    */</span> </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Login</span><span class="params">(::google::protobuf::RpcController* controller,</span></span></span><br><span class="line"><span class="params"><span class="function">                    <span class="type">const</span> ::fixbug::LoginRequest* request,</span></span></span><br><span class="line"><span class="params"><span class="function">                    ::fixbug::LoginResponse* response,</span></span></span><br><span class="line"><span class="params"><span class="function">                    ::google::protobuf::Closure* done)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 框架给业务上报了请求参数LoginRequest，应用获取相应数据做本地业务</span></span><br><span class="line">        std::string name = request-&gt;<span class="built_in">name</span>();</span><br><span class="line">        std::string pwd = request-&gt;<span class="built_in">pwd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 做本地业务</span></span><br><span class="line">        <span class="type">bool</span> login_result = <span class="built_in">Login</span>(name,pwd);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 把响应写入 包括错误码、错误信息、返回值</span></span><br><span class="line">        fixbug::ResultCode *code = response-&gt;<span class="built_in">mutable_result</span>();</span><br><span class="line">        code-&gt;<span class="built_in">set_errcode</span>(<span class="number">0</span>);</span><br><span class="line">        code-&gt;<span class="built_in">set_errmsg</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        response-&gt;<span class="built_in">set_sucess</span>(login_result);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行回调操作  </span></span><br><span class="line">        <span class="comment">// 执行响应对象数据的序列化和网络发送（都是由框架完成的）</span></span><br><span class="line">        done-&gt;<span class="built_in">Run</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    UserService us;</span><br><span class="line">    us.<span class="built_in">Login</span>(<span class="string">&quot;xxx&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="keep-note success"><p>问题：已经在文件中<code>#include &quot;user.pb.h&quot;</code>，但是<code>class UserService:public UserServiceRpc</code>中的<code>UserServiceRpc</code>还是报错，显示找不到这个类</p>
+<p>解决方法：<code>using namespace fixbug;</code>或者</p>
+<p><code>class UserService:public fixbug::UserServiceRpc</code></p>
+</div>
+
+<h2 id="设计框架"><a href="#设计框架" class="headerlink" title="设计框架"></a>设计框架</h2><p>首先，根据想法，应该怎么设计框架，先调用框架的初始化操作<code>Init</code>，然后创建一个<code>rpc</code>网络服务对象，发布一个服务<code>NotifyService</code>，然后启动<code>rpc</code>服务。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;user.pb.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> fixbug;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">UserService原来是一个本地服务，提供了两个进程内的本地方法，Login和GetFriendLists</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">UserService</span>:<span class="keyword">public</span> UserServiceRpc&#123;    <span class="comment">// 使用在rpc服务的发布端（rpc服务提供者）</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">Login</span><span class="params">(std::string name, std::string pwd)</span></span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;doing local service Login&quot;</span>&lt;&lt;std::endl;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;name:&quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot;pwd:&quot;</span>&lt;&lt;pwd&lt;&lt;std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    重写基类UserServiceRpc的虚函数 下面这些方法都是框架直接调用的</span></span><br><span class="line"><span class="comment">    1. caller ==&gt; Login(LoginRequest) ==&gt; moduo ==&gt; callee</span></span><br><span class="line"><span class="comment">    2. callee ==&gt; Login(LoginRequest) ==&gt; 交到下面重写的这个Login方法上了</span></span><br><span class="line"><span class="comment">    */</span> </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Login</span><span class="params">(::google::protobuf::RpcController* controller,</span></span></span><br><span class="line"><span class="params"><span class="function">                    <span class="type">const</span> ::fixbug::LoginRequest* request,</span></span></span><br><span class="line"><span class="params"><span class="function">                    ::fixbug::LoginResponse* response,</span></span></span><br><span class="line"><span class="params"><span class="function">                    ::google::protobuf::Closure* done)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 框架给业务上报了请求参数LoginRequest，应用获取相应数据做本地业务</span></span><br><span class="line">        std::string name = request-&gt;<span class="built_in">name</span>();</span><br><span class="line">        std::string pwd = request-&gt;<span class="built_in">pwd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 做本地业务</span></span><br><span class="line">        <span class="type">bool</span> login_result = <span class="built_in">Login</span>(name,pwd);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 把响应写入 包括错误码、错误信息、返回值</span></span><br><span class="line">        fixbug::ResultCode *code = response-&gt;<span class="built_in">mutable_result</span>();</span><br><span class="line">        code-&gt;<span class="built_in">set_errcode</span>(<span class="number">0</span>);</span><br><span class="line">        code-&gt;<span class="built_in">set_errmsg</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        response-&gt;<span class="built_in">set_sucess</span>(login_result);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行回调操作  </span></span><br><span class="line">        <span class="comment">// 执行响应对象数据的序列化和网络发送（都是由框架完成的）</span></span><br><span class="line">        done-&gt;<span class="built_in">Run</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>&#123;</span><br><span class="line">    UserService us;</span><br><span class="line">    us.<span class="built_in">Login</span>(<span class="string">&quot;xxx&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用框架的初始化操作</span></span><br><span class="line">    MprpcApplication::<span class="built_in">Init</span>(argc,argv);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// provider是一个rpc网络服务对象，把UserService对象发布到rpc节点上</span></span><br><span class="line">    RpcProvider provider;</span><br><span class="line">    provider.<span class="built_in">NotifyService</span>(<span class="keyword">new</span> <span class="built_in">UserService</span>());</span><br><span class="line">    <span class="comment">//provider.NotifyService(new ProductService());</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动一个rpc服务发布节点,Run以后，进程进入阻塞状态，等待远程的rpc调用请求</span></span><br><span class="line">    provider.<span class="built_in">Run</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后根据前面的设计，完善类和方法</p>
+<p><strong>mprpcapplication.h</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// rpc框架的基础类，负责框架的一些初始化操作</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MprpcApplication</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">MprpcApplication</span>()&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="type">static</span> MprpcApplication* <span class="title">GetInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="type">static</span> MprpcApplication application;</span><br><span class="line">        <span class="keyword">return</span> &amp;application;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 防止拷贝构造和赋值操作，确保单例的唯一性</span></span><br><span class="line">    <span class="built_in">MprpcApplication</span>(<span class="type">const</span> MprpcApplication&amp;) =<span class="keyword">delete</span>;  <span class="comment">// 删除拷贝构造函数</span></span><br><span class="line">    MprpcApplication&amp; <span class="keyword">operator</span>=(<span class="type">const</span> MprpcApplication&amp;) =<span class="keyword">delete</span>;   <span class="comment">// 拷贝赋值运算符</span></span><br><span class="line">    <span class="built_in">MprpcApplication</span>(MprpcApplication&amp;&amp;) =<span class="keyword">delete</span>;   <span class="comment">// 删除移动构造函数</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">Init</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>mprpcapplication.cc</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mprpcapplication.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类外实现静态方法不用static</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MprpcApplication::Init</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>rpcprovider.h</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;google/protobuf/service.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 框架提供的专门发布rpc服务的网络对象类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RpcProvider</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//RpcProvider()&#123;&#125;;</span></span><br><span class="line">    <span class="comment">// 这里是框架提供给外部使用的，可以发布rpc方法的函数接口</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">NotifyService</span><span class="params">(google::protobuf::Service *service)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 启动rpc服务节点，开始提供rpc远程网络调用服务</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Run</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>rpcprovider.cc</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rpcprovider.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RpcProvider::NotifyService</span><span class="params">(google::protobuf::Service *service)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RpcProvider::Run</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>进入<code>build</code>文件夹，运行<code>cmake ..</code>编译生成<code>MakeFile</code>文件，然后<code>make</code>，根据生成<code>makefile</code>文件，编译程序。生成包括可执行文件<code>provider</code>和动态库<code>libmprpc.so</code>。</p>
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/image-20240113141045539.png"  alt="image-20240113141045539"></p>
+<div class="keep-note success"><p><strong>类的静态成员</strong></p>
+<p>特点：<br>　　A、内存分配：在程序的全局数据区分配。<br>　　B、初始化和定义：<br>　　　 a、静态数据成员定义时要分配空间，所以不能在类声明中定义。<br>　　　 b、为了避免在多个使用该类的源文件中，对其重复定义，所在，不能在类的头文件中<br>　　　　定义。<br>　　　 c、静态数据成员因为程序一开始运行就必需存在，所以其初始化的最佳位置在类的内部实现。<br>　　C、特点<br>　　　 a、对相于<code>public,protected,private</code>关键字的影响它和普通数据成员一样，<br>　　　 b、因为其空间在全局数据区分配，属于所有本类的对象共享，所以，它不属于特定的类对象，在没产生类对象时其作用域就可见，即在没有产生类的实例时，我们就可以操作它。<br>　　D、访问形式<br>　　　 a、 类对象名.静态数据成员名</p>
+<p>   E、静态数据成员，主要用在类的所有实例都拥有的属性上。比如，对于一个存款类，帐号相对于每个实例都是不同的，但每个实例的利息是相同的。所以，应该把利息设为存款类的静态数据成员。这有两个好处，第一，不管定义多少个存款类对象，利息数据成员都共享分配在全局区的内存，所以节省存贮空间。第二，一旦利息需要改变时，只要改变一次，则所有存款类对象的利息全改变过来了，因为它们实际上是共用一个东西。</p>
+<p><strong>定义类的静态成员</strong></p>
+<p>一般来说，不能在类的内部初始化静态成员。必须在类的外部定义和初始化每个静态成员。和其他对象一样，一个静态数据成员只能定义一次。静态数据成员定义在任何函数之外。因此一旦它被定义，就将一直存在于程序的整个生命周期中。</p>
+<p><strong>外部定义</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MprpcConfig MprpcApplication::m_config;</span><br></pre></td></tr></table></figure>
+
+<p><strong>类内初始化</strong></p>
+<p>通常情况下，类的静态成员不应该在类的内部初始化。然而，可以为静态成员提供<code>const</code>整数类型的类内初始值，不过要求静态成员必须是字面值常量类型的<code>constexpr</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">const</span> MprpcConfig m_config;</span><br></pre></td></tr></table></figure>
+</div>
+
+<h2 id="读取配置文件"><a href="#读取配置文件" class="headerlink" title="读取配置文件"></a>读取配置文件</h2><h3 id="mprpcapplication-h"><a href="#mprpcapplication-h" class="headerlink" title="mprpcapplication.h"></a><strong>mprpcapplication.h</strong></h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mprpcconfig.h&quot;</span></span></span><br><span class="line"><span class="comment">// rpc框架的基础类，负责框架的一些初始化操作</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MprpcApplication</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">MprpcApplication</span>()&#123;&#125;;</span><br><span class="line">    <span class="function"><span class="type">static</span> MprpcApplication* <span class="title">GetInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="type">static</span> MprpcApplication application;</span><br><span class="line">        <span class="keyword">return</span> &amp;application;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">Init</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="comment">// 防止拷贝构造和赋值操作，确保单例的唯一性</span></span><br><span class="line">    <span class="built_in">MprpcApplication</span>(<span class="type">const</span> MprpcApplication&amp;) =<span class="keyword">delete</span>;  <span class="comment">// 删除拷贝构造函数</span></span><br><span class="line">    MprpcApplication&amp; <span class="keyword">operator</span>=(<span class="type">const</span> MprpcApplication&amp;) =<span class="keyword">delete</span>;   <span class="comment">// 拷贝赋值运算符</span></span><br><span class="line">    <span class="built_in">MprpcApplication</span>(MprpcApplication&amp;&amp;) =<span class="keyword">delete</span>;   <span class="comment">// 删除移动构造函数</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">static</span> MprpcConfig m_config;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="mprpcapplication-cpp"><a href="#mprpcapplication-cpp" class="headerlink" title="mprpcapplication.cpp"></a><strong>mprpcapplication.cpp</strong></h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mprpcapplication.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line">MprpcConfig MprpcApplication::m_config;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">ShowArgsHelp</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;format: command -i &lt;configfile&gt;&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类外实现静态方法不用static</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MprpcApplication::Init</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(argc &lt; <span class="number">2</span>)&#123;</span><br><span class="line">        <span class="built_in">ShowArgsHelp</span>();</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> c = <span class="number">0</span>;</span><br><span class="line">    std::string config_file;</span><br><span class="line">    <span class="keyword">while</span>((c = <span class="built_in">getopt</span>(argc, argv, <span class="string">&quot;i:&quot;</span>)) != <span class="number">-1</span>)&#123;</span><br><span class="line">        <span class="keyword">switch</span>(c)&#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;i&#x27;</span>:</span><br><span class="line">                config_file = optarg; </span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;?&#x27;</span>:</span><br><span class="line">                std::cout&lt;&lt;<span class="string">&quot;invalid args!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">                <span class="built_in">ShowArgsHelp</span>();</span><br><span class="line">                <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;:&#x27;</span>:</span><br><span class="line">                std::cout&lt;&lt;<span class="string">&quot;need &lt;configfile&gt;&quot;</span> &lt;&lt;std::endl;</span><br><span class="line">                <span class="built_in">ShowArgsHelp</span>();</span><br><span class="line">                <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 开始加载配置文件</span></span><br><span class="line">    m_config.<span class="built_in">LoadConfigFile</span>(config_file.<span class="built_in">c_str</span>());</span><br><span class="line">    <span class="comment">// 测试</span></span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;rpcserverip: &quot;</span>&lt;&lt;m_config.<span class="built_in">Load</span>(<span class="string">&quot;rpcserverip&quot;</span>)&lt;&lt;std::endl;</span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;rpcserverport: &quot;</span>&lt;&lt;m_config.<span class="built_in">Load</span>(<span class="string">&quot;rpcserverport&quot;</span>)&lt;&lt;std::endl;</span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;zookeeperip: &quot;</span>&lt;&lt;m_config.<span class="built_in">Load</span>(<span class="string">&quot;zookeeperip&quot;</span>)&lt;&lt;std::endl;</span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;zookeeperport: &quot;</span>&lt;&lt;m_config.<span class="built_in">Load</span>(<span class="string">&quot;zookeeperport&quot;</span>)&lt;&lt;std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="mprpcconfig-h"><a href="#mprpcconfig-h" class="headerlink" title="mprpcconfig.h"></a>mprpcconfig.h</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// rpcserverip  rpcserverport  zookeeperip   zookeeperport</span></span><br><span class="line"><span class="comment">// 框架读取配置文件类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MprpcConfig</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 负责解析加载配置文件</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">LoadConfigFile</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* config_file)</span></span>;</span><br><span class="line">    <span class="comment">// 查询配置项信息</span></span><br><span class="line">    <span class="function">std::string <span class="title">Load</span><span class="params">(<span class="type">const</span> std::string &amp;key)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::unordered_map&lt;std::string, std::string&gt; m_configMap;   <span class="comment">// 保存配置项</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="mprpcconfig-cpp"><a href="#mprpcconfig-cpp" class="headerlink" title="mprpcconfig.cpp"></a>mprpcconfig.cpp</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mprpcconfig.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MprpcConfig::LoadConfigFile</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* config_file)</span></span>&#123;</span><br><span class="line">    FILE *fp = <span class="built_in">fopen</span>(config_file, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(fp == <span class="literal">nullptr</span>)&#123;</span><br><span class="line">        std::cout&lt;&lt; config_file &lt;&lt; <span class="string">&quot; is not exist!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 1.注释  2.正确的配置项 =  3. 去掉前后多余的空格</span></span><br><span class="line">    <span class="keyword">while</span>(!<span class="built_in">feof</span>(fp))&#123;</span><br><span class="line">        <span class="type">char</span> buf[<span class="number">512</span>] =&#123;<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="built_in">fgets</span>(buf,<span class="number">512</span>,fp);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 去掉字符串前面多余的空格</span></span><br><span class="line">        <span class="function">std::string <span class="title">src_buf</span><span class="params">(buf)</span></span>;</span><br><span class="line">        <span class="type">int</span> idx = src_buf.<span class="built_in">find_first_not_of</span>(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span>(idx != <span class="number">-1</span>)&#123;</span><br><span class="line">            <span class="comment">// 说明字符串前面有空格</span></span><br><span class="line">            src_buf = src_buf.<span class="built_in">substr</span>(idx,src_buf.<span class="built_in">size</span>() - idx);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 去掉字符串后面多余的空格</span></span><br><span class="line">        idx = src_buf.<span class="built_in">find_last_not_of</span>(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span>(idx != <span class="number">-1</span>)&#123;</span><br><span class="line">            <span class="comment">// 说明字符串后面有空格</span></span><br><span class="line">            src_buf = src_buf.<span class="built_in">substr</span>(<span class="number">0</span>,idx + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 判断#的注释</span></span><br><span class="line">        <span class="keyword">if</span>(src_buf[<span class="number">0</span>] == <span class="string">&#x27;#&#x27;</span> || src_buf.<span class="built_in">empty</span>())&#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 解析配置项</span></span><br><span class="line">        idx = src_buf.<span class="built_in">find</span>(<span class="string">&#x27;=&#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span>(idx == <span class="number">-1</span>)&#123;</span><br><span class="line">            <span class="comment">// 配置项不合法</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        std::string key;</span><br><span class="line">        std::string value;</span><br><span class="line">        key = src_buf.<span class="built_in">substr</span>(<span class="number">0</span>,idx);</span><br><span class="line">        value = src_buf.<span class="built_in">substr</span>(idx+<span class="number">1</span>,src_buf.<span class="built_in">size</span>() - idx);</span><br><span class="line">        m_configMap.<span class="built_in">insert</span>(&#123;key,value&#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">    <span class="comment">// 查询配置项信息</span></span><br><span class="line"><span class="function">std::string <span class="title">MprpcConfig::Load</span><span class="params">(<span class="type">const</span> std::string &amp;key)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 不用用m_configMap[key],因为当key不存在时，会往map中加一项</span></span><br><span class="line">   <span class="comment">// return m_configMap[key];</span></span><br><span class="line">   <span class="keyword">auto</span> it = m_configMap.<span class="built_in">find</span>(key);</span><br><span class="line">   <span class="keyword">if</span>(it == m_configMap.<span class="built_in">end</span>())&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> it-&gt;second;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">doing local service Login</span><br><span class="line">name:xxxpwd:xxx</span><br><span class="line">rpcserverip: 127.0.0.1</span><br><span class="line"></span><br><span class="line">rpcserverport: 8000</span><br><span class="line"></span><br><span class="line">zookeeperip: 127.0.0.1</span><br><span class="line"></span><br><span class="line">zookeeperport: 5000</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="muduo库的安装与使用"><a href="#muduo库的安装与使用" class="headerlink" title="muduo库的安装与使用"></a><code>muduo</code>库的安装与使用</h2><p>下载<code>muduo</code>库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/chenshuo/muduo</span><br></pre></td></tr></table></figure>
+
+<p>安装<code>CMake</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install cmake</span><br></pre></td></tr></table></figure>
+
+<p>安装<code>boost</code>库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libboost-dev libboost-test-dev</span><br></pre></td></tr></table></figure>
+
+<p><code>muduo</code>有三个非必须的依赖库，<code>curl、c-ares DNS、google protobuf</code>，如果安装了这三个库，<code>cmake</code>会多编译一些示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libcurl4-openssl-dev libc-ares-dev</span><br><span class="line">sudo apt-get install protobuf-compiler libprotobuf-dev</span><br></pre></td></tr></table></figure>
+
+<p>安装好前面的依赖后，正式开始安装<code>muduo</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">进入muduo目录</span></span><br><span class="line">cd muduo</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">编译</span></span><br><span class="line">./build.sh</span><br></pre></td></tr></table></figure>
+
+<p>编译完成后，在输入<code>./build.sh install</code>命令进行<code>muduo</code>库安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./build.sh install</span><br></pre></td></tr></table></figure>
+
+<p><code>./build.sh install</code>实际上把<code>muduo</code>的头文件和lib库文件放到了<code>muduo</code>同级目录下的<code>build</code>目录下的<code>release-install-cpp11</code>文件夹下面了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mzy@DESKTOP-4QU667E:/media/mzy/build$ ls</span><br><span class="line">release-cpp11  release-install-cpp11</span><br></pre></td></tr></table></figure>
+
+<p><code>install</code>命令并没有把它们拷贝到系统路径下，导致每次编译程序都需要指定<code>muduo</code>库的头文件和库文件路径，很麻烦，所以选择直接把<code>inlcude</code>（头文件）和<code>lib</code>（库文件）目录下的文件拷贝到系统目录下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mv muduo/ /usr/include/</span><br><span class="line">sudo mv * /usr/local/lib/</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试代码</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/net/TcpServer.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/base/Logging.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;boost/bind.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/net/EventLoop.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用muduo开发回显服务器</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EchoServer</span></span><br><span class="line">&#123;</span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">EchoServer</span>(muduo::net::EventLoop* loop,</span><br><span class="line">             <span class="type">const</span> muduo::net::InetAddress&amp; listenAddr);</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">start</span><span class="params">()</span></span>; </span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">onConnection</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr&amp; conn)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">onMessage</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr&amp; conn,</span></span></span><br><span class="line"><span class="params"><span class="function">                 muduo::net::Buffer* buf,</span></span></span><br><span class="line"><span class="params"><span class="function">                 muduo::Timestamp time)</span></span>;</span><br><span class="line"></span><br><span class="line">  muduo::net::TcpServer server_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">EchoServer::<span class="built_in">EchoServer</span>(muduo::net::EventLoop* loop,</span><br><span class="line">                       <span class="type">const</span> muduo::net::InetAddress&amp; listenAddr)</span><br><span class="line">  : <span class="built_in">server_</span>(loop, listenAddr, <span class="string">&quot;EchoServer&quot;</span>)</span><br><span class="line">&#123;</span><br><span class="line">  server_.<span class="built_in">setConnectionCallback</span>(</span><br><span class="line">      boost::<span class="built_in">bind</span>(&amp;EchoServer::onConnection, <span class="keyword">this</span>, _1));</span><br><span class="line">  server_.<span class="built_in">setMessageCallback</span>(</span><br><span class="line">      boost::<span class="built_in">bind</span>(&amp;EchoServer::onMessage, <span class="keyword">this</span>, _1, _2, _3));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">EchoServer::start</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  server_.<span class="built_in">start</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">EchoServer::onConnection</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr&amp; conn)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  LOG_INFO &lt;&lt; <span class="string">&quot;EchoServer - &quot;</span> &lt;&lt; conn-&gt;<span class="built_in">peerAddress</span>().<span class="built_in">toIpPort</span>() &lt;&lt; <span class="string">&quot; -&gt; &quot;</span></span><br><span class="line">           &lt;&lt; conn-&gt;<span class="built_in">localAddress</span>().<span class="built_in">toIpPort</span>() &lt;&lt; <span class="string">&quot; is &quot;</span></span><br><span class="line">           &lt;&lt; (conn-&gt;<span class="built_in">connected</span>() ? <span class="string">&quot;UP&quot;</span> : <span class="string">&quot;DOWN&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">EchoServer::onMessage</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr&amp; conn,</span></span></span><br><span class="line"><span class="params"><span class="function">                           muduo::net::Buffer* buf,</span></span></span><br><span class="line"><span class="params"><span class="function">                           muduo::Timestamp time)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// 接收到所有的消息，然后回显</span></span><br><span class="line">  <span class="function">muduo::string <span class="title">msg</span><span class="params">(buf-&gt;retrieveAllAsString())</span></span>;</span><br><span class="line">  LOG_INFO &lt;&lt; conn-&gt;<span class="built_in">name</span>() &lt;&lt; <span class="string">&quot; echo &quot;</span> &lt;&lt; msg.<span class="built_in">size</span>() &lt;&lt; <span class="string">&quot; bytes, &quot;</span></span><br><span class="line">           &lt;&lt; <span class="string">&quot;data received at &quot;</span> &lt;&lt; time.<span class="built_in">toString</span>();</span><br><span class="line">  conn-&gt;<span class="built_in">send</span>(msg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  LOG_INFO &lt;&lt; <span class="string">&quot;pid = &quot;</span> &lt;&lt; <span class="built_in">getpid</span>();</span><br><span class="line">  muduo::net::EventLoop loop;</span><br><span class="line">  muduo::<span class="function">net::InetAddress <span class="title">listenAddr</span><span class="params">(<span class="number">8888</span>)</span></span>;</span><br><span class="line">  <span class="function">EchoServer <span class="title">server</span><span class="params">(&amp;loop, listenAddr)</span></span>;</span><br><span class="line">  server.<span class="built_in">start</span>();</span><br><span class="line">  loop.<span class="built_in">loop</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用g++进行编译，注意链接<code>muduo</code>和<code>pthread</code>的库文件，编译命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ main.cpp -lmuduo_net -lmuduo_base -lpthread -std=c++11</span><br></pre></td></tr></table></figure>
+
+<p>编译链接完成，生成<code>a.out</code>可执行程序，上面的echo服务器监听8888端口，运行上面的<code>a.out</code>回显服务器如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">20240119 07:47:16.570523Z  9085 INFO  pid = 9085 - main.cpp:61</span><br><span class="line">20240119 07:47:34.910773Z  9085 INFO  TcpServer::newConnection [EchoServer] - new connection [EchoServer-0.0.0.0:8888#1] from 127.0.0.1:53666 - TcpServer.cc:80</span><br><span class="line">20240119 07:47:34.910814Z  9085 INFO  EchoServer - 127.0.0.1:53666 -&gt; 127.0.0.1:8888 is UP - main.cpp:42</span><br><span class="line">20240119 07:47:34.910841Z  9085 INFO  EchoServer-0.0.0.0:8888#1 echo 12 bytes, data received at 1705650454.910821 - main.cpp:53</span><br></pre></td></tr></table></figure>
+
+<p>等待客户端连接，可以打开一个新的<code>shell</code>命令行用<code>netcat</code>命令模拟客户端连接echo服务器进行功能测试，命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | nc localhost 8888</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo find /usr -name &quot;libmuduo*&quot;</span><br><span class="line">[sudo] password for mzy:</span><br><span class="line">/usr/local/lib/libmuduo_base.a</span><br><span class="line">/usr/local/lib/libmuduo_protorpc.a</span><br><span class="line">/usr/local/lib/libmuduo_net.a</span><br><span class="line">/usr/local/lib/libmuduo_protobuf_codec.a</span><br><span class="line">/usr/local/lib/libmuduo_protorpc_wire.a</span><br><span class="line">/usr/local/lib/libmuduo_http.a</span><br><span class="line">/usr/local/lib/libmuduo_inspect.a</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cmake --build build</span><br><span class="line">[ 14%] Linking CXX shared library /media/mzy/learn_mprpc/lib/libmprpc.so</span><br><span class="line">/usr/bin/ld: /usr/local/lib/libmuduo_net.a(EventLoop.cc.o): relocation R_X86_64_TPOFF32 against `_ZN12_GLOBAL__N_118t_loopInThisThreadE&#x27; can not be used when making a shared object; recompile with -fPIC</span><br><span class="line">/usr/bin/ld: /usr/local/lib/libmuduo_net.a(InetAddress.cc.o): relocation R_X86_64_TPOFF32 against `_ZL15t_resolveBuffer&#x27; can not be used when making a shared object; recompile with -fPIC</span><br><span class="line">collect2: error: ld returned 1 exit status</span><br><span class="line">make[2]: *** [src/CMakeFiles/mprpc.dir/build.make:129: /media/mzy/learn_mprpc/lib/libmprpc.so] Error 1</span><br><span class="line">make[1]: *** [CMakeFiles/Makefile2:131: src/CMakeFiles/mprpc.dir/all] Error 2</span><br><span class="line">make: *** [Makefile:91: all] Error 2</span><br></pre></td></tr></table></figure>
+
+<p><code>muduo</code>库是静态库，而自己生成的<code>mprpc</code>库是动态库，动态库在链接静态库的时候可能会出现问题，现在有两个解决方法：</p>
+<ol>
+<li>把<code>muduo</code>重新编译成动态库</li>
+<li>把<code>mprpc</code>编译成静态库</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">aux_source_directory</span>(. SRC_LIST)</span><br><span class="line"><span class="keyword">add_library</span>(mprpc STATIC <span class="variable">$&#123;SRC_LIST&#125;</span>)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(mprpc muduo_base muduo_net pthread)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;google/protobuf/service.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/net/TcpServer.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/net/EventLoop.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/net/InetAddress.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;muduo/net/TcpConnection.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 框架提供的专门发布rpc服务的网络对象类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RpcProvider</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//RpcProvider()&#123;&#125;;</span></span><br><span class="line">    <span class="comment">// 这里是框架提供给外部使用的，可以发布rpc方法的函数接口</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">NotifyService</span><span class="params">(google::protobuf::Service *service)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 启动rpc服务节点，开始提供rpc远程网络调用服务</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Run</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">   </span><br><span class="line">    <span class="comment">// muduo的事件循环EventLoop类的对象</span></span><br><span class="line">    muduo::net::EventLoop m_eventLoop;</span><br><span class="line">    <span class="comment">// 新的socket连接回调</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">OnConnection</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr &amp;)</span></span>;</span><br><span class="line">    <span class="comment">// 已建立连接用户的读写事件回调</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">OnMessage</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr &amp;, muduo::net::Buffer*, muduo::Timestamp)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rpcprovider.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mprpcapplication.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RpcProvider::NotifyService</span><span class="params">(google::protobuf::Service *service)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RpcProvider::Run</span><span class="params">()</span></span>&#123;</span><br><span class="line">    std::string ip = MprpcApplication::<span class="built_in">GetInstance</span>()-&gt;<span class="built_in">GetConfig</span>().<span class="built_in">Load</span>(<span class="string">&quot;rpcserverip&quot;</span>);</span><br><span class="line">    <span class="type">uint16_t</span> port = <span class="built_in">atoi</span>(MprpcApplication::<span class="built_in">GetInstance</span>()-&gt;<span class="built_in">GetConfig</span>().<span class="built_in">Load</span>(<span class="string">&quot;rpcserverport&quot;</span>).<span class="built_in">c_str</span>());</span><br><span class="line">    muduo::<span class="function">net::InetAddress <span class="title">address</span><span class="params">(ip,port)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 创建TcpServer对象</span></span><br><span class="line">    muduo::<span class="function">net::TcpServer <span class="title">server</span><span class="params">(&amp;m_eventLoop,address,<span class="string">&quot;RpcProvider&quot;</span>)</span></span>;</span><br><span class="line">    <span class="comment">// 绑定连接回调和消息读写回调方法   分离了网络代码和业务代码</span></span><br><span class="line">    server.<span class="built_in">setConnectionCallback</span>(std::<span class="built_in">bind</span>(&amp;RpcProvider::OnConnection,<span class="keyword">this</span>,std::placeholders::_1));</span><br><span class="line">    server.<span class="built_in">setMessageCallback</span>(std::<span class="built_in">bind</span>(&amp;RpcProvider::OnMessage,<span class="keyword">this</span>,std::placeholders::_1,</span><br><span class="line">    std::placeholders::_2,std::placeholders::_3));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 设置muduo库的线程数量</span></span><br><span class="line">    server.<span class="built_in">setThreadNum</span>(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动网络服务</span></span><br><span class="line">    server.<span class="built_in">start</span>();</span><br><span class="line">    m_eventLoop.<span class="built_in">loop</span>();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新的socket连接回调</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RpcProvider::OnConnection</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr&amp;)</span></span>&#123;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="comment">// 已建立连接用户的读写事件回调</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">RpcProvider::OnMessage</span><span class="params">(<span class="type">const</span> muduo::net::TcpConnectionPtr&amp;, muduo::net::Buffer*, muduo::Timestamp)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="发布服务"><a href="#发布服务" class="headerlink" title="发布服务"></a>发布服务</h2><p>Callee是<code>RpcProvider</code>的使用者，<code>rpc</code>服务方法的发布方</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">原</span><br><span class="line">class UserService&#123;</span><br><span class="line">login 本地方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>||</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">继承RPC方法的类</span><br><span class="line">class UserService : public UserServiceRpc&#123;</span><br><span class="line">login 本地方法</span><br><span class="line">login 重写protobuf提供的virtual虚函数&#123;</span><br><span class="line"><span class="bullet">	1.</span> 从LoginRequest获取参数的值</span><br><span class="line"><span class="bullet">	2.</span> 执行本地服务login，并获取返回值</span><br><span class="line"><span class="bullet">	3.</span> 用上面的返回值填写LoginResponse</span><br><span class="line"><span class="bullet">	4.</span> 一个回调，把LoginResponse发送到rpc client（rpc服务的调用端）</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://glf-1309623969.cos.ap-shanghai.myqcloud.com/img/RpcProvider%E6%A1%86%E6%9E%B6.svg"  alt="RpcProvider框架"></p>
+<h3 id="用户服务"><a href="#用户服务" class="headerlink" title="用户服务"></a>用户服务</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;user.pb.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mprpcapplication.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rpcprovider.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> fixbug;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">UserService原来是一个本地服务，提供了两个进程内的本地方法，Login和GetFriendLists</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">UserService</span>:<span class="keyword">public</span> UserServiceRpc&#123;    <span class="comment">// 使用在rpc服务的发布端（rpc服务提供者）</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">Login</span><span class="params">(std::string name, std::string pwd)</span></span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;doing local service Login&quot;</span>&lt;&lt;std::endl;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;name:&quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot;pwd:&quot;</span>&lt;&lt;pwd&lt;&lt;std::endl;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">Register</span><span class="params">(<span class="type">int</span> id, std::string name, std::string pwd)</span></span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;doing local service Register&quot;</span>&lt;&lt;std::endl;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;id: &quot;</span>&lt;&lt;id&lt;&lt;<span class="string">&quot;name: &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot;pwd: &quot;</span>&lt;&lt;pwd&lt;&lt;std::endl;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    重写基类UserServiceRpc的虚函数 下面这些方法都是框架直接调用的</span></span><br><span class="line"><span class="comment">    1. caller ==&gt; Login(LoginRequest) ==&gt; moduo ==&gt; callee</span></span><br><span class="line"><span class="comment">    2. callee ==&gt; Login(LoginRequest) ==&gt; 交到下面重写的这个Login方法上了</span></span><br><span class="line"><span class="comment">    */</span> </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Login</span><span class="params">(::google::protobuf::RpcController* controller,</span></span></span><br><span class="line"><span class="params"><span class="function">                    <span class="type">const</span> ::fixbug::LoginRequest* request,</span></span></span><br><span class="line"><span class="params"><span class="function">                    ::fixbug::LoginResponse* response,</span></span></span><br><span class="line"><span class="params"><span class="function">                    ::google::protobuf::Closure* done)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 框架给业务上报了请求参数LoginRequest，应用获取相应数据做本地业务</span></span><br><span class="line">        std::string name = request-&gt;<span class="built_in">name</span>();</span><br><span class="line">        std::string pwd = request-&gt;<span class="built_in">pwd</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 做本地业务</span></span><br><span class="line">        <span class="type">bool</span> login_result = <span class="built_in">Login</span>(name,pwd);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 把响应写入 包括错误码、错误信息、返回值</span></span><br><span class="line">        fixbug::ResultCode *code = response-&gt;<span class="built_in">mutable_result</span>();</span><br><span class="line">        code-&gt;<span class="built_in">set_errcode</span>(<span class="number">0</span>);</span><br><span class="line">        code-&gt;<span class="built_in">set_errmsg</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        response-&gt;<span class="built_in">set_sucess</span>(login_result);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行回调操作  </span></span><br><span class="line">        <span class="comment">// 执行响应对象数据的序列化和网络发送（都是由框架完成的）</span></span><br><span class="line">        done-&gt;<span class="built_in">Run</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">Register</span><span class="params">(::google::protobuf::RpcController* controller,</span></span></span><br><span class="line"><span class="params"><span class="function">                       <span class="type">const</span> ::fixbug::RegisterRequest* request,</span></span></span><br><span class="line"><span class="params"><span class="function">                       ::fixbug::RegisterResponse* response,</span></span></span><br><span class="line"><span class="params"><span class="function">                       ::google::protobuf::Closure* done)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 框架给业务上报了请求参数RegisterRequest，应用获取相应数据做本地业务</span></span><br><span class="line">        <span class="type">int</span> id = request-&gt;<span class="built_in">id</span>();</span><br><span class="line">        std::string name = request-&gt;<span class="built_in">name</span>();</span><br><span class="line">        std::string pwd = request-&gt;<span class="built_in">pwd</span>();</span><br><span class="line">        <span class="comment">// 本地业务</span></span><br><span class="line">        <span class="type">bool</span> register_result = <span class="built_in">Register</span>(id,name,pwd);</span><br><span class="line"></span><br><span class="line">        response-&gt;<span class="built_in">mutable_result</span>()-&gt;<span class="built_in">set_errcode</span>(<span class="number">0</span>);</span><br><span class="line">        response-&gt;<span class="built_in">mutable_result</span>()-&gt;<span class="built_in">set_errmsg</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        response-&gt;<span class="built_in">set_sucess</span>(register_result);</span><br><span class="line"></span><br><span class="line">        done-&gt;<span class="built_in">Run</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>&#123;</span><br><span class="line">    UserService us;</span><br><span class="line">   <span class="comment">// us.Login(&quot;xxx&quot;,&quot;xxx&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用框架的初始化操作 provider -i config.conf</span></span><br><span class="line">    MprpcApplication::<span class="built_in">Init</span>(argc,argv);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// provider是一个rpc网络服务对象，把UserService对象发布到rpc节点上</span></span><br><span class="line">    RpcProvider provider;</span><br><span class="line">    provider.<span class="built_in">NotifyService</span>(<span class="keyword">new</span> <span class="built_in">UserService</span>());</span><br><span class="line">    <span class="comment">//provider.NotifyService(new ProductService());</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动一个rpc服务发布节点,Run以后，进程进入阻塞状态，等待远程的rpc调用请求</span></span><br><span class="line">    provider.<span class="built_in">Run</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">./provider -i test.conf</span><br><span class="line"></span><br><span class="line">rpcserverip: 127.0.0.1</span><br><span class="line">rpcserverport: 8000</span><br><span class="line">zookeeperip: 127.0.0.1</span><br><span class="line">zookeeperport: 5000</span><br><span class="line">service_name:UserServiceRpc</span><br><span class="line">method_name:Login</span><br><span class="line">method_name:Register</span><br><span class="line">RpcProvider start service at ip:127.0.0.1 port:8000</span><br><span class="line">20240123 01:51:28.667152Z  4297 INFO  TcpServer::newConnection [RpcProvider] - new connection [RpcProvider-127.0.0.1:8000#1] from 127.0.0.1:48854 - TcpServer.cc:80</span><br><span class="line">===================================================</span><br><span class="line">header_size: 25</span><br><span class="line">rpc_header_str:</span><br><span class="line">UserServiceRpcLogin</span><br><span class="line">args_str:</span><br><span class="line">        Zhang san123456</span><br><span class="line">===================================================</span><br><span class="line">doing local service Login</span><br><span class="line">name:Zhang sanpwd:123456</span><br><span class="line">20240123 01:51:28.667959Z  4297 INFO  TcpServer::removeConnectionInLoop [RpcProvider] - connection RpcProvider-127.0.0.1:8000#1 - TcpServer.cc:109</span><br><span class="line">20240123 01:51:28.668079Z  4297 INFO  TcpServer::newConnection [RpcProvider] - new connection [RpcProvider-127.0.0.1:8000#2] from 127.0.0.1:48856 - TcpServer.cc:80</span><br><span class="line">===================================================</span><br><span class="line">header_size: 28</span><br><span class="line">rpc_header_str:</span><br><span class="line">UserServiceRpRegister</span><br><span class="line">args_strLi Si⸮abcde</span><br><span class="line">===================================================</span><br><span class="line">doing local service Register</span><br><span class="line">id: 1name: Li Sipwd: abcde</span><br><span class="line">20240123 01:51:28.668910Z  4297 INFO  TcpServer::removeConnectionInLoop [RpcProvider] - connection RpcProvider-127.0.0.1:8000#2 - TcpServer.cc:109</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">./consumer -i test.conf </span><br><span class="line">rpcserverip: 127.0.0.1</span><br><span class="line">rpcserverport: 8000</span><br><span class="line">zookeeperip: 127.0.0.1</span><br><span class="line">zookeeperport: 5000</span><br><span class="line">===================================================</span><br><span class="line">header_size: 25</span><br><span class="line">rpc_header_str: </span><br><span class="line">UserServiceRpcLogin</span><br><span class="line">service_name: UserServiceRpc</span><br><span class="line">method_name: Login</span><br><span class="line">args_str: </span><br><span class="line">        Zhang san123456</span><br><span class="line">===================================================</span><br><span class="line">rpc login response: 1</span><br><span class="line">===================================================</span><br><span class="line">header_size: 28</span><br><span class="line">rpc_header_str: </span><br><span class="line">UserServiceRpRegister</span><br><span class="line">service_name: UserServiceRpc</span><br><span class="line">method_name: Register</span><br><span class="line">args_str:Li Siabcde</span><br><span class="line">===================================================</span><br><span class="line">rpc register response: 1</span><br></pre></td></tr></table></figure>
+
+<h3 id="好友服务"><a href="#好友服务" class="headerlink" title="好友服务"></a>好友服务</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;friend.pb.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mprpcapplication.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rpcprovider.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">FriendService原来是一个本地服务，提供了两个进程内的本地方法，GetFriendLists</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">FriendService</span>:<span class="keyword">public</span> fixbug::FriendServiceRpc&#123;    <span class="comment">// 使用在rpc服务的发布端（rpc服务提供者）</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function">std::vector&lt;std::string&gt; <span class="title">GetFriendsList</span><span class="params">(<span class="type">uint32_t</span> uid)</span></span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;doing local service GetFriendsList,uid = &quot;</span>&lt;&lt;uid&lt;&lt;std::endl;</span><br><span class="line">        std::vector&lt;std::string&gt; friendslist;</span><br><span class="line">        friendslist.<span class="built_in">emplace_back</span>(<span class="string">&quot;Long aotian&quot;</span>);</span><br><span class="line">        friendslist.<span class="built_in">emplace_back</span>(<span class="string">&quot;Zhao ritian&quot;</span>);</span><br><span class="line">        friendslist.<span class="built_in">emplace_back</span>(<span class="string">&quot;Ye fan&quot;</span>);</span><br><span class="line">        friendslist.<span class="built_in">emplace_back</span>(<span class="string">&quot;Xiao yan&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> friendslist;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    重写基类UserServiceRpc的虚函数 下面这些方法都是框架直接调用的</span></span><br><span class="line"><span class="comment">    1. caller ==&gt; Login(LoginRequest) ==&gt; moduo ==&gt; callee</span></span><br><span class="line"><span class="comment">    2. callee ==&gt; Login(LoginRequest) ==&gt; 交到下面重写的这个Login方法上了</span></span><br><span class="line"><span class="comment">    */</span> </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">GetFriendsList</span><span class="params">(::google::protobuf::RpcController* controller,</span></span></span><br><span class="line"><span class="params"><span class="function">                       <span class="type">const</span> ::fixbug::GetFriendsListRequest* request,</span></span></span><br><span class="line"><span class="params"><span class="function">                       ::fixbug::GetFriendsListResponse* response,</span></span></span><br><span class="line"><span class="params"><span class="function">                       ::google::protobuf::Closure* done)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 框架给业务上报了请求参数LoginRequest，应用获取相应数据做本地业务</span></span><br><span class="line">        <span class="type">uint32_t</span> uid = request-&gt;<span class="built_in">uid</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 做本地业务</span></span><br><span class="line">        std::vector&lt;std::string&gt; firendslist = <span class="built_in">GetFriendsList</span>(uid);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 把响应写入 包括错误码、错误信息、返回值</span></span><br><span class="line">        fixbug::ResultCode *code = response-&gt;<span class="built_in">mutable_result</span>();</span><br><span class="line">        code-&gt;<span class="built_in">set_errcode</span>(<span class="number">0</span>);</span><br><span class="line">        code-&gt;<span class="built_in">set_errmsg</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> &amp;name : firendslist)&#123;</span><br><span class="line">            std::string* p = response-&gt;<span class="built_in">add_friends</span>();</span><br><span class="line">            *p = name;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 执行回调操作  </span></span><br><span class="line">        <span class="comment">// 执行响应对象数据的序列化和网络发送（都是由框架完成的）</span></span><br><span class="line">        done-&gt;<span class="built_in">Run</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span>&#123;</span><br><span class="line">    FriendService us;</span><br><span class="line">   <span class="comment">// us.Login(&quot;xxx&quot;,&quot;xxx&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用框架的初始化操作 provider -i config.conf</span></span><br><span class="line">    MprpcApplication::<span class="built_in">Init</span>(argc,argv);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// provider是一个rpc网络服务对象，把UserService对象发布到rpc节点上</span></span><br><span class="line">    RpcProvider provider;</span><br><span class="line">    provider.<span class="built_in">NotifyService</span>(<span class="keyword">new</span> <span class="built_in">FriendService</span>());</span><br><span class="line">    <span class="comment">//provider.NotifyService(new ProductService());</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动一个rpc服务发布节点,Run以后，进程进入阻塞状态，等待远程的rpc调用请求</span></span><br><span class="line">    provider.<span class="built_in">Run</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">./provider -i test.conf</span><br><span class="line">rpcserverip: 127.0.0.1</span><br><span class="line">rpcserverport: 8000</span><br><span class="line">zookeeperip: 127.0.0.1</span><br><span class="line">zookeeperport: 5000</span><br><span class="line">service_name:FriendServiceRpc</span><br><span class="line">method_name:GetFriendsList</span><br><span class="line">RpcProvider start service at ip:127.0.0.1 port:8000</span><br><span class="line">20240123 02:36:02.487174Z 10070 INFO  TcpServer::newConnection [RpcProvider] - new connection [RpcProvider-127.0.0.1:8000#1] from 127.0.0.1:48890 - TcpServer.cc:80</span><br><span class="line">===================================================</span><br><span class="line">header_size: 36</span><br><span class="line">rpc_header_str:</span><br><span class="line">FriendServiceRpcGetFriendsList</span><br><span class="line">args_str:</span><br><span class="line">===================================================</span><br><span class="line">doing local service GetFriendsList,uid = 9</span><br><span class="line">20240123 02:36:02.487649Z 10070 INFO  TcpServer::removeConnectionInLoop [RpcProvider] - connection RpcProvider-127.0.0.1:8000#1 - TcpServer.cc:109</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">./consumer -i test.conf </span><br><span class="line">rpcserverip: 127.0.0.1</span><br><span class="line">rpcserverport: 8000</span><br><span class="line">zookeeperip: 127.0.0.1</span><br><span class="line">zookeeperport: 5000</span><br><span class="line">===================================================</span><br><span class="line">header_size: 36</span><br><span class="line">rpc_header_str: </span><br><span class="line">FriendServiceRpcGetFriendsList</span><br><span class="line">service_name: FriendServiceRpc</span><br><span class="line">method_name: GetFriendsList</span><br><span class="line">args_str: </span><br><span class="line">===================================================</span><br><span class="line">rpc GetFriendsList response: 0</span><br><span class="line">index: 1 name: Long aotian</span><br><span class="line">index: 2 name: Zhao ritian</span><br><span class="line">index: 3 name: Ye fan</span><br><span class="line">index: 4 name: Xiao yan</span><br></pre></td></tr></table></figure>
+
+
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                从零实现分布式网络通信框架MPRPC
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2024/02/28/从零实现分布式网络通信框架MPRPC/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Mzy</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2024-02-28 18:46</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+                        <i class="fa-brands fa-creative-commons"></i>
+                        <i class="fa-brands fa-creative-commons-by"></i>
+                        <i class="fa-brands fa-creative-commons-nc"></i>
+                        <i class="fa-brands fa-creative-commons-sa"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/WebServer/">WebServer</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/2024/03/28/Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"
+                                   title="Web服务器面试总结"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Web服务器面试总结</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/01/16/CMake%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/"
+                                   title="CMake快速入门"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">CMake快速入门</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="waline-comment-container">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.css"/>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline-meta.css"/>
+        <div id="waline-comment"></div>
+        <script data-pjax
+                src="//cdn.jsdelivr.net/npm/@waline/client@v2/dist/waline.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script data-pjax
+                async
+        >
+          window.KeepCommentPlugin.walineOptions = JSON.parse('{}'.replace(/&#34;/g, '"'))
+
+          window.KeepCommentPlugin.initWaline = () => {
+            if (window?.Waline) {
+              window.KeepCommentPlugin.walineOptions.el = '#waline-comment'
+              window.KeepCommentPlugin.walineOptions.comment = '.post-comments-count'
+              window.KeepCommentPlugin.walineOptions.serverURL = 'https://waline-test-liart.vercel.app'
+              window.KeepCommentPlugin.walineOptions.lang = 'zh-CN' || 'zh-CN'
+              window.KeepCommentPlugin.walineOptions.reaction = 'true' === 'true'
+              window.Waline.init(window.KeepCommentPlugin.walineOptions)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initWaline()
+              }, 1000)
+            }
+          }
+
+          if ('true' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initWaline()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initWaline)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">从零实现分布式网络通信框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">集群与分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">单机服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">1.1.2.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text">分布式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPC%EF%BC%88%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">RPC（远程过程调用）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RPC%E9%80%9A%E4%BF%A1%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">RPC通信原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%8A%8A%E6%9C%AC%E5%9C%B0%E6%9C%8D%E5%8A%A1%E9%80%9A%E8%BF%87proto%E5%8F%91%E5%B8%83%E6%88%90%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.3.</span> <span class="nav-text">如何把本地服务通过proto发布成远程服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A1%86%E6%9E%B6"><span class="nav-number">1.4.</span> <span class="nav-text">设计框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text">读取配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcapplication-h"><span class="nav-number">1.5.1.</span> <span class="nav-text">mprpcapplication.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcapplication-cpp"><span class="nav-number">1.5.2.</span> <span class="nav-text">mprpcapplication.cpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcconfig-h"><span class="nav-number">1.5.3.</span> <span class="nav-text">mprpcconfig.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcconfig-cpp"><span class="nav-number">1.5.4.</span> <span class="nav-text">mprpcconfig.cpp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#muduo%E5%BA%93%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.</span> <span class="nav-text">muduo库的安装与使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.</span> <span class="nav-text">发布服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.1.</span> <span class="nav-text">用户服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%BD%E5%8F%8B%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.2.</span> <span class="nav-text">好友服务</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2022</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Mzy</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+                
+                <div class="deploy-info info-item default">
+                    
+                        本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/deploy-provider/github.png"></span> 提供部署服务
+                    
+                </div>
+            
+        
+
+        <div class="count-item info-item default">
+            
+                <span class="count-box border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">113.4k</span>
+                </span>
+            
+
+            
+                <span class="count-box border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">从零实现分布式网络通信框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">集群与分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">单机服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">1.1.2.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text">分布式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPC%EF%BC%88%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">RPC（远程过程调用）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RPC%E9%80%9A%E4%BF%A1%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">RPC通信原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%8A%8A%E6%9C%AC%E5%9C%B0%E6%9C%8D%E5%8A%A1%E9%80%9A%E8%BF%87proto%E5%8F%91%E5%B8%83%E6%88%90%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.3.</span> <span class="nav-text">如何把本地服务通过proto发布成远程服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A1%86%E6%9E%B6"><span class="nav-number">1.4.</span> <span class="nav-text">设计框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text">读取配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcapplication-h"><span class="nav-number">1.5.1.</span> <span class="nav-text">mprpcapplication.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcapplication-cpp"><span class="nav-number">1.5.2.</span> <span class="nav-text">mprpcapplication.cpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcconfig-h"><span class="nav-number">1.5.3.</span> <span class="nav-text">mprpcconfig.h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mprpcconfig-cpp"><span class="nav-number">1.5.4.</span> <span class="nav-text">mprpcconfig.cpp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#muduo%E5%BA%93%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.</span> <span class="nav-text">muduo库的安装与使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.</span> <span class="nav-text">发布服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.1.</span> <span class="nav-text">用户服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%BD%E5%8F%8B%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.2.</span> <span class="nav-text">好友服务</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/toggle-theme.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/code-block.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/anime.min.js"></script>
+
+<!-- local-search -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/local-search.js"></script>
+
+
+<!-- lazyload -->
+
+
+<div class="pjax">
+    
+        <!-- post-helper -->
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/post-helper.js"></script>
+
+        <!-- toc -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/toc.js"></script>
+        
+
+        <!-- copyright-info -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/copyright-info.js"></script>
+        
+
+        <!-- share -->
+        
+            <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/post/share.js"></script>
+        
+    
+
+    <!-- category-page -->
+    
+
+    <!-- links-page -->
+    
+
+    <!-- photos-page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@4.0.5/source/js/libs/pjax.min.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart()
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd()
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'))
+            KEEP.initExecute()
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
