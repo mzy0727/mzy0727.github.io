@@ -9,7 +9,7 @@
     
     <title>
         
-            信号量和互斥锁有什么区别 |
+            RPC面试总结 |
         
         Mzy&#39;s Blog
     </title>
@@ -198,12 +198,19 @@
     <div class="post-page-container border-box">
         <div class="post-content-container border-box">
             
-
-            <div class="post-content-bottom border-box">
-                
-                    <div class="post-title">
-                        信号量和互斥锁有什么区别
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        RPC面试总结
                     </div>
+                    <img class="post-cover" src="/images/post_banner.jpg"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
                 
 
                 
@@ -230,13 +237,13 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-check"></i>&nbsp;
-                <span class="pc">2023-11-23 18:25:16</span>
-                <span class="mobile">2023-11-23 18:25</span>
+                <span class="pc">2024-03-29 09:27:21</span>
+                <span class="mobile">2024-03-29 09:27</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="pc" data-updated="Thu Nov 23 2023 18:26:10 GMT+0800">2023-11-23 18:26:10</span>
+                <span class="pc" data-updated="Fri Mar 29 2024 09:27:58 GMT+0800">2024-03-29 09:27:58</span>
             </span>
         
 
@@ -244,7 +251,7 @@
             <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
                 <ul class="post-category-ul">
                     
-                            <li class="category-item"><a href="/categories/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/">每日一题</a></li>
+                            <li class="category-item"><a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></li>
                         
                     
                 </ul>
@@ -259,6 +266,9 @@
                             <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/c/">c++</a></li>
                         
                     
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/RPC/">RPC</a></li>
+                        
+                    
                 </ul>
             </span>
         
@@ -266,12 +276,12 @@
         
         
             <span class="meta-info-item post-wordcount">
-                <i class="icon fas fa-file-word"></i>&nbsp;<span>204 字</span>
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>1.7k 字</span>
             </span>
         
         
             <span class="meta-info-item post-min2read">
-                <i class="icon fas fa-clock"></i>&nbsp;<span>1 分钟</span>
+                <i class="icon fas fa-clock"></i>&nbsp;<span>5 分钟</span>
             </span>
         
         
@@ -292,11 +302,63 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h2 id="信号量和互斥锁有什么区别"><a href="#信号量和互斥锁有什么区别" class="headerlink" title="信号量和互斥锁有什么区别"></a><strong>信号量和互斥锁有什么区别</strong></h2><div class="keep-note success"><p>信号量用于线程的同步，互斥锁用于线程的互斥。</p>
-<p>信号量值可以为非负整数，互斥锁值只能为<strong>0&#x2F;1</strong>。</p>
-<p>信号量可以由一个线程释放，另一个线程得到，互斥锁的加锁和解锁必须由<strong>同一线程</strong>分别对应使用。</p>
-<p>信号量用在多线程多任务同步的，一个线程完成了某一个动作就通过信号量告诉别的线程，别的线程再进行某些动作。互斥锁是用在多线程多任务互斥的，一个线程占用了某一个资源，那么别的线程就无法访问，直到这个线程unlock，其他的线程才开始可以利用这个资源。</p>
-</div>
+                    <h1 id="MPRPC面试总结"><a href="#MPRPC面试总结" class="headerlink" title="MPRPC面试总结"></a>MPRPC面试总结</h1><h2 id="项目概述"><a href="#项目概述" class="headerlink" title="项目概述"></a>项目概述</h2><p><img   src="https://mzy777.oss-cn-hangzhou.aliyuncs.com/img/939e4b81aeb94e309a2768841e817ae1.png"  alt="img"></p>
+<p><img   src="https://mzy777.oss-cn-hangzhou.aliyuncs.com/img/980d6c6df43e4472ac8649689dc782e9.png"  alt="流程框架"></p>
+<h2 id="什么是-RPC-？"><a href="#什么是-RPC-？" class="headerlink" title="什么是 RPC ？"></a>什么是 RPC ？</h2><ul>
+<li>RPC (Remote Procedure Call)即<strong>远程过程调用</strong>，是分布式系统常见的一种通信方法。它允许程序调用另一个地址空间（通常是共享网络的另一台机器上）的过程或函数，而不用程序员显式编码这个远程调用的细节。</li>
+<li>除 RPC 之外，常见的多系统数据交互方案还有分布式消息队列、HTTP 请求调用、数据库和分布式缓存等。</li>
+<li><strong>RPC会隐藏底层的通讯细节</strong>（不需要直接处理Socket通讯或Http通讯）。</li>
+</ul>
+<h2 id="为什么要用RPC"><a href="#为什么要用RPC" class="headerlink" title="为什么要用RPC"></a>为什么要用RPC</h2><p>RPC 最大的特点就是可以让我们像调用本地函数一样调用远程函数。RPC是解决分布式系统通信问题的重要技术，在搭建一个复杂的分布式系统过程中，如果开发人员想要调用某个远端函数，在编写这个函数逻辑的时候还要<strong>编写网络通信有关</strong>的一系列逻辑，这样非常不利于开发。所以就需要RPC框架对调用远端函数和接收远端函数的处理结果这整个过程进行封装，让开发人员在调用远端函数时能和调用本地函数一样，具备相同的语义性。</p>
+<p>解决了单机模型和集群模型的缺点：</p>
+<ol>
+<li>受限于硬件资源，聊天服务器所能承受的用户的并发量</li>
+<li>任意模块的更改，都会导致整个项目代码重新编译、部署</li>
+<li>系统中，有些模块是属于CPU密集型的，有些模块是属于<code>I/O</code>密集型的，造成各模块对于硬件资源的需求是不一样的</li>
+</ol>
+<h2 id="在分布式系统中，不同服务之间应该如何通信呢？"><a href="#在分布式系统中，不同服务之间应该如何通信呢？" class="headerlink" title="在分布式系统中，不同服务之间应该如何通信呢？"></a>在分布式系统中，不同服务之间应该如何通信呢？</h2><p>在 RPC 框架中，主要是使用注册中心来实现服务注册和发现的功能。服务端节点上线后自行向注册中心注册服务列表，节点下线时需要从注册中心将节点元数据信息移除。客户端向服务端发起调用时，自己负责从注册中心获取服务端的服务列表，然后在通过负载均衡算法选择其中一个服务节点进行调用。以上是最简单直接的服务端和客户端的发布和订阅模式，不需要再借助任何中间服务器，性能损耗也是最小的。</p>
+<h2 id="为什么推荐Zookeeper作注册中心"><a href="#为什么推荐Zookeeper作注册中心" class="headerlink" title="为什么推荐Zookeeper作注册中心"></a>为什么推荐Zookeeper作注册中心</h2><p><strong>zk将全量数据存储在内存中，可谓是高性能，而且支持集群，可谓高可用，另外支持事件监听。这些特点决定了zk特别适合作为注册中心(数据发布&#x2F;订阅)。</strong></p>
+<h2 id="当服务提供者的某台服务器宕机或下线时”，zookeeper如何感知到呢？"><a href="#当服务提供者的某台服务器宕机或下线时”，zookeeper如何感知到呢？" class="headerlink" title="当服务提供者的某台服务器宕机或下线时”，zookeeper如何感知到呢？"></a>当服务提供者的某台服务器宕机或下线时”，zookeeper如何感知到呢？</h2><p>zookeeper提供了“心跳检测”功能，<strong>它会定时向各个服务提供者发送一个请求（实际上建立的是一个 socket 长连接），如果长期没有响应，服务中心就认为该服务提供者已经“挂了”，并将其剔除。</strong></p>
+<h2 id="注册中心会将新的服务IP地址列表发送给服务消费者机器是如何实现的呢？"><a href="#注册中心会将新的服务IP地址列表发送给服务消费者机器是如何实现的呢？" class="headerlink" title="注册中心会将新的服务IP地址列表发送给服务消费者机器是如何实现的呢？"></a>注册中心会将新的服务IP地址列表发送给服务消费者机器是如何实现的呢？</h2><ul>
+<li><p>主动拉取策略：服务的消费者定期调用注册中心提供的服务获取接口获取最新的服务列表并更新本地缓存，经典案例就是Eureka。</p>
+</li>
+<li><p>发布-订阅模式：服务消费者能够实时监控服务更新状态，通常采用监听器以及回调机制。Zookeeper使用的是“发布-订阅模式”。</p>
+</li>
+</ul>
+<h2 id="zookeeper-服务容灾？zookeeper-服务节点挂掉之后，怎么删除它？"><a href="#zookeeper-服务容灾？zookeeper-服务节点挂掉之后，怎么删除它？" class="headerlink" title="zookeeper 服务容灾？zookeeper 服务节点挂掉之后，怎么删除它？"></a>zookeeper 服务容灾？zookeeper 服务节点挂掉之后，怎么删除它？</h2><p>容灾：在集群若干台故障后，整个集群仍然可以对外提供可用的服务。删除：<strong>使用临时节点，会话失效，节点自动清除</strong>。</p>
+<h2 id="Zookeeper-有几种角色？"><a href="#Zookeeper-有几种角色？" class="headerlink" title="Zookeeper 有几种角色？"></a>Zookeeper 有几种角色？</h2><p>群首（leader），追随者（follower），观察者（observer）</p>
+<h2 id="CAP-理论解释下？P是什么？"><a href="#CAP-理论解释下？P是什么？" class="headerlink" title="CAP 理论解释下？P是什么？"></a>CAP 理论解释下？P是什么？</h2><ul>
+<li>一致性（<strong>C</strong>onsistency）多个副本之间的数据一致性</li>
+<li>可用性（<strong>A</strong>vailability）在合理规定的时间内，是否能返回一个明确的结果。</li>
+<li>分区容错性（<strong>P</strong>artition tolerance）在分区故障下，仍然可以对外提供正常的服务。</li>
+</ul>
+<p>一个分布式系统在以上三个特性中：最多满足其中的两个特性。<strong>Zookeeper满足CP</strong></p>
+<h2 id="zookeeper的节点类型"><a href="#zookeeper的节点类型" class="headerlink" title="zookeeper的节点类型?"></a>zookeeper的节点类型?</h2><p>（持久，临时，顺序）</p>
+<h2 id="为什么需要序列化？"><a href="#为什么需要序列化？" class="headerlink" title="为什么需要序列化？"></a>为什么需要序列化？</h2><p>网络传输的数据必须是二进制数据，但调用方请求的出入参数都是对象。对象是不能直接在网络中传输的，所以我们需要提前把它转成可传输的二进制，并且要求转换算法是可逆的，这个过程我们一般叫做“序列化”。这时，服务提供方就可以正确地从二进制数据中分割出不同的请求，同时根据请求类型和序列化类型，把二进制的消息体逆向还原成请求对象，这个过程我们称之为“反序列化”。</p>
+<h2 id="序列化和反序列化有什么作用"><a href="#序列化和反序列化有什么作用" class="headerlink" title="序列化和反序列化有什么作用"></a>序列化和反序列化有什么作用</h2><p>（1）<strong>实现了数据的持久化</strong>：永久性保存对象，保存对象的字节序列到本地文件或者数据库中；<br>（2）<strong>序列化实现远程通信</strong>：通过序列化以字节流的形式使对象在网络中进行传递和接收；<br>（3）通过序列化在进程间传递对象；</p>
+<h2 id="为什么使用Protobuf而不是Json"><a href="#为什么使用Protobuf而不是Json" class="headerlink" title="为什么使用Protobuf而不是Json"></a>为什么使用Protobuf而不是Json</h2><ul>
+<li>JSON 进行序列化的额外空间开销比较大，对于大数据量服务这意味着需要巨大的内存和磁盘开销；</li>
+<li>序列化后体积相比 JSON、Hessian 小很多;</li>
+<li>序列化反序列化速度很快，不需要通过反射获取类型；</li>
+</ul>
+<h3 id="为什么用-RPC，不用-HTTP"><a href="#为什么用-RPC，不用-HTTP" class="headerlink" title="为什么用 RPC，不用 HTTP"></a>为什么用 RPC，不用 HTTP</h3><p>使用 TCP 和使用 HTTP 各有优势：</p>
+<p><strong>传输效率</strong>：</p>
+<ul>
+<li>TCP，通常自定义上层协议，可以让请求报文体积更小 </li>
+<li>HTTP：如果是基于HTTP 1.1 的协议，请求中会包含很多无用的内容</li>
+</ul>
+<p><strong>性能消耗</strong>，主要在于序列化和反序列化的耗时</p>
+<ul>
+<li>TCP，可以基于各种序列化框架进行，效率比较高 </li>
+<li>HTTP，大部分是通过 json 来实现的，字节大小和序列化耗时都要更消耗性能</li>
+</ul>
+<p><strong>跨平台</strong>：</p>
+<ul>
+<li>TCP：通常要求客户端和服务器为统一平台 </li>
+<li>HTTP：可以在各种异构系统上运行</li>
+</ul>
+<p><strong>总结</strong>：<br>  RPC 的 TCP 方式主要用于公司内部的服务调用，性能消耗低，传输效率高。HTTP主要用于对外的异构环境，浏览器接口调用，APP接口调用，第三方接口调用等。</p>
+
                 </div>
 
                 
@@ -305,11 +367,11 @@
     <div class="copyright-info-content border-box">
         <div class="copyright-info-top border-box">
             <div class="copyright-post-title border-box text-ellipsis">
-                信号量和互斥锁有什么区别
+                RPC面试总结
             </div>
 
             <div class="copyright-post-link border-box text-ellipsis">
-                2023/11/23/信号量和互斥锁有什么区别/
+                2024/03/29/RPC面试总结/
             </div>
         </div>
 
@@ -325,7 +387,7 @@
                 <div class="type">
                     发布于
                 </div>
-                <div class="content">2023-11-23 18:25</div>
+                <div class="content">2024-03-29 09:27</div>
             </div>
 
 
@@ -360,6 +422,10 @@
                                 
                                     <li class="tag-item border-box">
                                         <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/c/">c++</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/RPC/">RPC</a>
                                     </li>
                                 
                             </ul>
@@ -398,31 +464,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2023/11/23/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"
-                                   title="单例模式"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">单例模式</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2023/11/22/vector%E6%80%8E%E4%B9%88%E6%89%A9%E5%AE%B9/"
-                                   title="vector怎么扩容"
+                                   href="/2024/03/28/Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"
+                                   title="Web服务器面试总结"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">vector怎么扩容</span>
+                                        <span class="post-nav-title-item text-ellipsis">Web服务器面试总结</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -525,7 +575,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">信号量和互斥锁有什么区别</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MPRPC%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">MPRPC面试总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">项目概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-RPC-%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">什么是 RPC ？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8RPC"><span class="nav-number">1.3.</span> <span class="nav-text">为什么要用RPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%EF%BC%8C%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E4%B9%8B%E9%97%B4%E5%BA%94%E8%AF%A5%E5%A6%82%E4%BD%95%E9%80%9A%E4%BF%A1%E5%91%A2%EF%BC%9F"><span class="nav-number">1.4.</span> <span class="nav-text">在分布式系统中，不同服务之间应该如何通信呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8E%A8%E8%8D%90Zookeeper%E4%BD%9C%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">1.5.</span> <span class="nav-text">为什么推荐Zookeeper作注册中心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E6%9C%8D%E5%8A%A1%E6%8F%90%E4%BE%9B%E8%80%85%E7%9A%84%E6%9F%90%E5%8F%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%95%E6%9C%BA%E6%88%96%E4%B8%8B%E7%BA%BF%E6%97%B6%E2%80%9D%EF%BC%8Czookeeper%E5%A6%82%E4%BD%95%E6%84%9F%E7%9F%A5%E5%88%B0%E5%91%A2%EF%BC%9F"><span class="nav-number">1.6.</span> <span class="nav-text">当服务提供者的某台服务器宕机或下线时”，zookeeper如何感知到呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E4%BC%9A%E5%B0%86%E6%96%B0%E7%9A%84%E6%9C%8D%E5%8A%A1IP%E5%9C%B0%E5%9D%80%E5%88%97%E8%A1%A8%E5%8F%91%E9%80%81%E7%BB%99%E6%9C%8D%E5%8A%A1%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%BA%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%91%A2%EF%BC%9F"><span class="nav-number">1.7.</span> <span class="nav-text">注册中心会将新的服务IP地址列表发送给服务消费者机器是如何实现的呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper-%E6%9C%8D%E5%8A%A1%E5%AE%B9%E7%81%BE%EF%BC%9Fzookeeper-%E6%9C%8D%E5%8A%A1%E8%8A%82%E7%82%B9%E6%8C%82%E6%8E%89%E4%B9%8B%E5%90%8E%EF%BC%8C%E6%80%8E%E4%B9%88%E5%88%A0%E9%99%A4%E5%AE%83%EF%BC%9F"><span class="nav-number">1.8.</span> <span class="nav-text">zookeeper 服务容灾？zookeeper 服务节点挂掉之后，怎么删除它？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zookeeper-%E6%9C%89%E5%87%A0%E7%A7%8D%E8%A7%92%E8%89%B2%EF%BC%9F"><span class="nav-number">1.9.</span> <span class="nav-text">Zookeeper 有几种角色？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP-%E7%90%86%E8%AE%BA%E8%A7%A3%E9%87%8A%E4%B8%8B%EF%BC%9FP%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.10.</span> <span class="nav-text">CAP 理论解释下？P是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper%E7%9A%84%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.11.</span> <span class="nav-text">zookeeper的节点类型?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%BA%8F%E5%88%97%E5%8C%96%EF%BC%9F"><span class="nav-number">1.12.</span> <span class="nav-text">为什么需要序列化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8"><span class="nav-number">1.13.</span> <span class="nav-text">序列化和反序列化有什么作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8Protobuf%E8%80%8C%E4%B8%8D%E6%98%AFJson"><span class="nav-number">1.14.</span> <span class="nav-text">为什么使用Protobuf而不是Json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-RPC%EF%BC%8C%E4%B8%8D%E7%94%A8-HTTP"><span class="nav-number">1.14.1.</span> <span class="nav-text">为什么用 RPC，不用 HTTP</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
 
@@ -710,7 +760,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">信号量和互斥锁有什么区别</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MPRPC%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">MPRPC面试总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">项目概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-RPC-%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">什么是 RPC ？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8RPC"><span class="nav-number">1.3.</span> <span class="nav-text">为什么要用RPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%EF%BC%8C%E4%B8%8D%E5%90%8C%E6%9C%8D%E5%8A%A1%E4%B9%8B%E9%97%B4%E5%BA%94%E8%AF%A5%E5%A6%82%E4%BD%95%E9%80%9A%E4%BF%A1%E5%91%A2%EF%BC%9F"><span class="nav-number">1.4.</span> <span class="nav-text">在分布式系统中，不同服务之间应该如何通信呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8E%A8%E8%8D%90Zookeeper%E4%BD%9C%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">1.5.</span> <span class="nav-text">为什么推荐Zookeeper作注册中心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93%E6%9C%8D%E5%8A%A1%E6%8F%90%E4%BE%9B%E8%80%85%E7%9A%84%E6%9F%90%E5%8F%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%95%E6%9C%BA%E6%88%96%E4%B8%8B%E7%BA%BF%E6%97%B6%E2%80%9D%EF%BC%8Czookeeper%E5%A6%82%E4%BD%95%E6%84%9F%E7%9F%A5%E5%88%B0%E5%91%A2%EF%BC%9F"><span class="nav-number">1.6.</span> <span class="nav-text">当服务提供者的某台服务器宕机或下线时”，zookeeper如何感知到呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E4%BC%9A%E5%B0%86%E6%96%B0%E7%9A%84%E6%9C%8D%E5%8A%A1IP%E5%9C%B0%E5%9D%80%E5%88%97%E8%A1%A8%E5%8F%91%E9%80%81%E7%BB%99%E6%9C%8D%E5%8A%A1%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%BA%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%91%A2%EF%BC%9F"><span class="nav-number">1.7.</span> <span class="nav-text">注册中心会将新的服务IP地址列表发送给服务消费者机器是如何实现的呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper-%E6%9C%8D%E5%8A%A1%E5%AE%B9%E7%81%BE%EF%BC%9Fzookeeper-%E6%9C%8D%E5%8A%A1%E8%8A%82%E7%82%B9%E6%8C%82%E6%8E%89%E4%B9%8B%E5%90%8E%EF%BC%8C%E6%80%8E%E4%B9%88%E5%88%A0%E9%99%A4%E5%AE%83%EF%BC%9F"><span class="nav-number">1.8.</span> <span class="nav-text">zookeeper 服务容灾？zookeeper 服务节点挂掉之后，怎么删除它？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zookeeper-%E6%9C%89%E5%87%A0%E7%A7%8D%E8%A7%92%E8%89%B2%EF%BC%9F"><span class="nav-number">1.9.</span> <span class="nav-text">Zookeeper 有几种角色？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP-%E7%90%86%E8%AE%BA%E8%A7%A3%E9%87%8A%E4%B8%8B%EF%BC%9FP%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.10.</span> <span class="nav-text">CAP 理论解释下？P是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper%E7%9A%84%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.11.</span> <span class="nav-text">zookeeper的节点类型?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%BA%8F%E5%88%97%E5%8C%96%EF%BC%9F"><span class="nav-number">1.12.</span> <span class="nav-text">为什么需要序列化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8"><span class="nav-number">1.13.</span> <span class="nav-text">序列化和反序列化有什么作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8Protobuf%E8%80%8C%E4%B8%8D%E6%98%AFJson"><span class="nav-number">1.14.</span> <span class="nav-text">为什么使用Protobuf而不是Json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-RPC%EF%BC%8C%E4%B8%8D%E7%94%A8-HTTP"><span class="nav-number">1.14.1.</span> <span class="nav-text">为什么用 RPC，不用 HTTP</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
 
